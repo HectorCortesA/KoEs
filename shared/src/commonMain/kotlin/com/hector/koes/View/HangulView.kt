@@ -10,10 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,6 +43,7 @@ private val consonants = listOf(
 fun HangulView(
     onNavigate: (String) -> Unit = {}
 ) {
+    val scrollState = rememberScrollState()
 
     Box(
         modifier = Modifier
@@ -59,8 +61,9 @@ fun HangulView(
 
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .align(BiasAlignment(0f, -0.15f)),
+                .fillMaxSize()
+                .padding(top = 170.dp)
+                .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -74,7 +77,8 @@ fun HangulView(
             consonants.chunked(3).forEach { rowItems ->
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     rowItems.forEach { item ->
@@ -88,6 +92,49 @@ fun HangulView(
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            Text(
+                text = "Vocales",
+                fontSize = 28.sp
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            // Aquí después agregas tus cards de vocales
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            Text(
+                text = "Pronunciación",
+                fontSize = 28.sp
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Text(
+                text = "Pronunciación",
+                fontSize = 28.sp
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+            Text(
+                text = "Pronunciación",
+                fontSize = 28.sp
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+            Text(
+                text = "Pronunciación",
+                fontSize = 28.sp
+            )
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            // Aquí después agregas tus cards de pronunciación
+
+            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }
