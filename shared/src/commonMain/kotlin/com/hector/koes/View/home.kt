@@ -38,7 +38,9 @@ import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
 
 @Composable
-fun Home() {
+fun Home(
+    onNavigate: (String) -> Unit = {}
+) {
     var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
     val suggestion = "티몬체"
     val text = textFieldValue.text
@@ -53,7 +55,8 @@ fun Home() {
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
-                .padding(top = 60.dp)
+                .padding(top = 60.dp),
+            onNavigate = onNavigate
         )
 
         // Contenedor Palabras - Posición fija para que no se mueva con el teclado o el tooltip

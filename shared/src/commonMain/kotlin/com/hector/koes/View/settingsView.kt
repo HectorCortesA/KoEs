@@ -14,7 +14,9 @@ import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
 
 @Composable
-fun settingsView(){
+fun SettingsView(
+    onNavigate: (String) -> Unit = {}
+){
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -24,7 +26,8 @@ fun settingsView(){
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
-                .padding(top = 60.dp)
+                .padding(top = 60.dp),
+            onNavigate = onNavigate
         )
     }
 
@@ -34,6 +37,6 @@ fun settingsView(){
     showBackground = true
 )
 @Composable
-fun settingsViewPreview(){
-    settingsView()
+fun SettingsViewPreview(){
+    SettingsView()
 }

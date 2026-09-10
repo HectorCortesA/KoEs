@@ -3,6 +3,7 @@ package com.hector.koes.components.navbar
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -28,7 +29,8 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun Navbar(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onNavigate: (String) -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -38,27 +40,30 @@ fun Navbar(
     ) {
 
         NavButton(text = "Pl")
-        NavButton(text = "hg")
+        NavButton(text = "hg", onClick = { onNavigate("hangul") })  // Vista HangulView
         NavButton(text = "LC")
-        NavButton(text = "T")
-        NavButton(text = "PS")
+        NavButton(text = "T", onClick = { onNavigate("home") }) // home
+        NavButton(text = "PS", ) // Vista
 
         Spacer(
             modifier = Modifier.width(26.dp)
         )
 
-        NavButton(text = "AJ")
+        NavButton(text = "AJ", onClick = { onNavigate("settings") })
     }
 }
 
 @Composable
 fun NavButton(
-    text: String
+    text: String,
+    onClick: () -> Unit = {}
 ) {
     // Usamos Surface con color transparente para evitar cualquier relleno 
     // y asegurar la forma circular perfecta sin sombras poligonales.
     Surface(
-        modifier = Modifier.size(50.dp),
+        modifier = Modifier
+            .size(50.dp)
+            .clickable { onClick() },
         shape = CircleShape,
         color = Color.Transparent,
         border = BorderStroke(
