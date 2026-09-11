@@ -39,6 +39,40 @@ private val consonants = listOf(
     Hangul("ㅌ", "tieut", "t")
 )
 
+private val vowelsVertical = listOf(
+    Hangul("ㅏ", "a", "a"),
+    Hangul("ㅑ", "ya", "ya"),
+    Hangul("ㅓ", "eo", "eo"),
+    Hangul("ㅕ", "yeo", "yeo"),
+    Hangul("ㅣ", "i", "i")
+)
+
+private val vowelsHorizontal = listOf(
+    Hangul("ㅗ", "o", "o"),
+    Hangul("ㅛ", "yo", "yo"),
+    Hangul("ㅜ", "u", "u"),
+    Hangul("ㅠ", "yu", "yu"),
+    Hangul("ㅡ", "eu", "eu")
+)
+
+private val vowelsVerticalDouble = listOf(
+    Hangul("ㅐ", "ae", "ae"),
+    Hangul("ㅒ", "yae", "yae"),
+    Hangul("ㅔ", "e", "e"),
+    Hangul("ㅖ", "ye", "ye")
+)
+
+private val vowelsDoubleMixed = listOf(
+    Hangul("ㅘ", "wa", "wa"),
+    Hangul("ㅙ", "wae", "wae"),
+    Hangul("ㅚ", "oe", "oe"),
+    Hangul("ㅝ", "wo", "wo"),
+    Hangul("ㅞ", "we", "we"),
+    Hangul("ㅟ", "wi", "wi"),
+    Hangul("ㅢ", "ui", "ui")
+)
+
+
 @Composable
 fun HangulView(
     onNavigate: (String) -> Unit = {}
@@ -96,45 +130,111 @@ fun HangulView(
             Spacer(modifier = Modifier.height(40.dp))
 
             Text(
-                text = "Vocales",
+                text = "Vocales verticales",
                 fontSize = 28.sp
             )
 
             Spacer(modifier = Modifier.height(30.dp))
 
             // Aquí después agregas tus cards de vocales
+            vowelsVertical.chunked(3).forEach { rowItems ->
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    rowItems.forEach { item ->
+                        CardHangul(
+                            hangul = item.hangul,
+                            romanization = item.romanization,
+                            pronunciation = item.pronunciation
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+            Spacer(modifier = Modifier.height(40.dp))
+
+            Text(
+                text = "Vocales horizontales",
+                fontSize = 28.sp
+            )
+            Spacer(modifier = Modifier.height(30.dp))
+            vowelsHorizontal.chunked(3).forEach { rowItems ->
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    rowItems.forEach { item ->
+                        CardHangul(
+                            hangul = item.hangul,
+                            romanization = item.romanization,
+                            pronunciation = item.pronunciation
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
             Spacer(modifier = Modifier.height(40.dp))
 
             Text(
-                text = "Pronunciación",
+                text = "Vocales verticales dobles",
                 fontSize = 28.sp
             )
 
             Spacer(modifier = Modifier.height(30.dp))
+            vowelsVerticalDouble.chunked(3).forEach { rowItems ->
 
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    rowItems.forEach { item ->
+                        CardHangul(
+                            hangul = item.hangul,
+                            romanization = item.romanization,
+                            pronunciation = item.pronunciation
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
             Text(
-                text = "Pronunciación",
+                text = "Vocales mixtas dobles",
                 fontSize = 28.sp
             )
-
             Spacer(modifier = Modifier.height(30.dp))
-            Text(
-                text = "Pronunciación",
-                fontSize = 28.sp
-            )
+            vowelsDoubleMixed.chunked(3).forEach { rowItems ->
 
-            Spacer(modifier = Modifier.height(30.dp))
-            Text(
-                text = "Pronunciación",
-                fontSize = 28.sp
-            )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-            Spacer(modifier = Modifier.height(30.dp))
+                    rowItems.forEach { item ->
+                        CardHangul(
+                            hangul = item.hangul,
+                            romanization = item.romanization,
+                            pronunciation = item.pronunciation
+                        )
+                    }
+                }
 
-            // Aquí después agregas tus cards de pronunciación
+                Spacer(modifier = Modifier.height(16.dp))
+            }
 
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(40.dp))
+
         }
     }
 }
