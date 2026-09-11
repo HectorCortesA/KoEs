@@ -1,6 +1,7 @@
 package com.hector.koes.components.card
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,12 +25,14 @@ fun CardDictionary(
     wordSpanish: String,
     wordCorea: String,
     pronunciation: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ){
     Row(
         modifier = modifier
             .width(362.dp)
             .height(60.dp)
+            .clickable { onClick() }
             .background(color = Color(0xFFDAE4EA), shape = RoundedCornerShape(size = 5.dp)),
         verticalAlignment = Alignment.CenterVertically
     ){

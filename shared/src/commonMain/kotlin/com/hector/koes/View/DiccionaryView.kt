@@ -32,10 +32,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hector.koes.model.DictionaryItem
 import com.hector.koes.components.card.CardDictionary
+import com.hector.koes.components.card.ModalDictionary
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiccionaryView(
     onNavigate: (String) -> Unit = {},
@@ -43,14 +51,19 @@ fun DiccionaryView(
 ) {
     var value by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
+    
+    // Estado para el Modal
+    var showModal by remember { mutableStateOf(false) }
+    var selectedItem by remember { mutableStateOf<DictionaryItem?>(null) }
+    val sheetState = rememberModalBottomSheetState()
 
     // Lista de ejemplo para simular la API
     val dictionaryItems = listOf(
-        DictionaryItem("Hola", "안녕하세요", "annyeonghaseyo"),
-        DictionaryItem("Gracias", "감사합니다", "gamsahamnida"),
-        DictionaryItem("Si", "네", "ne"),
-        DictionaryItem("No", "아니요", "aniyo"),
-        DictionaryItem("Adiós", "안녕", "annyeong")
+        DictionaryItem("Hola", "안녕하세요", "annyeonghaseyo", "an-nyeong-ha-se-yo"),
+        DictionaryItem("Gracias", "감사합니다", "gamsahamnida", "gam-sa-ham-ni-da"),
+        DictionaryItem("Si", "네", "ne", "ne"),
+        DictionaryItem("No", "아니요", "aniyo", "a-ni-yo"),
+        DictionaryItem("Adiós", "안녕", "annyeong", "an-nyeong")
     )
 
     // Filtrado básico
@@ -132,13 +145,41 @@ fun DiccionaryView(
                 CardDictionary(
                     wordSpanish = item.spanish,
                     wordCorea = item.korean,
-                    pronunciation = item.pronunciation
+                    pronunciation = item.romanization,
+                    onClick = {
+                        selectedItem = item
+                        showModal = true
+                    }
                 )
                 Spacer(modifier = Modifier.height(10.dp))
             }
             
             // Espacio extra al final para el scroll
             Spacer(modifier = Modifier.height(100.dp))
+        }
+
+        // Implementación del ModalBottomSheet
+        if (showModal && selectedItem != null) {
+            ModalBottomSheet(
+                onDismissRequest = { showModal = false },
+                sheetState = sheetState,
+                containerColor = Color(0x80FFFFFF),
+                dragHandle = null,
+                tonalElevation = 0.dp,
+                scrimColor = Color.Black.copy(alpha = 0.32f),
+                shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp),
+            ) {
+                // El contenido del modal
+                Box(modifier = Modifier.fillMaxWidth().background(Color(0x80FFFFFF))) {
+                    ModalDictionary(
+                        wordSpanish = selectedItem!!.spanish,
+                        wordCorea = selectedItem!!.korean,
+                        romanization = selectedItem!!.romanization,
+                        pronunciation = selectedItem!!.pronunciation,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
         }
     }
 }
