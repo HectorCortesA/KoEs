@@ -34,6 +34,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.statusBarsPadding
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
 
@@ -55,7 +56,8 @@ fun Home(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
-                .padding(top = 60.dp),
+                .statusBarsPadding()
+                .padding(top = 10.dp),
             onNavigate = onNavigate
         )
 
@@ -63,7 +65,8 @@ fun Home(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 220.dp), // Ajustado para quedar en el tercio superior fijo
+                .statusBarsPadding()
+                .padding(top = 110.dp), // Ajustado para quedar debajo de la navbar
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(

@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.statusBarsPadding
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
 
@@ -26,7 +27,8 @@ fun SettingsView(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
-                .padding(top = 60.dp),
+                .statusBarsPadding()
+                .padding(top = 10.dp),
             onNavigate = onNavigate
         )
     }

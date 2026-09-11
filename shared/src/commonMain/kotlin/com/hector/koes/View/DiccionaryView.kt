@@ -30,6 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.statusBarsPadding
 import com.hector.koes.model.DictionaryItem
 import com.hector.koes.components.card.CardDictionary
 import com.hector.koes.components.card.ModalDictionary
@@ -81,7 +82,8 @@ fun DiccionaryView(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
-                .padding(top = 60.dp),
+                .statusBarsPadding()
+                .padding(top = 10.dp),
             onNavigate = onNavigate
         )
 
@@ -96,7 +98,8 @@ fun DiccionaryView(
             ),
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 150.dp)
+                .statusBarsPadding()
+                .padding(top = 80.dp)
                 .width(362.dp)
                 .height(43.dp)
                 .background(
@@ -137,7 +140,8 @@ fun DiccionaryView(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 240.dp)
+                .statusBarsPadding()
+                .padding(top = 150.dp)
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
