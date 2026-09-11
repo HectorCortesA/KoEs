@@ -39,7 +39,7 @@ fun Navbar(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        NavButton(text = "Pl")
+        NavButton(text = "Pl", onClick = { onNavigate("dictionary") })
         NavButton(text = "hg", onClick = { onNavigate("hangul") })  // Vista HangulView
         NavButton(text = "LC")
         NavButton(text = "T", onClick = { onNavigate("home") }) // home

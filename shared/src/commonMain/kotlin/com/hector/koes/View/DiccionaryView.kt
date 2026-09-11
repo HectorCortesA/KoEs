@@ -38,11 +38,10 @@ import com.hector.koes.ui.theme.Background
 
 @Composable
 fun DiccionaryView(
-    value: String,
-    onValueChange: (String) -> Unit,
     onNavigate: (String) -> Unit = {},
     placeholder: String = "Busca la palabra"
 ) {
+    var value by remember { mutableStateOf("") }
     val scrollState = rememberScrollState()
 
     // Lista de ejemplo para simular la API
@@ -54,7 +53,7 @@ fun DiccionaryView(
         DictionaryItem("Adiós", "안녕", "annyeong")
     )
 
-    // Filtrado básico (opcional)
+    // Filtrado básico
     val filteredItems = dictionaryItems.filter {
         it.spanish.contains(value, ignoreCase = true) || 
         it.korean.contains(value, ignoreCase = true)
@@ -75,7 +74,7 @@ fun DiccionaryView(
 
         BasicTextField(
             value = value,
-            onValueChange = onValueChange,
+            onValueChange = { value = it },
             singleLine = true,
             cursorBrush = SolidColor(Color.Black),
             textStyle = TextStyle(
@@ -147,10 +146,5 @@ fun DiccionaryView(
 @Preview(showBackground = true)
 @Composable
 fun DiccionaryViewPreview() {
-    var text by remember { mutableStateOf("") }
-
-    DiccionaryView(
-        value = text,
-        onValueChange = { text = it }
-    )
+    DiccionaryView()
 }
