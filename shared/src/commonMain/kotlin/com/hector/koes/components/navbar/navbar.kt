@@ -63,6 +63,7 @@ fun NavButton(
     Surface(
         modifier = Modifier
             .size(50.dp)
+            .clip(CircleShape) // Corta el efecto ripple para que sea circular
             .clickable { onClick() },
         shape = CircleShape,
         color = Color.Transparent,
