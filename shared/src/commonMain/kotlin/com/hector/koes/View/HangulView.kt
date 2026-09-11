@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -102,8 +103,9 @@ fun HangulView(
         ) {
 
             Text(
-                text = "Hangul",
-                fontSize = 28.sp
+                text = "Hangul".uppercase(),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -130,8 +132,9 @@ fun HangulView(
             Spacer(modifier = Modifier.height(40.dp))
 
             Text(
-                text = "Vocales verticales",
-                fontSize = 28.sp
+                text = "Vocales verticales".uppercase(),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -158,8 +161,9 @@ fun HangulView(
             Spacer(modifier = Modifier.height(40.dp))
 
             Text(
-                text = "Vocales horizontales",
-                fontSize = 28.sp
+                text = "Vocales horizontales".uppercase(),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(30.dp))
             vowelsHorizontal.chunked(3).forEach { rowItems ->
@@ -184,8 +188,9 @@ fun HangulView(
             Spacer(modifier = Modifier.height(40.dp))
 
             Text(
-                text = "Vocales verticales dobles",
-                fontSize = 28.sp
+                text = "Vocales verticales dobles".uppercase(),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
             )
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -210,8 +215,9 @@ fun HangulView(
 
             Spacer(modifier = Modifier.height(40.dp))
             Text(
-                text = "Vocales mixtas dobles",
-                fontSize = 28.sp
+                text = "Vocales mixtas dobles".uppercase(),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(30.dp))
             vowelsDoubleMixed.chunked(3).forEach { rowItems ->
