@@ -4,13 +4,17 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,8 +30,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hector.koes.model.DictionaryItem
+import com.hector.koes.components.card.CardDictionary
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
+
 
 @Composable
 fun DiccionaryView(
@@ -36,12 +43,28 @@ fun DiccionaryView(
     onNavigate: (String) -> Unit = {},
     placeholder: String = "Busca la palabra"
 ) {
+    val scrollState = rememberScrollState()
+
+    // Lista de ejemplo para simular la API
+    val dictionaryItems = listOf(
+        DictionaryItem("Hola", "안녕하세요", "annyeonghaseyo"),
+        DictionaryItem("Gracias", "감사합니다", "gamsahamnida"),
+        DictionaryItem("Si", "네", "ne"),
+        DictionaryItem("No", "아니요", "aniyo"),
+        DictionaryItem("Adiós", "안녕", "annyeong")
+    )
+
+    // Filtrado básico (opcional)
+    val filteredItems = dictionaryItems.filter {
+        it.spanish.contains(value, ignoreCase = true) || 
+        it.korean.contains(value, ignoreCase = true)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Background)
     ) {
-
         Navbar(
             modifier = Modifier
                 .fillMaxWidth()
@@ -94,11 +117,30 @@ fun DiccionaryView(
                             fontSize = 16.sp
                         )
                     }
-
                     innerTextField()
                 }
             }
         )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 240.dp)
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            filteredItems.forEach { item ->
+                CardDictionary(
+                    wordSpanish = item.spanish,
+                    wordCorea = item.korean,
+                    pronunciation = item.pronunciation
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+            
+            // Espacio extra al final para el scroll
+            Spacer(modifier = Modifier.height(100.dp))
+        }
     }
 }
 
