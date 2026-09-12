@@ -17,6 +17,7 @@ kotlin {
             baseName = "Shared"
             isStatic = true
             linkerOpts("-lsqlite3")
+            binaryOption("bundleId", "com.hector.koes.shared")
         }
     }
     
