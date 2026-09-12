@@ -16,8 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,16 +34,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
+import com.hector.koes.viewModel.SettingsManager
+import com.hector.koes.viewModel.WritingMode
 
 @Composable
 fun SettingsView(
     onNavigate: (String) -> Unit = {},
     name: String = "Hector Uriel A"
 ) {
+    val viewModel = SettingsManager.instance
     val scrollState = rememberScrollState()
-
-    var palabrasActivas by remember { mutableStateOf(false) }
-    var oracionesActivas by remember { mutableStateOf(false) }
+    
+    val writingMode by viewModel.writingMode.collectAsState()
+    val selectedCategory by viewModel.selectedCategory.collectAsState()
+    val categories by viewModel.categories.collectAsState()
 
     Box(
         modifier = Modifier
@@ -118,16 +125,13 @@ fun SettingsView(
             Spacer(modifier = Modifier.height(16.dp))
 
             SettingsWritingOption(
-                palabrasActivas = palabrasActivas,
-                onPalabrasChange = { 
-                    palabrasActivas = it
-                    if (it) oracionesActivas = false 
-                },
-                oracionesActivas = oracionesActivas,
-                onOracionesChange = { 
-                    oracionesActivas = it
-                    if (it) palabrasActivas = false
-                }
+                palabrasActivas = writingMode == WritingMode.PALABRAS,
+                onPalabrasChange = { if (it) viewModel.setWritingMode(WritingMode.PALABRAS) },
+                oracionesActivas = writingMode == WritingMode.ORACIONES,
+                onOracionesChange = { if (it) viewModel.setWritingMode(WritingMode.ORACIONES) },
+                selectedCategory = selectedCategory,
+                categories = categories,
+                onCategorySelected = { viewModel.setCategory(it) }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -196,8 +200,13 @@ fun SettingsWritingOption(
     palabrasActivas: Boolean,
     onPalabrasChange: (Boolean) -> Unit,
     oracionesActivas: Boolean,
-    onOracionesChange: (Boolean) -> Unit
+    onOracionesChange: (Boolean) -> Unit,
+    selectedCategory: String,
+    categories: List<String>,
+    onCategorySelected: (String) -> Unit
 ) {
+    var expanded by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -273,14 +282,31 @@ fun SettingsWritingOption(
                     color = Color(0x33D9D9D9),
                     shape = RoundedCornerShape(20.dp)
                 )
+                .clickable { expanded = true }
                 .padding(horizontal = 16.dp),
             contentAlignment = Alignment.CenterStart
         ) {
             Text(
-                text = "Seleccionar categoría",
+                text = selectedCategory,
                 fontSize = 14.sp,
                 color = Color.Black.copy(alpha = 0.6f)
             )
+            
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = Modifier.fillMaxWidth(0.8f).background(Color.White)
+            ) {
+                categories.forEach { category ->
+                    DropdownMenuItem(
+                        text = { Text(category) },
+                        onClick = {
+                            onCategorySelected(category)
+                            expanded = false
+                        }
+                    )
+                }
+            }
         }
     }
 }

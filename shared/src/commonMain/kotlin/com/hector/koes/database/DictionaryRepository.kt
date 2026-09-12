@@ -2,6 +2,7 @@ package com.hector.koes.database
 
 import com.hector.koes.database.DictionaryItemEntity
 import com.hector.koes.model.DictionaryItem
+import com.hector.koes.model.FullDictionaryItem
 
 class DictionaryRepository {
     private val database = KoEsDatabase(createDriver())
@@ -13,6 +14,21 @@ class DictionaryRepository {
             korean = wordCoreano,
             romanization = romanization,
             pronunciation = pronunciation
+        )
+    }
+
+    private fun DictionaryItemEntity.toFullDomain(): FullDictionaryItem {
+        return FullDictionaryItem(
+            id = id,
+            wordSpanish = wordSpanish,
+            wordCoreano = wordCoreano,
+            romanization = romanization,
+            pronunciation = pronunciation,
+            tipo = tipo,
+            categoria = categoria,
+            definicion = definicion,
+            ejemploSpanish = ejemploSpanish,
+            ejemploKoreano = ejemploKoreano
         )
     }
 
@@ -52,5 +68,17 @@ class DictionaryRepository {
 
     fun deleteAll() {
         queries.deleteAll()
+    }
+
+    fun getCategories(): List<String> {
+        return queries.getCategories().executeAsList()
+    }
+
+    fun getRandomByCategory(categoria: String): FullDictionaryItem? {
+        return queries.getRandomByCategory(categoria).executeAsOneOrNull()?.toFullDomain()
+    }
+
+    fun getRandomAll(): FullDictionaryItem? {
+        return queries.getRandomAll().executeAsOneOrNull()?.toFullDomain()
     }
 }

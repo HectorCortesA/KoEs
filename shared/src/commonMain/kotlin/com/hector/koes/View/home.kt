@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,11 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -35,17 +32,41 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
+import com.hector.koes.viewModel.HomeViewModel
+import com.hector.koes.viewModel.WritingMode
 
 @Composable
 fun Home(
-    onNavigate: (String) -> Unit = {}
+    onNavigate: (String) -> Unit = {},
+    viewModel: HomeViewModel = viewModel { HomeViewModel() }
 ) {
+    val currentItem by viewModel.currentItem.collectAsState()
+    val writingMode by viewModel.writingMode.collectAsState()
+    
     var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
-    val suggestion = "티몬체"
-    val text = textFieldValue.text
     var showTooltip by remember { mutableStateOf(false) }
+
+    // Obtenemos la palabra objetivo según el modo
+    val suggestion = if (writingMode == WritingMode.PALABRAS) {
+        currentItem?.wordCoreano ?: ""
+    } else {
+        currentItem?.ejemploKoreano ?: ""
+    }
+
+    // Obtenemos el texto en español para mostrar
+    val displaySpanish = if (writingMode == WritingMode.PALABRAS) {
+        currentItem?.wordSpanish ?: "Cargando..."
+    } else {
+        currentItem?.ejemploSpanish ?: "Cargando..."
+    }
+
+    // Limpiamos el texto cuando cambia la palabra
+    LaunchedEffect(currentItem) {
+        textFieldValue = TextFieldValue("")
+    }
 
     Box(
         modifier = Modifier
@@ -61,32 +82,29 @@ fun Home(
             onNavigate = onNavigate
         )
 
-        // Contenedor Palabras - Posición fija para que no se mueva con el teclado o el tooltip
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .padding(top = 110.dp), // Ajustado para quedar debajo de la navbar
+                .padding(top = 110.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = Modifier.height(60.dp) // Altura fija para que el tooltip no desplace lo de abajo
+                modifier = Modifier.height(60.dp)
             ) {
-                // Contenido que está DETRÁS del glass
                 Text(
-                    text = "Hola",
+                    text = displaySpanish,
                     color = Color.Black,
                     fontSize = 18.sp,
-                    modifier = if (showTooltip) {
+                    modifier = if (showTooltip && writingMode == WritingMode.PALABRAS) {
                         Modifier.blur(5.dp)
                     } else {
                         Modifier
                     }
                 )
 
-                if (showTooltip) {
-                    // Glass Tooltip
+                if (showTooltip && writingMode == WritingMode.PALABRAS) {
                     Box(
                         modifier = Modifier
                             .width(162.dp)
@@ -98,15 +116,16 @@ fun Home(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Timon-che",
+                            text = currentItem?.romanization ?: "",
                             color = Color.Black,
                             fontSize = 14.sp
                         )
                     }
                 }
             }
+            
             Text(
-                text = "티몬체",
+                text = suggestion,
                 color = Color.Black,
                 fontSize = 18.sp,
                 modifier = Modifier
@@ -114,20 +133,21 @@ fun Home(
                         detectTapGestures(
                             onPress = {
                                 showTooltip = true
-
                                 tryAwaitRelease()
-
                                 showTooltip = false
                             }
                         )
                     }
             )
 
+            Spacer(modifier = Modifier.height(20.dp))
+
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 val visualText = buildAnnotatedString {
+                    val text = textFieldValue.text
                     for (i in text.indices) {
                         val isCorrect = i < suggestion.length && text[i] == suggestion[i]
                         withStyle(style = SpanStyle(color = if (isCorrect) Color.Black else Color.Red)) {
@@ -143,27 +163,28 @@ fun Home(
 
                 BasicTextField(
                     value = textFieldValue,
-                    onValueChange = {
-                        if (it.text.length <= suggestion.length) {
-                            textFieldValue = it
+                    onValueChange = { newValue ->
+                        if (newValue.text.length <= suggestion.length) {
+                            textFieldValue = newValue
+                            viewModel.checkCompletion(newValue.text)
                         }
                     },
                     textStyle = TextStyle(
                         color = Color.Transparent,
                         textAlign = TextAlign.Center,
-                        fontSize = 40.sp,
+                        fontSize = if (writingMode == WritingMode.PALABRAS) 40.sp else 24.sp,
                         fontWeight = FontWeight.Bold
                     ),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                     cursorBrush = SolidColor(Color.Black),
-                    singleLine = true,
+                    singleLine = writingMode == WritingMode.PALABRAS,
                     decorationBox = { innerTextField ->
                         Box(contentAlignment = Alignment.Center) {
                             Text(
                                 text = visualText,
                                 style = TextStyle(
                                     textAlign = TextAlign.Center,
-                                    fontSize = 40.sp,
+                                    fontSize = if (writingMode == WritingMode.PALABRAS) 40.sp else 24.sp,
                                     fontWeight = FontWeight.Bold
                                 ),
                                 modifier = Modifier.fillMaxWidth()
@@ -177,9 +198,7 @@ fun Home(
     }
 }
 
-@Preview(
-    showBackground = true
-)
+@Preview(showBackground = true)
 @Composable
 fun HomePreview() {
     Home()

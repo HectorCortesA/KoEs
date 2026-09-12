@@ -66,8 +66,19 @@ FROM DictionaryItemEntity;
 deleteAll:
 DELETE FROM DictionaryItemEntity;
 
+getCategories:
+SELECT DISTINCT categoria FROM DictionaryItemEntity;
 
+getRandomByCategory:
+SELECT * FROM DictionaryItemEntity
+WHERE categoria = :categoria
+ORDER BY RANDOM()
+LIMIT 1;
 
+getRandomAll:
+SELECT * FROM DictionaryItemEntity
+ORDER BY RANDOM()
+LIMIT 1;
 
 INSERT INTO DictionaryItemEntity (
     wordSpanish,
@@ -13268,4 +13279,3 @@ INSERT INTO DictionaryItemEntity (
     'Esta aleación contiene níquel.',
     '이 합금에는 니켈이 들어 있어요.'
 );
-
