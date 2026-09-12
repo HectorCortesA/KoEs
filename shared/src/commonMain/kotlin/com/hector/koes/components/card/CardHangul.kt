@@ -53,7 +53,7 @@ fun CardHangul(
         // si el contenido es muy largo, usando un tamaño de fuente más pequeño de base.
         Text(
             text = "$romanization ($pronunciation)",
-            fontSize = 10.sp,
+            fontSize = 12.sp,
             maxLines = 1,
             softWrap = false,
             overflow = TextOverflow.Ellipsis,

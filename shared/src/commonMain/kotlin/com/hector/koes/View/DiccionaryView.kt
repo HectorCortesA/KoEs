@@ -11,16 +11,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -31,6 +35,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.hector.koes.viewModel.DictionaryViewModel
+import androidx.compose.runtime.collectAsState
 import com.hector.koes.model.DictionaryItem
 import com.hector.koes.components.card.CardDictionary
 import com.hector.koes.components.card.ModalDictionary
@@ -39,39 +46,43 @@ import com.hector.koes.ui.theme.Background
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.navigationBars
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiccionaryView(
     onNavigate: (String) -> Unit = {},
-    placeholder: String = "Busca la palabra"
+    placeholder: String = "Busca la palabra",
+    viewModel: DictionaryViewModel = viewModel { DictionaryViewModel() }
 ) {
-    var value by remember { mutableStateOf("") }
-    val scrollState = rememberScrollState()
+    val words by viewModel.words.collectAsState()
+    val query by viewModel.query.collectAsState()
+    
+    val listState = rememberLazyListState()
+    
+    // Detectamos cuando llegamos al final de la lista para cargar más
+    val shouldLoadMore = remember {
+        derivedStateOf {
+            val totalItemsCount = listState.layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            
+            // Si estamos a 5 elementos del final, cargamos más
+            lastVisibleItemIndex >= totalItemsCount - 5 && totalItemsCount > 0
+        }
+    }
+
+    LaunchedEffect(shouldLoadMore.value) {
+        if (shouldLoadMore.value) {
+            viewModel.loadNextPage()
+        }
+    }
     
     // Estado para el Modal
     var showModal by remember { mutableStateOf(false) }
     var selectedItem by remember { mutableStateOf<DictionaryItem?>(null) }
     val sheetState = rememberModalBottomSheetState()
-
-    // Lista de ejemplo para simular la API
-    val dictionaryItems = listOf(
-        DictionaryItem("Hola", "안녕하세요", "annyeonghaseyo", "an-nyeong-ha-se-yo"),
-        DictionaryItem("Gracias", "감사합니다", "gamsahamnida", "gam-sa-ham-ni-da"),
-        DictionaryItem("Si", "네", "ne", "ne"),
-        DictionaryItem("No", "아니요", "aniyo", "a-ni-yo"),
-        DictionaryItem("Adiós", "안녕", "annyeong", "an-nyeong")
-    )
-
-    // Filtrado básico
-    val filteredItems = dictionaryItems.filter {
-        it.spanish.contains(value, ignoreCase = true) || 
-        it.korean.contains(value, ignoreCase = true)
-    }
 
     Box(
         modifier = Modifier
@@ -88,8 +99,8 @@ fun DiccionaryView(
         )
 
         BasicTextField(
-            value = value,
-            onValueChange = { value = it },
+            value = query,
+            onValueChange = { viewModel.onSearch(it) },
             singleLine = true,
             cursorBrush = SolidColor(Color.Black),
             textStyle = TextStyle(
@@ -125,7 +136,7 @@ fun DiccionaryView(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.CenterStart
                 ) {
-                    if (value.isEmpty()) {
+                    if (query.isEmpty()) {
                         Text(
                             text = placeholder,
                             color = Color.Black.copy(alpha = 0.4f),
@@ -137,15 +148,15 @@ fun DiccionaryView(
             }
         )
 
-        Column(
+        LazyColumn(
+            state = listState,
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .padding(top = 150.dp)
-                .verticalScroll(scrollState),
+                .padding(top = 150.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            filteredItems.forEach { item ->
+            items(words) { item ->
                 CardDictionary(
                     wordSpanish = item.spanish,
                     wordCorea = item.korean,
@@ -159,7 +170,9 @@ fun DiccionaryView(
             }
             
             // Espacio extra al final para el scroll
-            Spacer(modifier = Modifier.height(100.dp))
+            item {
+                Spacer(modifier = Modifier.height(100.dp))
+            }
         }
 
         // Implementación del ModalBottomSheet

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    id("app.cash.sqldelight") version "2.3.2"
 }
 
 kotlin {
@@ -43,7 +44,13 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.compose.uiTooling)
+            implementation("app.cash.sqldelight:android-driver:2.3.2")
         }
+
+        iosMain.dependencies {
+            implementation("app.cash.sqldelight:native-driver:2.3.2")
+        }
+
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
@@ -53,9 +60,18 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation("app.cash.sqldelight:runtime:2.3.2")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+    }
+}
+
+sqldelight {
+    databases {
+        create("KoEsDatabase") {
+            packageName.set("com.hector.koes.database")
         }
     }
 }
