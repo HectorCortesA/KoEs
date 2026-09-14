@@ -13274,7 +13274,7 @@ INSERT INTO DictionaryItemEntity (
     'nikel',
     'ni-kel',
     'sustantivo',
-    'química',
+ 'química',
     'Elemento químico metálico de símbolo Ni.',
     'Esta aleación contiene níquel.',
     '이 합금에는 니켈이 들어 있어요.'

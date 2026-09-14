@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -107,8 +108,10 @@ fun HangulView(
 
             Text(
                 text = "Hangul".uppercase(),
+                modifier = Modifier.fillMaxWidth(),
                 fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -136,8 +139,10 @@ fun HangulView(
 
             Text(
                 text = "Vocales verticales".uppercase(),
+                modifier = Modifier.fillMaxWidth(),
                 fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -165,8 +170,10 @@ fun HangulView(
 
             Text(
                 text = "Vocales horizontales".uppercase(),
+                modifier = Modifier.fillMaxWidth(),
                 fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(30.dp))
             vowelsHorizontal.chunked(3).forEach { rowItems ->
@@ -189,13 +196,13 @@ fun HangulView(
             }
 
             Spacer(modifier = Modifier.height(40.dp))
-
             Text(
                 text = "Vocales verticales dobles".uppercase(),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
-
             Spacer(modifier = Modifier.height(30.dp))
             vowelsVerticalDouble.chunked(3).forEach { rowItems ->
 
@@ -219,8 +226,10 @@ fun HangulView(
             Spacer(modifier = Modifier.height(40.dp))
             Text(
                 text = "Vocales mixtas dobles".uppercase(),
+                modifier = Modifier.fillMaxWidth(),
                 fontSize = 28.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(30.dp))
             vowelsDoubleMixed.chunked(3).forEach { rowItems ->
