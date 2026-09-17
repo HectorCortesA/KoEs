@@ -12,7 +12,8 @@ enum class WritingMode {
 }
 
 class SettingsViewModel : ViewModel() {
-    private val repository = DatabaseModule.repository
+    //private val repository = DatabaseModule.repository
+    private val repository by lazy { DatabaseModule.repository }
 
     private val _writingMode = MutableStateFlow(WritingMode.PALABRAS)
     val writingMode: StateFlow<WritingMode> = _writingMode

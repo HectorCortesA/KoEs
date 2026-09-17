@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
-    private val repository = DatabaseModule.repository
+    private val repository by lazy { DatabaseModule.repository }
     private val settings = SettingsManager.instance
 
     private val _currentItem = MutableStateFlow<FullDictionaryItem?>(null)
@@ -36,21 +36,25 @@ class HomeViewModel : ViewModel() {
 
     fun loadRandomItem() {
         viewModelScope.launch {
-            val category = settings.selectedCategory.value
-            
-            val item = if (category == "Todas") {
-                repository.getRandomAll()
-            } else {
-                repository.getRandomByCategory(category)
+            try {
+                val category = settings.selectedCategory.value
+                
+                val item = if (category == "Todas") {
+                    repository.getRandomAll()
+                } else {
+                    repository.getRandomByCategory(category)
+                }
+                
+                if (item == null) {
+                    println("HomeViewModel: No se encontró ningún ítem para la categoría: $category")
+                } else {
+                    println("HomeViewModel: Nuevo ítem cargado: ${item.wordSpanish} (${item.categoria})")
+                }
+                
+                _currentItem.value = item
+            } catch (e: Exception) {
+                println("HomeViewModel: Error cargando ítem aleatorio: ${e.message}")
             }
-            
-            if (item == null) {
-                println("HomeViewModel: No se encontró ningún ítem para la categoría: $category")
-            } else {
-                println("HomeViewModel: Nuevo ítem cargado: ${item.wordSpanish} (${item.categoria})")
-            }
-            
-            _currentItem.value = item
         }
     }
 

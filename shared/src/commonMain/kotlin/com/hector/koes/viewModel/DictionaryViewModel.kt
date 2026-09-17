@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class DictionaryViewModel : ViewModel() {
-    private val repository = DatabaseModule.repository
+    private val repository by lazy { DatabaseModule.repository }
 
     private val _words = MutableStateFlow<List<DictionaryItem>>(emptyList())
     val words: StateFlow<List<DictionaryItem>> = _words

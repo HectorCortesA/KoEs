@@ -35,6 +35,7 @@ fun ModalDictionary(
     wordCorea: String,
     romanization: String,
     pronunciation: String,
+
 ){
     Box(
         modifier = modifier
