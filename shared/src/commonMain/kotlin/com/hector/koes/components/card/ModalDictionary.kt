@@ -35,6 +35,8 @@ fun ModalDictionary(
     wordCorea: String,
     romanization: String,
     pronunciation: String,
+    ejemploSpanish: String,
+    ejemploKoreano: String
 
 ){
     Box(
@@ -121,6 +123,25 @@ fun ModalDictionary(
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center
             )
+
+            Text(
+                text = ejemploSpanish,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 40.dp),
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center
+            )
+
+            Text(
+                text = ejemploKoreano,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -133,7 +154,9 @@ fun ModalDictionaryPreview(){
         wordSpanish = "Hola",
         wordCorea = "안녕하세요",
         romanization = "annyeonghaseyo",
-        pronunciation = "an-nyeong-ha-se-yo"
+        pronunciation = "an-nyeong-ha-se-yo",
+        ejemploSpanish = "Hola, ¿cómo estás?",
+        ejemploKoreano = "안녕하세요, 어떻게 지내세요?"
     )
 
 }

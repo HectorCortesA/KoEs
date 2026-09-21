@@ -193,6 +193,8 @@ fun DiccionaryView(
                         wordCorea = selectedItem!!.korean,
                         romanization = selectedItem!!.romanization,
                         pronunciation = selectedItem!!.pronunciation,
+                        ejemploSpanish = selectedItem!!.ejemploSpanish,
+                        ejemploKoreano = selectedItem!!.ejemploKoreano,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }

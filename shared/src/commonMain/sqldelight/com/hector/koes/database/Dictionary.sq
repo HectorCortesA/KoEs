@@ -13270,7 +13270,7 @@ INSERT INTO DictionaryItemEntity (
     ejemploKoreano
 ) VALUES (
     'Níquel',
-    '니켈',
+ '니켈',
     'nikel',
     'ni-kel',
     'sustantivo',

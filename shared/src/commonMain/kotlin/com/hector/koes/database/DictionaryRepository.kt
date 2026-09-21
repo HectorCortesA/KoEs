@@ -13,7 +13,9 @@ class DictionaryRepository {
             spanish = wordSpanish,
             korean = wordCoreano,
             romanization = romanization,
-            pronunciation = pronunciation
+            pronunciation = pronunciation,
+            ejemploKoreano = ejemploKoreano,
+            ejemploSpanish = ejemploSpanish
         )
     }
 
