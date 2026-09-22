@@ -10,6 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.hector.koes.View.DiccionaryView
 import com.hector.koes.View.Home
 import com.hector.koes.View.HangulView
+import com.hector.koes.View.ScoreView
 import com.hector.koes.View.SettingsView
 @Composable
 @Preview
@@ -21,6 +22,7 @@ fun App() {
             "home" -> Home(onNavigate = { currentScreen = it })
             "dictionary" -> DiccionaryView(onNavigate = { currentScreen = it })
             "hangul" -> HangulView(onNavigate = { currentScreen = it })
+            "score" -> ScoreView(onNavigate = { currentScreen = it })
             "settings" -> SettingsView(onNavigate = { currentScreen = it })
             else -> Home(onNavigate = { currentScreen = it })
         }

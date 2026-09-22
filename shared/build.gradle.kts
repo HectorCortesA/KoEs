@@ -54,6 +54,8 @@ kotlin {
         }
 
         commonMain.dependencies {
+            implementation("io.coil-kt.coil3:coil-compose:3.0.4")
+            implementation("io.coil-kt.coil3:coil-svg:3.0.4")
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
@@ -69,7 +71,9 @@ kotlin {
         }
     }
 }
-
+compose.resources {
+    packageOfResClass = "com.hector.koes.resources"
+}
 sqldelight {
     databases {
         create("KoEsDatabase") {

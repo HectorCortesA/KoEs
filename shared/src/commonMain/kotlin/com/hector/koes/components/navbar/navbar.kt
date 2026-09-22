@@ -43,10 +43,11 @@ fun Navbar(
         NavButton(text = "hg", onClick = { onNavigate("hangul") })  // Vista HangulView
         NavButton(text = "LC")
         NavButton(text = "T", onClick = { onNavigate("home") }) // home
-        NavButton(text = "PS", ) // Vista
+        NavButton(text = "PS", onClick = { onNavigate("score") } ) // Vista
 
         Spacer(
             modifier = Modifier.width(26.dp)
+
         )
 
         NavButton(text = "AJ", onClick = { onNavigate("settings") })
