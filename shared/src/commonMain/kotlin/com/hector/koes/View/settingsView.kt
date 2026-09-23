@@ -27,11 +27,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hector.koes.components.Profile.ModaProfile
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
 import com.hector.koes.viewModel.SettingsManager
@@ -45,6 +47,9 @@ fun SettingsView(
     val viewModel = SettingsManager.instance
     val scrollState = rememberScrollState()
     
+    var profileName by remember(name) { mutableStateOf(name) }
+    var showProfileModal by remember { mutableStateOf(false) }
+
     val writingMode by viewModel.writingMode.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
     val categories by viewModel.categories.collectAsState()
@@ -55,104 +60,124 @@ fun SettingsView(
             .background(Background)
     ) {
 
-        Navbar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .statusBarsPadding()
-                .padding(top = 10.dp),
-            onNavigate = onNavigate
-        )
-
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
-                .padding(
-                    top = 80.dp,
-                    start = 21.dp,
-                    end = 21.dp
-                )
-                .verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .blur(if (showProfileModal) 16.dp else 0.dp)
         ) {
+            Navbar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(top = 10.dp),
+                onNavigate = onNavigate
+            )
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+                    .padding(
+                        top = 80.dp,
+                        start = 21.dp,
+                        end = 21.dp
+                    )
+                    .verticalScroll(scrollState),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                Text(
-                    text = name,
-                    modifier = Modifier.width(220.dp),
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight(600),
-                    lineHeight = 38.sp
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = profileName,
+                        modifier = Modifier.width(220.dp),
+                        fontSize = 36.sp,
+                        fontWeight = FontWeight(600),
+                        lineHeight = 38.sp
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Box(
+                        modifier = Modifier
+                            .width(104.dp)
+                            .height(106.dp)
+                            .background(
+                                color = Color(0x33D9D9D9),
+                                shape = RoundedCornerShape(50.dp)
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "IMG",
+                            fontSize = 12.sp,
+                            color = Color.Black.copy(alpha = 0.5f)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(40.dp))
+
+                SettingsOption(
+                    text = "Perfil",
+                    onClick = { showProfileModal = true }
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                Box(
-                    modifier = Modifier
-                        .width(104.dp)
-                        .height(106.dp)
-                        .background(
-                            color = Color(0x33D9D9D9),
-                            shape = RoundedCornerShape(50.dp)
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "IMG",
-                        fontSize = 12.sp,
-                        color = Color.Black.copy(alpha = 0.5f)
-                    )
-                }
+                SettingsOption(
+                    text = "Tema"
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                SettingsWritingOption(
+                    palabrasActivas = writingMode == WritingMode.PALABRAS,
+                    onPalabrasChange = { if (it) viewModel.setWritingMode(WritingMode.PALABRAS) },
+                    oracionesActivas = writingMode == WritingMode.ORACIONES,
+                    onOracionesChange = { if (it) viewModel.setWritingMode(WritingMode.ORACIONES) },
+                    selectedCategory = selectedCategory,
+                    categories = categories,
+                    onCategorySelected = { viewModel.setCategory(it) }
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                SettingsOption(
+                    text = "Guardado of datos"
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+                SettingsClosetOption(
+                    text = "Cerrar sesión"
+                )
+
+                Spacer(modifier = Modifier.height(80.dp))
             }
+        }
 
-            Spacer(modifier = Modifier.height(40.dp))
-
-            SettingsOption(
-                text = "Perfil"
+        if (showProfileModal) {
+            ModaProfile(
+                nameProfile = profileName,
+                photoUrl = "",
+                onBack = { showProfileModal = false },
+                onUpdateProfile = { newName ->
+                    profileName = newName
+                    showProfileModal = false
+                }
             )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SettingsOption(
-                text = "Tema"
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SettingsWritingOption(
-                palabrasActivas = writingMode == WritingMode.PALABRAS,
-                onPalabrasChange = { if (it) viewModel.setWritingMode(WritingMode.PALABRAS) },
-                oracionesActivas = writingMode == WritingMode.ORACIONES,
-                onOracionesChange = { if (it) viewModel.setWritingMode(WritingMode.ORACIONES) },
-                selectedCategory = selectedCategory,
-                categories = categories,
-                onCategorySelected = { viewModel.setCategory(it) }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            SettingsOption(
-                text = "Guardado de datos"
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-            SettingsClosetOption(
-                text = "Cerrar sesión"
-            )
-
-            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 }
 
 @Composable
 fun SettingsOption(
-    text: String
+    text: String,
+    onClick: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -162,6 +187,7 @@ fun SettingsOption(
                 color = Color(0xFFF8F8F8),
                 shape = RoundedCornerShape(30.dp)
             )
+            .clickable { onClick() }
             .padding(horizontal = 24.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
