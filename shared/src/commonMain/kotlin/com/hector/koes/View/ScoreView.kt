@@ -3,6 +3,7 @@ package com.hector.koes.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -254,15 +255,24 @@ fun ScoreView(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .align(Alignment.BottomCenter),
+                    .background(Color.Black.copy(alpha = 0.25f))
+                    .clickable { showShareModal = false },
                 contentAlignment = Alignment.BottomCenter
             ) {
-                SharedModal(
-                    onCameraClick = {
-                        showShareModal = false
-                        onNavigate("cameraView")
-                    }
-                )
+                Box(
+                    modifier = Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = {}
+                    )
+                ) {
+                    SharedModal(
+                        onCameraClick = {
+                            showShareModal = false
+                            onNavigate("cameraView")
+                        }
+                    )
+                }
             }
         }
     }
