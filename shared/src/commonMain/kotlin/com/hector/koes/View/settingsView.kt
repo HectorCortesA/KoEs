@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.shape.CircleShape
@@ -42,6 +43,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import com.hector.koes.components.Profile.ModaProfile
 import com.hector.koes.components.Profile.ModaProfile
 import com.hector.koes.components.navbar.Navbar
@@ -256,6 +259,8 @@ fun SettingsWritingOption(
     onCategorySelected: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var selectorWidthDp by remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
 
     Column(
         modifier = Modifier
@@ -325,44 +330,52 @@ fun SettingsWritingOption(
         Spacer(modifier = Modifier.height(10.dp))
 
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(43.dp)
-                .background(
-                    color = Color(0x33D9D9D9),
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .clickable {
-                    expanded = !expanded
-                }
-                .padding(horizontal = 16.dp),
-            contentAlignment = Alignment.CenterStart
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(43.dp)
+                    .onGloballyPositioned { coordinates ->
+                        selectorWidthDp = with(density) { coordinates.size.width.toDp() }
+                    }
+                    .background(
+                        color = Color(0x33D9D9D9),
+                        shape = RoundedCornerShape(20.dp)
+                    )
+                    .clickable {
+                        expanded = !expanded
+                    }
+                    .padding(horizontal = 16.dp),
+                contentAlignment = Alignment.CenterStart
             ) {
-                Text(
-                    text = selectedCategory,
-                    fontSize = 14.sp,
-                    color = Color.Black.copy(alpha = 0.6f)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = selectedCategory,
+                        fontSize = 14.sp,
+                        color = Color.Black.copy(alpha = 0.6f)
+                    )
 
-                Text(
-                    text = if (expanded) "▲" else "▼",
-                    fontSize = 12.sp,
-                    color = Color.Black.copy(alpha = 0.5f)
-                )
+                    Text(
+                        text = if (expanded) "▲" else "▼",
+                        fontSize = 12.sp,
+                        color = Color.Black.copy(alpha = 0.5f)
+                    )
+                }
             }
-            
+
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
+                offset = DpOffset(x = 0.dp, y = 4.dp),
                 containerColor = Color.White.copy(alpha = 0.30f),
                 shadowElevation = 0.dp,
                 modifier = Modifier
-                    .fillMaxWidth(0.82f)
+                    .width(if (selectorWidthDp > 0.dp) selectorWidthDp else 280.dp)
                     .heightIn(max = 240.dp)
                     .clip(RoundedCornerShape(20.dp))
                     .background(
