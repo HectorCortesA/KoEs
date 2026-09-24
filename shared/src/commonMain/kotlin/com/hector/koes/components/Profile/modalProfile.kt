@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -49,15 +51,27 @@ fun ModaProfile(
     photoUrl: String,
     onBack: () -> Unit = {},
     onPickImage: () -> Unit = {},
-    onUpdateProfile: (String) -> Unit = {}
+    onUpdateProfile: (String) -> Unit = {},
+    onUpdateProfileWithPhoto: (String, String) -> Unit = { name, _ -> onUpdateProfile(name) }
 ) {
 
     var name by remember {
         mutableStateOf(nameProfile)
     }
 
+    var currentPhotoUrl by remember(photoUrl) {
+        mutableStateOf(photoUrl)
+    }
+
     var isEditing by remember {
         mutableStateOf(false)
+    }
+
+    val launchImagePicker = rememberImagePickerLauncher { uri ->
+        if (uri != null) {
+            currentPhotoUrl = uri
+            onPickImage()
+        }
     }
 
     val scope = rememberCoroutineScope()
@@ -176,15 +190,15 @@ fun ModaProfile(
                         .clickable(
                             enabled = isEditing
                         ) {
-                            onPickImage()
+                            launchImagePicker()
                         },
                     contentAlignment = Alignment.Center
                 ) {
 
-                    if (photoUrl.isNotEmpty()) {
+                    if (currentPhotoUrl.isNotEmpty()) {
 
                         AsyncImage(
-                            model = photoUrl,
+                            model = currentPhotoUrl,
                             contentDescription = "Foto de perfil",
                             modifier = Modifier
                                 .fillMaxSize()
@@ -237,13 +251,37 @@ fun ModaProfile(
                         onValueChange = {
                             name = it
                         },
-                        label = {
-                            Text("Nombre")
+                        textStyle = androidx.compose.ui.text.TextStyle(
+                            fontSize = 14.sp
+                        ),
+                        placeholder = {
+                            Text(
+                                text = "Nombre",
+                                fontSize = 15.sp
+                            )
                         },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true
+                        modifier = Modifier
+                            .shadow(
+                                elevation = 1.dp,
+                                spotColor = Color(0x40000000),
+                                ambientColor = Color(0x40000000),
+                                shape = RoundedCornerShape(5.dp)
+                            )
+                            .width(237.dp)
+                            .height(60.dp),
+                        singleLine = true,
+                        shape = RoundedCornerShape(5.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = Color(0xFFEDEDED),
+                            unfocusedContainerColor = Color(0xFFEDEDED),
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent,
+                            focusedTextColor = Color.Black,
+                            unfocusedTextColor = Color.Black,
+                            focusedPlaceholderColor = Color.Gray,
+                            unfocusedPlaceholderColor = Color.Gray
+                        )
                     )
-
                     Spacer(
                         modifier = Modifier.height(25.dp)
                     )
@@ -251,7 +289,7 @@ fun ModaProfile(
                     GlassButton(
                         text = "Actualizar",
                         onClick = {
-                            onUpdateProfile(name)
+                            onUpdateProfileWithPhoto(name, currentPhotoUrl)
                             isEditing = false
                         }
                     )
@@ -278,7 +316,7 @@ fun GlassButton(
                 onClick()
             },
         shape = RoundedCornerShape(25.dp),
-        color = Color.White.copy(alpha = 0.10f),
+        color = Color.Black.copy(alpha = 0.05f),
         border = BorderStroke(
             width = 1.dp,
             brush = Brush.verticalGradient(

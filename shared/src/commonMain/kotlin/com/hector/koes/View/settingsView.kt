@@ -33,6 +33,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import coil3.compose.AsyncImage
 import com.hector.koes.components.Profile.ModaProfile
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
@@ -48,6 +52,7 @@ fun SettingsView(
     val scrollState = rememberScrollState()
     
     var profileName by remember(name) { mutableStateOf(name) }
+    var profilePhotoUrl by remember { mutableStateOf("") }
     var showProfileModal by remember { mutableStateOf(false) }
 
     val writingMode by viewModel.writingMode.collectAsState()
@@ -106,17 +111,29 @@ fun SettingsView(
                         modifier = Modifier
                             .width(104.dp)
                             .height(106.dp)
+                            .clip(CircleShape)
                             .background(
                                 color = Color(0x33D9D9D9),
-                                shape = RoundedCornerShape(50.dp)
+                                shape = CircleShape
                             ),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = "IMG",
-                            fontSize = 12.sp,
-                            color = Color.Black.copy(alpha = 0.5f)
-                        )
+                        if (profilePhotoUrl.isNotEmpty()) {
+                            AsyncImage(
+                                model = profilePhotoUrl,
+                                contentDescription = "Foto de perfil",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            Text(
+                                text = "IMG",
+                                fontSize = 12.sp,
+                                color = Color.Black.copy(alpha = 0.5f)
+                            )
+                        }
                     }
                 }
 
@@ -163,10 +180,11 @@ fun SettingsView(
         if (showProfileModal) {
             ModaProfile(
                 nameProfile = profileName,
-                photoUrl = "",
+                photoUrl = profilePhotoUrl,
                 onBack = { showProfileModal = false },
-                onUpdateProfile = { newName ->
+                onUpdateProfileWithPhoto = { newName, newPhoto ->
                     profileName = newName
+                    profilePhotoUrl = newPhoto
                     showProfileModal = false
                 }
             )
