@@ -1,6 +1,7 @@
 package com.hector.koes.View
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.graphics.Brush
+import com.hector.koes.components.Profile.ModaProfile
 import com.hector.koes.components.Profile.ModaProfile
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
@@ -326,29 +332,98 @@ fun SettingsWritingOption(
                     color = Color(0x33D9D9D9),
                     shape = RoundedCornerShape(20.dp)
                 )
-                .clickable { expanded = true }
+                .clickable {
+                    expanded = !expanded
+                }
                 .padding(horizontal = 16.dp),
             contentAlignment = Alignment.CenterStart
         ) {
-            Text(
-                text = selectedCategory,
-                fontSize = 14.sp,
-                color = Color.Black.copy(alpha = 0.6f)
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = selectedCategory,
+                    fontSize = 14.sp,
+                    color = Color.Black.copy(alpha = 0.6f)
+                )
+
+                Text(
+                    text = if (expanded) "▲" else "▼",
+                    fontSize = 12.sp,
+                    color = Color.Black.copy(alpha = 0.5f)
+                )
+            }
             
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                modifier = Modifier.fillMaxWidth(0.8f).background(Color.White)
-            ) {
-                categories.forEach { category ->
-                    DropdownMenuItem(
-                        text = { Text(category) },
-                        onClick = {
-                            onCategorySelected(category)
-                            expanded = false
-                        }
+                containerColor = Color.White.copy(alpha = 0.30f),
+                shadowElevation = 0.dp,
+                modifier = Modifier
+                    .fillMaxWidth(0.82f)
+                    .heightIn(max = 240.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White.copy(alpha = 0.35f),
+                                Color.White.copy(alpha = 0.15f)
+                            )
+                        ),
+                        shape = RoundedCornerShape(20.dp)
                     )
+                    .border(
+                        width = 1.dp,
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color.White.copy(alpha = 0.80f),
+                                Color.White.copy(alpha = 0.20f)
+                            )
+                        ),
+                        shape = RoundedCornerShape(20.dp)
+                    )
+            ) {
+                var visibleCount by remember { mutableStateOf(10) }
+                val menuScrollState = rememberScrollState()
+
+                val shouldLoadMore by remember {
+                    derivedStateOf {
+                        menuScrollState.maxValue > 0 && menuScrollState.value >= (menuScrollState.maxValue - 150)
+                    }
+                }
+
+                LaunchedEffect(shouldLoadMore) {
+                    if (shouldLoadMore && visibleCount < categories.size) {
+                        visibleCount = (visibleCount + 10).coerceAtMost(categories.size)
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 240.dp)
+                        .verticalScroll(menuScrollState)
+                ) {
+                    val currentVisibleCategories = categories.take(visibleCount)
+
+                    currentVisibleCategories.forEach { category ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = category,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color(0xFF222222)
+                                )
+                            },
+                            onClick = {
+                                onCategorySelected(category)
+                                expanded = false
+                            }
+                        )
+                    }
                 }
             }
         }
