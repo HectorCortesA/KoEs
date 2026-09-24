@@ -133,16 +133,26 @@ fun EditCameraView(
                     DropdownMenu(
                         expanded = isDropdownExpanded,
                         onDismissRequest = { isDropdownExpanded = false },
+                        containerColor = Color.White.copy(alpha = 0.25f),
+                        shadowElevation = 0.dp,
                         modifier = Modifier
                             .width(200.dp)
                             .clip(RoundedCornerShape(16.dp))
-                            .background(Color.White.copy(alpha = 0.85f))
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.White.copy(alpha = 0.35f),
+                                        Color.White.copy(alpha = 0.15f)
+                                    )
+                                ),
+                                shape = RoundedCornerShape(16.dp)
+                            )
                             .border(
                                 width = 1.dp,
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
-                                        Color.White.copy(alpha = 0.90f),
-                                        Color.White.copy(alpha = 0.30f)
+                                        Color.White.copy(alpha = 0.80f),
+                                        Color.White.copy(alpha = 0.20f)
                                     )
                                 ),
                                 shape = RoundedCornerShape(16.dp)
@@ -155,7 +165,7 @@ fun EditCameraView(
                                         text = badge,
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Medium,
-                                        color = Color(0xFF333333)
+                                        color = Color(0xFF222222)
                                     )
                                 },
                                 onClick = {
