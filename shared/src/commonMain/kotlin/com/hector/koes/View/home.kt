@@ -150,15 +150,19 @@ fun Home(
                 val visualText = remember(textFieldValue.text, suggestion) {
                     buildAnnotatedString {
                         val text = textFieldValue.text
+                        val isWordFullyComplete = text.isNotEmpty() &&
+                                suggestion.isNotEmpty() &&
+                                (text.trim() == suggestion.trim() || HangulUtils.decomposeToJamos(text.trim()) == HangulUtils.decomposeToJamos(suggestion.trim()))
+
                         val validation = HangulUtils.getCharacterValidation(text, suggestion)
 
                         for (i in text.indices) {
-                            val isCorrect = validation.getOrElse(i) { false }
+                            val isCorrect = isWordFullyComplete || validation.getOrElse(i) { false }
                             withStyle(style = SpanStyle(color = if (isCorrect) Color.Black else Color.Red)) {
                                 append(text[i])
                             }
                         }
-                        if (text.length < suggestion.length) {
+                        if (text.length < suggestion.length && !isWordFullyComplete) {
                             withStyle(style = SpanStyle(color = Color.Black.copy(alpha = 0.15f))) {
                                 append(suggestion.substring(text.length))
                             }
@@ -170,7 +174,9 @@ fun Home(
                     value = textFieldValue,
                     onValueChange = { newValue ->
                         textFieldValue = newValue
-                        viewModel.checkCompletion(newValue.text)
+                        viewModel.checkCompletion(newValue.text) {
+                            textFieldValue = TextFieldValue("")
+                        }
                     },
                     textStyle = TextStyle(
                         color = Color.Transparent,

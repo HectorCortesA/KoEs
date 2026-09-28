@@ -37,11 +37,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import androidx.compose.runtime.collectAsState
 import com.hector.koes.components.Calendar.HeatCalendar
 import com.hector.koes.components.modal.SharedModal
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.resources.Res
 import com.hector.koes.ui.theme.Background
+import com.hector.koes.viewModel.UserProgressManager
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @OptIn(ExperimentalResourceApi::class)
@@ -52,6 +54,10 @@ fun ScoreView(
     val scrollState = rememberScrollState()
     val isPreview = LocalInspectionMode.current
     var showShareModal by remember { mutableStateOf(false) }
+
+    val streak by UserProgressManager.currentStreak.collectAsState()
+    val wordsLearned by UserProgressManager.wordsLearnedCount.collectAsState()
+    val dailyWordCounts by UserProgressManager.dailyWordCounts.collectAsState()
 
     Box(
         modifier = Modifier
@@ -113,7 +119,7 @@ fun ScoreView(
                     )
 
                     Text(
-                        text = "2",
+                        text = streak.toString(),
                         modifier = Modifier
                             .align(Alignment.TopEnd)
                             .padding(
@@ -162,7 +168,7 @@ fun ScoreView(
                     ) {
 
                         Text(
-                            text = "10",
+                            text = wordsLearned.toString(),
                             color = Color.Black,
                             fontSize = 34.sp,
                             fontWeight = FontWeight.Bold
@@ -189,8 +195,8 @@ fun ScoreView(
             ) {
 
                 HeatCalendar(
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    wordCounts = dailyWordCounts
                 )
             }
 

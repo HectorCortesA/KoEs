@@ -42,7 +42,7 @@ fun ModalDictionary(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(719.dp)
+            .height(519.dp)
             .clip(RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp))
     ) {
         // Capa de fondo con Glass

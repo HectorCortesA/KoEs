@@ -61,7 +61,7 @@ class HomeViewModel : ViewModel() {
 
     private var isTransitioning = false
 
-    fun checkCompletion(input: String) {
+    fun checkCompletion(input: String, onComplete: () -> Unit = {}) {
         if (isTransitioning) return
         val current = _currentItem.value ?: return
         val target = if (writingMode.value == WritingMode.PALABRAS) {
@@ -76,8 +76,10 @@ class HomeViewModel : ViewModel() {
         if (trimmedTarget.isNotEmpty() &&
             (trimmedInput == trimmedTarget || HangulUtils.decomposeToJamos(trimmedInput) == HangulUtils.decomposeToJamos(trimmedTarget))
         ) {
-            println("HomeViewModel: ¡Palabra completada! Cargando siguiente...")
+            println("HomeViewModel: ¡Palabra completada! Registrando progreso...")
+            UserProgressManager.recordWordCompleted(trimmedTarget)
             isTransitioning = true
+            onComplete()
             viewModelScope.launch {
                 kotlinx.coroutines.delay(150)
                 loadRandomItem()
