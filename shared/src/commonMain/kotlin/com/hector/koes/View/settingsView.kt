@@ -155,9 +155,9 @@ fun SettingsView(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                SettingsOption(
+                /*SettingsOption(
                     text = "Tema"
-                )
+                )*/
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -171,18 +171,29 @@ fun SettingsView(
                     onCategorySelected = { viewModel.setCategory(it) }
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(140.dp))
+            }
 
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(
+                        start = 21.dp,
+                        end = 21.dp,
+                        bottom = 10.dp
+                    ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 SettingsOption(
-                    text = "Guardado of datos"
+                    text = "Guardado de datos"
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
+
                 SettingsClosetOption(
                     text = "Cerrar sesión"
                 )
-
-                Spacer(modifier = Modifier.height(80.dp))
             }
         }
 
