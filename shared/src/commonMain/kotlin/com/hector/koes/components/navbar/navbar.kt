@@ -41,7 +41,7 @@ fun Navbar(
 
         NavButton(text = "Pl", onClick = { onNavigate("dictionary") })
         NavButton(text = "hg", onClick = { onNavigate("hangul") })  // Vista HangulView
-        NavButton(text = "LC")
+        NavButton(text = "LC", onClick = { onNavigate("favorite")})
         NavButton(text = "T", onClick = { onNavigate("home") }) // home
         NavButton(text = "PS", onClick = { onNavigate("score") } ) // Vista
 

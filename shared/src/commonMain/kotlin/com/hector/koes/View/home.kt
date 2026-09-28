@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
+import com.hector.koes.util.HangulUtils
 import com.hector.koes.viewModel.HomeViewModel
 import com.hector.koes.viewModel.WritingMode
 
@@ -146,17 +147,21 @@ fun Home(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                val visualText = buildAnnotatedString {
-                    val text = textFieldValue.text
-                    for (i in text.indices) {
-                        val isCorrect = i < suggestion.length && text[i] == suggestion[i]
-                        withStyle(style = SpanStyle(color = if (isCorrect) Color.Black else Color.Red)) {
-                            append(text[i])
+                val visualText = remember(textFieldValue.text, suggestion) {
+                    buildAnnotatedString {
+                        val text = textFieldValue.text
+                        val validation = HangulUtils.getCharacterValidation(text, suggestion)
+
+                        for (i in text.indices) {
+                            val isCorrect = validation.getOrElse(i) { false }
+                            withStyle(style = SpanStyle(color = if (isCorrect) Color.Black else Color.Red)) {
+                                append(text[i])
+                            }
                         }
-                    }
-                    if (text.length < suggestion.length) {
-                        withStyle(style = SpanStyle(color = Color.Black.copy(alpha = 0.1f))) {
-                            append(suggestion.substring(text.length))
+                        if (text.length < suggestion.length) {
+                            withStyle(style = SpanStyle(color = Color.Black.copy(alpha = 0.15f))) {
+                                append(suggestion.substring(text.length))
+                            }
                         }
                     }
                 }
@@ -164,10 +169,8 @@ fun Home(
                 BasicTextField(
                     value = textFieldValue,
                     onValueChange = { newValue ->
-                        if (newValue.text.length <= suggestion.length) {
-                            textFieldValue = newValue
-                            viewModel.checkCompletion(newValue.text)
-                        }
+                        textFieldValue = newValue
+                        viewModel.checkCompletion(newValue.text)
                     },
                     textStyle = TextStyle(
                         color = Color.Transparent,

@@ -43,6 +43,7 @@ import com.hector.koes.components.card.CardDictionary
 import com.hector.koes.components.card.ModalDictionary
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
+import com.hector.koes.viewModel.FavoritesManager
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -177,6 +178,10 @@ fun DiccionaryView(
 
         // Implementación del ModalBottomSheet
         if (showModal && selectedItem != null) {
+            val item = selectedItem!!
+            val favoritesList by FavoritesManager.favorites.collectAsState()
+            val isFav = favoritesList.any { it.spanish == item.spanish && it.korean == item.korean }
+
             ModalBottomSheet(
                 onDismissRequest = { showModal = false },
                 sheetState = sheetState,
@@ -189,12 +194,16 @@ fun DiccionaryView(
                 // El contenido del modal
                 Box(modifier = Modifier.fillMaxWidth().background(Color(0x80FFFFFF))) {
                     ModalDictionary(
-                        wordSpanish = selectedItem!!.spanish,
-                        wordCorea = selectedItem!!.korean,
-                        romanization = selectedItem!!.romanization,
-                        pronunciation = selectedItem!!.pronunciation,
-                        ejemploSpanish = selectedItem!!.ejemploSpanish,
-                        ejemploKoreano = selectedItem!!.ejemploKoreano,
+                        wordSpanish = item.spanish,
+                        wordCorea = item.korean,
+                        romanization = item.romanization,
+                        pronunciation = item.pronunciation,
+                        ejemploSpanish = item.ejemploSpanish,
+                        ejemploKoreano = item.ejemploKoreano,
+                        isFavorite = isFav,
+                        onToggleFavorite = {
+                            FavoritesManager.toggleFavorite(item)
+                        },
                         modifier = Modifier.fillMaxWidth()
                     )
                 }

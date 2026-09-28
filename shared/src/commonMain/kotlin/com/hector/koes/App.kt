@@ -10,6 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.hector.koes.View.CameraView
 import com.hector.koes.View.DiccionaryView
 import com.hector.koes.View.EditCameraView
+import com.hector.koes.View.FavoriteView
 import com.hector.koes.View.HangulView
 import com.hector.koes.View.Home
 import com.hector.koes.View.ScoreView
@@ -28,6 +29,7 @@ fun App() {
             "hangul" -> HangulView(onNavigate = { currentScreen = it })
             "score" -> ScoreView(onNavigate = { currentScreen = it })
             "settings" -> SettingsView(onNavigate = { currentScreen = it })
+            "favorite", "favorites", "favoriteView" -> FavoriteView(onNavigate = { currentScreen = it })
             "camera", "cameraView" -> CameraView(
                 onNavigate = { currentScreen = it },
                 onPhotoApproved = { photo ->

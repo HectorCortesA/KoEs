@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hector.koes.database.DatabaseModule
 import com.hector.koes.model.FullDictionaryItem
+import com.hector.koes.util.HangulUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -58,7 +59,10 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+    private var isTransitioning = false
+
     fun checkCompletion(input: String) {
+        if (isTransitioning) return
         val current = _currentItem.value ?: return
         val target = if (writingMode.value == WritingMode.PALABRAS) {
             current.wordCoreano
@@ -66,10 +70,19 @@ class HomeViewModel : ViewModel() {
             current.ejemploKoreano
         }
 
-        // Si el texto coincide exactamente con el objetivo (ignorando espacios al inicio/final), cargamos la siguiente
-        if (input.trim() == target.trim() && target.isNotEmpty()) {
+        val trimmedInput = input.trim()
+        val trimmedTarget = target.trim()
+
+        if (trimmedTarget.isNotEmpty() &&
+            (trimmedInput == trimmedTarget || HangulUtils.decomposeToJamos(trimmedInput) == HangulUtils.decomposeToJamos(trimmedTarget))
+        ) {
             println("HomeViewModel: ¡Palabra completada! Cargando siguiente...")
-            loadRandomItem()
+            isTransitioning = true
+            viewModelScope.launch {
+                kotlinx.coroutines.delay(150)
+                loadRandomItem()
+                isTransitioning = false
+            }
         }
     }
 }
