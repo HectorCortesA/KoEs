@@ -2,6 +2,10 @@ package com.hector.koes.components.camera
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import java.io.ByteArrayOutputStream
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
@@ -149,7 +153,44 @@ actual fun CameraPreview(
                         val bytes = ByteArray(buffer.remaining())
                         buffer.get(bytes)
                         image.close()
-                        onPhotoCaptured(bytes)
+
+                        val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                        val rotation = image.imageInfo.rotationDegrees
+                        val matrix = Matrix().apply {
+                            postRotate(rotation.toFloat())
+                        }
+                        val rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+
+                        val portraitBitmap = if (rotatedBitmap.width > rotatedBitmap.height) {
+                            val rotMatrix = Matrix().apply { postRotate(90f) }
+                            Bitmap.createBitmap(rotatedBitmap, 0, 0, rotatedBitmap.width, rotatedBitmap.height, rotMatrix, true)
+                        } else {
+                            rotatedBitmap
+                        }
+
+                        // Center crop to 9:16 ratio (16:9 height:width)
+                        val targetRatio = 16f / 9f
+                        val srcW = portraitBitmap.width.toFloat()
+                        val srcH = portraitBitmap.height.toFloat()
+                        val srcRatio = srcH / srcW
+
+                        val croppedBitmap: Bitmap = if (srcRatio > targetRatio) {
+                            val newH = (srcW * targetRatio).toInt()
+                            val yOffset = ((srcH - newH) / 2).toInt()
+                            Bitmap.createBitmap(portraitBitmap, 0, yOffset, srcW.toInt(), newH)
+                        } else if (srcRatio < targetRatio) {
+                            val newW = (srcH / targetRatio).toInt()
+                            val xOffset = ((srcW - newW) / 2).toInt()
+                            Bitmap.createBitmap(portraitBitmap, xOffset, 0, newW, srcH.toInt())
+                        } else {
+                            portraitBitmap
+                        }
+
+                        val finalBitmap = Bitmap.createScaledBitmap(croppedBitmap, 1080, 1920, true)
+
+                        val outputStream = ByteArrayOutputStream()
+                        finalBitmap.compress(Bitmap.CompressFormat.JPEG, 95, outputStream)
+                        onPhotoCaptured(outputStream.toByteArray())
                     }
 
                     override fun onError(exception: ImageCaptureException) {

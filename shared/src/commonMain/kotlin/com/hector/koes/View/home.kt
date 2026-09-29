@@ -32,6 +32,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.ui.text.TextRange
+import com.hector.koes.components.KoreanKeyboard.KoreanKeyboard
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
@@ -49,6 +52,7 @@ fun Home(
     
     var textFieldValue by remember { mutableStateOf(TextFieldValue("")) }
     var showTooltip by remember { mutableStateOf(false) }
+    var showCustomKeyboard by remember { mutableStateOf(true) }
 
     // Obtenemos la palabra objetivo según el modo
     val suggestion = if (writingMode == WritingMode.PALABRAS) {
@@ -173,18 +177,30 @@ fun Home(
                 BasicTextField(
                     value = textFieldValue,
                     onValueChange = { newValue ->
-                        textFieldValue = newValue
-                        viewModel.checkCompletion(newValue.text) {
-                            textFieldValue = TextFieldValue("")
+                        if (!showCustomKeyboard) {
+                            textFieldValue = newValue
+                            viewModel.checkCompletion(newValue.text) {
+                                textFieldValue = TextFieldValue("")
+                            }
                         }
                     },
+                    readOnly = showCustomKeyboard,
                     textStyle = TextStyle(
                         color = Color.Transparent,
                         textAlign = TextAlign.Center,
                         fontSize = if (writingMode == WritingMode.PALABRAS) 40.sp else 24.sp,
                         fontWeight = FontWeight.Bold
                     ),
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp)
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onTap = {
+                                    showCustomKeyboard = true
+                                }
+                            )
+                        },
                     cursorBrush = SolidColor(Color.Black),
                     singleLine = writingMode == WritingMode.PALABRAS,
                     decorationBox = { innerTextField ->
@@ -200,6 +216,40 @@ fun Home(
                             )
                             innerTextField()
                         }
+                    }
+                )
+            }
+        }
+
+        if (showCustomKeyboard) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter),
+                contentAlignment = Alignment.Center
+            ) {
+                KoreanKeyboard(
+                    onKeyClick = { key ->
+                        val newText = if (key == " ") {
+                            textFieldValue.text + " "
+                        } else {
+                            HangulUtils.compose(textFieldValue.text, key)
+                        }
+                        textFieldValue = TextFieldValue(newText, selection = TextRange(newText.length))
+                        viewModel.checkCompletion(newText) {
+                            textFieldValue = TextFieldValue("")
+                        }
+                    },
+                    onShiftClick = {},
+                    onDeleteClick = {
+                        val newText = HangulUtils.backspace(textFieldValue.text)
+                        textFieldValue = TextFieldValue(newText, selection = TextRange(newText.length))
+                        viewModel.checkCompletion(newText) {}
+                    },
+                    onNumberClick = {},
+                    onSettingsClick = {},
+                    onNativeKeyboardClick = {
+                        showCustomKeyboard = false
                     }
                 )
             }

@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -16,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,62 +34,73 @@ fun SharedModal(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
-            .background(
-                color = Color(0x80D9D9D9),
-                shape = RoundedCornerShape(
+            .height(150.dp)
+            .clip(
+                RoundedCornerShape(
                     topStart = 30.dp,
                     topEnd = 30.dp,
                     bottomStart = 0.dp,
                     bottomEnd = 0.dp
                 )
-            ),
-        contentAlignment = Alignment.Center
+            )
     ) {
+        Box(
+            modifier = Modifier
+                .matchParentSize()
+                .background(Color(0x80D9D9D9))
+        )
 
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .navigationBarsPadding(),
+            contentAlignment = Alignment.Center
         ) {
 
-            Button(
-                onClick = onOptionAClick,
-                modifier = Modifier
-                    .width(64.dp)
-                    .height(62.dp),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFD9D9D9)
-                ),
-                contentPadding = PaddingValues(0.dp)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "A",
-                    color = Color.Black,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
 
-            Spacer(modifier = Modifier.width(20.dp))
+                Button(
+                    onClick = onOptionAClick,
+                    modifier = Modifier
+                        .width(64.dp)
+                        .height(62.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFD9D9D9)
+                    ),
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    Text(
+                        text = "A",
+                        color = Color.Black,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-            Button(
-                onClick = onCameraClick,
-                modifier = Modifier
-                    .width(64.dp)
-                    .height(62.dp),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFD9D9D9)
-                ),
-                contentPadding = PaddingValues(0.dp)
-            ) {
-                Text(
-                    text = "📷",
-                    color = Color.Black,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Spacer(modifier = Modifier.width(20.dp))
+
+                Button(
+                    onClick = onCameraClick,
+                    modifier = Modifier
+                        .width(64.dp)
+                        .height(62.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFD9D9D9)
+                    ),
+                    contentPadding = PaddingValues(0.dp)
+                ) {
+                    Text(
+                        text = "📷",
+                        color = Color.Black,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }

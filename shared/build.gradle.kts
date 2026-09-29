@@ -51,6 +51,8 @@ kotlin {
             implementation(libs.camerax.camera2)
             implementation(libs.camerax.lifecycle)
             implementation(libs.camerax.view)
+            implementation("androidx.exifinterface:exifinterface:1.3.7")
+
             implementation("app.cash.sqldelight:android-driver:2.3.2")
         }
 
@@ -64,6 +66,7 @@ kotlin {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
+            implementation(compose.materialIconsExtended)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)

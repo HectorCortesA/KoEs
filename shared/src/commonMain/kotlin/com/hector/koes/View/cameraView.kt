@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -32,6 +33,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -115,6 +117,48 @@ fun CameraView(
                             capturedPhotoBytes = bytes
                         }
                     )
+
+                    // Botón para cambiar a cámara frontal / trasera dentro de la vista de cámara
+                    Box(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .align(Alignment.BottomEnd)
+                            .offset(
+                                x = (-20).dp,
+                                y = (-20).dp
+                            )
+                            .shadow(
+                                elevation = 4.dp,
+                                shape = CircleShape,
+                                spotColor = Color(0x40000000),
+                                ambientColor = Color(0x40000000)
+                            )
+                            .clip(CircleShape)
+                            .background(
+                                color = Color(0x80FFFFFF)
+                            )
+                            .border(
+                                width = 1.dp,
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.White.copy(alpha = 0.8f),
+                                        Color.White.copy(alpha = 0.2f)
+                                    )
+                                ),
+                                shape = CircleShape
+                            )
+                            .clickable {
+                                isFrontCamera = !isFrontCamera
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "↻",
+                            fontSize = 22.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
 
@@ -169,19 +213,29 @@ fun CameraView(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(139.dp)
+                .height(150.dp)
                 .align(Alignment.BottomCenter)
-                .background(
-                    color = Color(0x80D9D9D9),
-                    shape = RoundedCornerShape(
+                .clip(
+                    RoundedCornerShape(
                         topStart = 30.dp,
                         topEnd = 30.dp,
                         bottomStart = 0.dp,
                         bottomEnd = 0.dp
                     )
-                ),
-            contentAlignment = Alignment.Center
+                )
         ) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(Color(0x80D9D9D9))
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding(),
+                contentAlignment = Alignment.Center
+            ) {
 
             // ESTADO 1: Cámara activa
             if (capturedPhotoBytes == null) {
@@ -270,6 +324,7 @@ fun CameraView(
                 }
             }
         }
+      }
     }
 }
 
