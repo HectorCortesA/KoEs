@@ -26,6 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import com.hector.koes.resources.Res
 
 @Composable
 fun Navbar(
@@ -39,32 +41,30 @@ fun Navbar(
         verticalAlignment = Alignment.CenterVertically
     ) {
 
-        NavButton(text = "Pl", onClick = { onNavigate("dictionary") })
-        NavButton(text = "hg", onClick = { onNavigate("hangul") })  // Vista HangulView
-        NavButton(text = "LC", onClick = { onNavigate("favorite")})
-        NavButton(text = "T", onClick = { onNavigate("home") }) // home
-        NavButton(text = "PS", onClick = { onNavigate("score") } ) // Vista
+        NavButton(iconUri = "files/dicionary.svg", onClick = { onNavigate("dictionary") })
+        NavButton(iconUri = "files/hg.svg", onClick = { onNavigate("hangul") })  // Vista HangulView
+        NavButton(iconUri = "files/favorite.svg", onClick = { onNavigate("favorite")})
+        NavButton(iconUri = "files/home.svg", onClick = { onNavigate("home") }) // home
+        NavButton(iconUri = "files/score.svg", onClick = { onNavigate("score") } ) // Vista
 
         Spacer(
             modifier = Modifier.width(26.dp)
-
         )
 
-        NavButton(text = "AJ", onClick = { onNavigate("settings") })
+        NavButton(iconUri = "files/setting.svg", onClick = { onNavigate("settings") })
     }
 }
 
 @Composable
 fun NavButton(
-    text: String,
+    text: String? = null,
+    iconUri: String? = null,
     onClick: () -> Unit = {}
 ) {
-    // Usamos Surface con color transparente para evitar cualquier relleno 
-    // y asegurar la forma circular perfecta sin sombras poligonales.
     Surface(
         modifier = Modifier
             .size(50.dp)
-            .clip(CircleShape) // Corta el efecto ripple para que sea circular
+            .clip(CircleShape)
             .clickable { onClick() },
         shape = CircleShape,
         color = Color.Transparent,
@@ -81,11 +81,19 @@ fun NavButton(
         Box(
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = text,
-                color = Color(0xFF333333),
-                fontWeight = FontWeight.Bold
-            )
+            if (iconUri != null) {
+                AsyncImage(
+                    model = Res.getUri(iconUri),
+                    contentDescription = null,
+                    modifier = Modifier.size(26.dp)
+                )
+            } else if (text != null) {
+                Text(
+                    text = text,
+                    color = Color(0xFF333333),
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
@@ -97,7 +105,5 @@ fun NavButton(
 )
 @Composable
 fun NavbarPreview() {
-    Navbar(
-
-    )
+    Navbar()
 }
