@@ -227,10 +227,10 @@ fun EditCameraView(
                         if (item.isCalendar) {
                             Box(
                                 modifier = Modifier
-                                    .width(220.dp)
-                                    .clip(RoundedCornerShape(14.dp))
+                                    .width(260.dp)
+                                    .clip(RoundedCornerShape(16.dp))
                                     .background(Color.White.copy(alpha = 0.90f))
-                                    .padding(10.dp)
+                                    .padding(12.dp)
                             ) {
                                 HeatCalendar(
                                     modifier = Modifier.fillMaxWidth(),
@@ -303,7 +303,8 @@ fun EditCameraView(
                             photoBytes,
                             overlayItems,
                             0f,
-                            0f
+                            0f,
+                            dailyWordCounts
                         )
 
                         if (finalPhotoBytes != null) {

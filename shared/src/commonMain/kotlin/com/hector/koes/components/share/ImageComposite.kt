@@ -36,4 +36,4 @@ fun calculateImageTransform(
 expect fun getImageDimensions(photoBytes: ByteArray?): Pair<Float, Float>
 
 @Composable
-expect fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: List<OverlayItem>, previewWidth: Float, previewHeight: Float) -> ByteArray?
+expect fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: List<OverlayItem>, previewWidth: Float, previewHeight: Float, dailyWordCounts: Map<Int, Int>) -> ByteArray?

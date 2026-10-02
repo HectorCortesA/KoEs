@@ -8,8 +8,8 @@ actual fun getImageDimensions(photoBytes: ByteArray?): Pair<Float, Float> {
 }
 
 @Composable
-actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: List<OverlayItem>, previewWidth: Float, previewHeight: Float) -> ByteArray? {
-    return { photoBytes, _, _, _ ->
+actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: List<OverlayItem>, previewWidth: Float, previewHeight: Float, dailyWordCounts: Map<Int, Int>) -> ByteArray? {
+    return { photoBytes, _, _, _, _ ->
         photoBytes
     }
 }

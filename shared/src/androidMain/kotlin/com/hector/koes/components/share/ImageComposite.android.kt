@@ -93,9 +93,9 @@ fun decodeAndRotateBitmap(photoBytes: ByteArray?): Bitmap {
 }
 
 @Composable
-actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: List<OverlayItem>, previewWidth: Float, previewHeight: Float) -> ByteArray? {
+actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: List<OverlayItem>, previewWidth: Float, previewHeight: Float, dailyWordCounts: Map<Int, Int>) -> ByteArray? {
     return remember {
-        val compositor: (ByteArray?, List<OverlayItem>, Float, Float) -> ByteArray? = { photoBytes, overlayItems, _, _ ->
+        val compositor: (ByteArray?, List<OverlayItem>, Float, Float, Map<Int, Int>) -> ByteArray? = { photoBytes, overlayItems, _, _, dailyWordCounts ->
             try {
                 val baseBitmap = decodeAndRotateBitmap(photoBytes)
                 val exportWidth = 1080f
@@ -118,45 +118,93 @@ actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: Lis
                 )
                 canvas.drawBitmap(baseBitmap, null, destRect, null)
 
-                // Render items in a column at bottom-right corner
-                var startY = exportHeight - 100f - (overlayItems.size * 70f)
+                // Calculate total height needed for the items column to render from bottom-right upwards or downwards correctly
+                var totalBlockHeight = 0f
+                overlayItems.forEach { item ->
+                    if (item.isCalendar) {
+                        totalBlockHeight += 360f + 20f
+                    } else {
+                        totalBlockHeight += 70f + 16f
+                    }
+                }
+
+                var currentY = (exportHeight - 140f - totalBlockHeight).coerceAtLeast(100f)
                 val marginX = 60f
 
                 overlayItems.forEach { item ->
                     canvas.save()
                     if (item.isCalendar) {
-                        val calWidth = 320f
-                        val calHeight = 220f
+                        val calWidth = 500f
+                        val calHeight = 360f
                         val calX = exportWidth - calWidth - marginX
-                        val calY = startY.coerceAtLeast(100f)
+                        val calY = currentY
+
                         val bgPaint = Paint().apply {
                             color = Color.WHITE
                             style = Paint.Style.FILL
                             isAntiAlias = true
                         }
-                        val rect = RectF(calX, calY, calX + calWidth, calY + calHeight)
-                        canvas.drawRoundRect(rect, 24f, 24f, bgPaint)
+                        canvas.drawRoundRect(RectF(calX, calY, calX + calWidth, calY + calHeight), 32f, 32f, bgPaint)
 
-                        val calTextPaint = Paint().apply {
-                            color = Color.BLACK
-                            textSize = 28f
-                            isFakeBoldText = true
+                        // Draw heatmap grid (12 cols x 5 rows) and flowers
+                        val cols = 12
+                        val rows = 5
+                        val padding = 24f
+                        val innerW = calWidth - (padding * 2f)
+                        val innerH = calHeight - (padding * 2f)
+                        val cellW = innerW / cols
+                        val cellH = innerH / rows
+
+                        val cellBgPaint = Paint().apply {
+                            color = Color.parseColor("#B3D2DC")
+                            style = Paint.Style.FILL
                             isAntiAlias = true
                         }
-                        canvas.drawText("📅 Calendario", calX + 24f, calY + 50f, calTextPaint)
-                        startY += calHeight + 20f
+                        val petalPaint = Paint().apply {
+                            color = Color.parseColor("#C058A8")
+                            style = Paint.Style.FILL
+                            isAntiAlias = true
+                        }
+                        val centerPaint = Paint().apply {
+                            color = Color.parseColor("#F7CFE1")
+                            style = Paint.Style.FILL
+                            isAntiAlias = true
+                        }
+
+                        for (col in 0 until cols) {
+                            for (row in 0 until rows) {
+                                val index = col * rows + row
+                                val count = dailyWordCounts[index] ?: 0
+                                val cellLeft = calX + padding + (col * cellW) + 2f
+                                val cellTop = calY + padding + (row * cellH) + 2f
+                                val cellRight = calX + padding + ((col + 1) * cellW) - 2f
+                                val cellBottom = calY + padding + ((row + 1) * cellH) - 2f
+
+                                if (count > 0) {
+                                    val cx = (cellLeft + cellRight) / 2f
+                                    val cy = (cellTop + cellBottom) / 2f
+                                    val radius = cellW * 0.45f
+                                    canvas.drawCircle(cx, cy, radius, petalPaint)
+                                    canvas.drawCircle(cx, cy, radius * 0.4f, centerPaint)
+                                } else {
+                                    canvas.drawRoundRect(RectF(cellLeft, cellTop, cellRight, cellBottom), 6f, 6f, cellBgPaint)
+                                }
+                            }
+                        }
+
+                        currentY += calHeight + 20f
                     } else {
                         val textPaint = Paint().apply {
                             isAntiAlias = true
                             color = Color.WHITE
-                            textSize = 42f
+                            textSize = 54f
                             isFakeBoldText = true
-                            setShadowLayer(6f, 2f, 2f, Color.BLACK)
+                            setShadowLayer(8f, 2f, 2f, Color.BLACK)
                         }
 
                         val textWidth = textPaint.measureText(item.text)
                         val drawX = exportWidth - textWidth - marginX
-                        val drawY = startY.coerceAtLeast(100f)
+                        val drawY = currentY
 
                         canvas.drawText(
                             item.text,
@@ -164,7 +212,7 @@ actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: Lis
                             drawY - textPaint.fontMetrics.ascent,
                             textPaint
                         )
-                        startY += textPaint.textSize + 24f
+                        currentY += textPaint.textSize + 24f
                     }
                     canvas.restore()
                 }
