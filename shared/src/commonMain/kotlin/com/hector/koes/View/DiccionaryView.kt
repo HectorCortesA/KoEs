@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,6 +48,9 @@ import com.hector.koes.viewModel.FavoritesManager
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.foundation.layout.Arrangement
+import coil3.compose.AsyncImage
+import com.hector.koes.resources.Res
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 
@@ -149,30 +153,59 @@ fun DiccionaryView(
             }
         )
 
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .padding(top = 150.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            items(words) { item ->
-                CardDictionary(
-                    wordSpanish = item.spanish,
-                    wordCorea = item.korean,
-                    pronunciation = item.romanization,
-                    onClick = {
-                        selectedItem = item
-                        showModal = true
-                    }
-                )
-                Spacer(modifier = Modifier.height(10.dp))
+        if (words.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 150.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    AsyncImage(
+                        model = Res.getUri("files/error.svg"),
+                        contentDescription = "No hay palabra encontrada",
+                        modifier = Modifier
+                            .width(196.dp)
+                            .height(196.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = "No hay palabra encontrada",
+                        color = Color(0xFF666666),
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
             }
-            
-            // Espacio extra al final para el scroll
-            item {
-                Spacer(modifier = Modifier.height(100.dp))
+        } else {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .padding(top = 150.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(words) { item ->
+                    CardDictionary(
+                        wordSpanish = item.spanish,
+                        wordCorea = item.korean,
+                        pronunciation = item.romanization,
+                        onClick = {
+                            selectedItem = item
+                            showModal = true
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+                
+                // Espacio extra al final para el scroll
+                item {
+                    Spacer(modifier = Modifier.height(100.dp))
+                }
             }
         }
 
