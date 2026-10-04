@@ -38,6 +38,8 @@ import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.model.DictionaryItem
 import com.hector.koes.ui.theme.Background
 import com.hector.koes.viewModel.FavoritesManager
+import coil3.compose.AsyncImage
+import com.hector.koes.resources.Res
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -102,15 +104,14 @@ fun FavoriteView(
         if (favoritesList.isEmpty()) {
             Box(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 130.dp),
+                    .fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "No tienes favoritos guardados aún.",
-                    fontSize = 16.sp,
-                    color = Color.Black.copy(alpha = 0.5f),
-                    textAlign = TextAlign.Center
+                AsyncImage(
+                    model = Res.getUri("files/fav.svg"),
+                    contentDescription = "Sin favoritos",
+                    modifier = Modifier
+                        .fillMaxWidth(0.45f)
                 )
             }
         } else {
