@@ -13,17 +13,31 @@ import com.hector.koes.View.EditCameraView
 import com.hector.koes.View.FavoriteView
 import com.hector.koes.View.HangulView
 import com.hector.koes.View.Home
+import com.hector.koes.View.OnBoardingName
+import com.hector.koes.View.OnboardingPreferences
 import com.hector.koes.View.ScoreView
 import com.hector.koes.View.SettingsView
+import com.hector.koes.util.PreferencesStorage
 
 @Composable
 @Preview
 fun App() {
-    var currentScreen by remember { mutableStateOf("home") }
+    val isCompleted = remember { PreferencesStorage.isOnboardingCompleted() }
+    var currentScreen by remember { mutableStateOf(if (isCompleted) "home" else "onboardingName") }
     var capturedPhotoBytes by remember { mutableStateOf<ByteArray?>(null) }
 
     MaterialTheme {
         when (currentScreen) {
+            "onboardingName" -> OnBoardingName(
+                onNext = {
+                    currentScreen = "onboardingPreferences"
+                }
+            )
+            "onboardingPreferences" -> OnboardingPreferences(
+                onFinalize = {
+                    currentScreen = "home"
+                }
+            )
             "home" -> Home(onNavigate = { currentScreen = it })
             "dictionary" -> DiccionaryView(onNavigate = { currentScreen = it })
             "hangul" -> HangulView(onNavigate = { currentScreen = it })

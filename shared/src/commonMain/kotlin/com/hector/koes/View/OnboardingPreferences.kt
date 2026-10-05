@@ -7,15 +7,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,22 +24,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
+import com.hector.koes.components.Profile.rememberImagePickerLauncher
 import com.hector.koes.resources.Res
 import com.hector.koes.ui.theme.Background
+import com.hector.koes.viewModel.OnboardingViewModel
 
 @Composable
-fun OnBoarding(
-    onNext: (String) -> Unit = {}
+fun OnboardingPreferences(
+    viewModel: OnboardingViewModel = viewModel { OnboardingViewModel() },
+    onFinalize: () -> Unit = {}
 ) {
     var query by remember {
-        mutableStateOf("")
+        mutableStateOf(viewModel.userPhotoUrl.value)
+    }
+
+    val launchImagePicker = rememberImagePickerLauncher { uri ->
+        if (uri != null) {
+            query = uri
+            viewModel.setUserPhotoUrl(uri)
+        }
     }
 
     Box(
@@ -50,61 +57,38 @@ fun OnBoarding(
             .fillMaxSize()
             .background(Background)
     ) {
-        // 1. Imagen de fondo colocada en la parte derecha de abajo (atrás del texto y botones)
+        // 1. Imagen de fondo colocada en la parte izquierda de abajo
         Box(
             modifier = Modifier
                 .fillMaxSize(),
-            contentAlignment = Alignment.BottomEnd
+            contentAlignment = Alignment.BottomStart
         ) {
             AsyncImage(
-                model = Res.getUri("files/peoplenormal.svg"),
+                model = Res.getUri("files/peopleheart.svg"),
                 contentDescription = "Mascota",
                 modifier = Modifier
-                    .fillMaxWidth(0.95f)
+                    .fillMaxWidth(0.75f)
             )
         }
 
-        // 2. Contenido principal: Título arriba, y campos centrados en el medio
-        Column(
+        // 2. Contenido centrado: Avatar (selector de imagen) y botón Finalizar
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
-                .padding(horizontal = 24.dp, vertical = 32.dp),
-            horizontalAlignment = Alignment.Start
+                .padding(top = 110.dp),
+            contentAlignment = Alignment.TopCenter
         ) {
-            Text(
-                text = "Bienvenido",
-                color = Color.Black,
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.weight(0.25f))
-
-            // Contenedor centrado en medio junto con el botón Siguiente
             Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                BasicTextField(
-                    value = query,
-                    onValueChange = {
-                        query = it
-                    },
-                    singleLine = true,
-                    cursorBrush = SolidColor(Color.Black),
-                    textStyle = TextStyle(
-                        color = Color.Black,
-                        fontSize = 16.sp
-                    ),
+                // Selector circular tipo glass para imagen de perfil
+                Box(
                     modifier = Modifier
-                        .width(268.dp)
-                        .height(39.dp)
-                        .background(
-                            color = Color(0x33D9D9D9),
-                            shape = RoundedCornerShape(10.dp)
-                        )
+                        .width(174.dp)
+                        .height(171.dp)
+                        .clip(RoundedCornerShape(100.dp))
+                        .background(color = Color(0x33D9D9D9), shape = RoundedCornerShape(size = 100.dp))
                         .border(
                             border = BorderStroke(
                                 width = 1.dp,
@@ -115,34 +99,43 @@ fun OnBoarding(
                                     )
                                 )
                             ),
-                            shape = RoundedCornerShape(10.dp)
+                            shape = RoundedCornerShape(size = 100.dp)
                         )
-                        .padding(horizontal = 16.dp),
-                    decorationBox = { innerTextField ->
-                        Box(
-                            modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            if (query.isEmpty()) {
-                                Text(
-                                    text = "Escribe tu nombre",
-                                    color = Color.Black.copy(alpha = 0.4f),
-                                    fontSize = 16.sp
-                                )
-                            }
-                            innerTextField()
-                        }
+                        .clickable {
+                            launchImagePicker()
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (query.isNotEmpty()) {
+                        AsyncImage(
+                            model = query,
+                            contentDescription = "Foto de perfil",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(100.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Text(
+                            text = "Foto",
+                            color = Color.Black.copy(alpha = 0.5f),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
                     }
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
+                }
 
                 Box(
+                    modifier = Modifier.height(24.dp)
+                )
+
+                // Botón Finalizar tipo glass
+                Box(
                     modifier = Modifier
-                        .width(111.dp)
+                        .width(103.dp)
                         .height(39.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color(0x33D9D9D9))
+                        .background(color = Color(0x33D9D9D9))
                         .border(
                             border = BorderStroke(
                                 width = 1.dp,
@@ -156,32 +149,26 @@ fun OnBoarding(
                             shape = RoundedCornerShape(10.dp)
                         )
                         .clickable {
-                            onNext(query)
+                            viewModel.setUserPhotoUrl(query)
+                            viewModel.completeOnboarding()
+                            onFinalize()
                         },
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Siguiente",
+                        text = "Finalizar",
                         color = Color.Black,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.weight(0.65f))
         }
     }
 }
 
-@Preview(
-    showBackground = true
-)
+@Preview(showBackground = true)
 @Composable
-fun OnBoardingPreview() {
-    OnBoarding(
-        onNext = { name ->
-            println("Nombre: $name")
-        }
-    )
+fun OnboardingPreferencesPreview() {
+    OnboardingPreferences()
 }

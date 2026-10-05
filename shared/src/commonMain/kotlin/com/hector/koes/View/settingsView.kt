@@ -52,17 +52,17 @@ import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
 import com.hector.koes.viewModel.SettingsManager
 import com.hector.koes.viewModel.WritingMode
+import com.hector.koes.util.PreferencesStorage
 
 @Composable
 fun SettingsView(
-    onNavigate: (String) -> Unit = {},
-    name: String = "Hector Uriel A"
+    onNavigate: (String) -> Unit = {}
 ) {
     val viewModel = SettingsManager.instance
     val scrollState = rememberScrollState()
     
-    var profileName by remember(name) { mutableStateOf(name) }
-    var profilePhotoUrl by remember { mutableStateOf("") }
+    var profileName by remember { mutableStateOf(PreferencesStorage.getUserName().ifEmpty { "Usuario" }) }
+    var profilePhotoUrl by remember { mutableStateOf(PreferencesStorage.getUserPhotoUrl()) }
     var showProfileModal by remember { mutableStateOf(false) }
 
     val writingMode by viewModel.writingMode.collectAsState()
@@ -207,6 +207,8 @@ fun SettingsView(
                 onUpdateProfileWithPhoto = { newName, newPhoto ->
                     profileName = newName
                     profilePhotoUrl = newPhoto
+                    PreferencesStorage.setUserName(newName)
+                    PreferencesStorage.setUserPhotoUrl(newPhoto)
                     showProfileModal = false
                 }
             )
