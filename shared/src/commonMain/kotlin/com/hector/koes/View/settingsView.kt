@@ -387,29 +387,14 @@ fun SettingsWritingOption(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 offset = DpOffset(x = 0.dp, y = 4.dp),
-                containerColor = Color.White.copy(alpha = 0.30f),
+                containerColor = Color.White,
                 shadowElevation = 0.dp,
                 modifier = Modifier
                     .width(if (selectorWidthDp > 0.dp) selectorWidthDp else 280.dp)
                     .heightIn(max = 240.dp)
                     .clip(RoundedCornerShape(20.dp))
                     .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.White.copy(alpha = 0.35f),
-                                Color.White.copy(alpha = 0.15f)
-                            )
-                        ),
-                        shape = RoundedCornerShape(20.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color.White.copy(alpha = 0.80f),
-                                Color.White.copy(alpha = 0.20f)
-                            )
-                        ),
+                        color = Color.White,
                         shape = RoundedCornerShape(20.dp)
                     )
             ) {
