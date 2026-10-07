@@ -26,23 +26,21 @@ class DictionaryRepository {
             wordCoreano = wordCoreano,
             romanization = romanization,
             pronunciation = pronunciation,
-            tipo = tipo,
             categoria = categoria,
-            definicion = definicion,
+            subcategoria = subcategoria,
             ejemploSpanish = ejemploSpanish,
             ejemploKoreano = ejemploKoreano
         )
     }
 
-    fun insertWord(item: DictionaryItem, tipo: String, categoria: String, definicion: String, ejSp: String, ejKr: String) {
+    fun insertWord(item: DictionaryItem, categoria: String, subcategoria: String, ejSp: String, ejKr: String) {
         queries.insertWord(
             item.spanish,
             item.korean,
             item.romanization,
             item.pronunciation,
-            tipo,
             categoria,
-            definicion,
+            subcategoria,
             ejSp,
             ejKr
         )
@@ -73,7 +71,10 @@ class DictionaryRepository {
     }
 
     fun getCategories(): List<String> {
-        return queries.getCategories().executeAsList()
+        val all = queries.selectAll().executeAsList()
+        val cats = all.map { it.categoria }
+        val subcats = all.map { it.subcategoria }
+        return (cats + subcats).distinct()
     }
 
     fun getRandomByCategory(categoria: String): FullDictionaryItem? {

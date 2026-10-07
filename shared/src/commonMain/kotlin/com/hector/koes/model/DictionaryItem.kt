@@ -15,9 +15,8 @@ data class FullDictionaryItem(
     val wordCoreano: String,
     val romanization: String,
     val pronunciation: String,
-    val tipo: String,
     val categoria: String,
-    val definicion: String,
+    val subcategoria: String,
     val ejemploSpanish: String,
     val ejemploKoreano: String
 )
