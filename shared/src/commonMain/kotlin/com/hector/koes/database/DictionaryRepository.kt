@@ -78,7 +78,10 @@ class DictionaryRepository {
     }
 
     fun getRandomByCategory(categoria: String): FullDictionaryItem? {
-        return queries.getRandomByCategory(categoria).executeAsOneOrNull()?.toFullDomain()
+        val items = queries.selectAll().executeAsList()
+            .map { it.toFullDomain() }
+            .filter { it.categoria == categoria || it.subcategoria == categoria }
+        return items.randomOrNull()
     }
 
     fun getRandomAll(): FullDictionaryItem? {
