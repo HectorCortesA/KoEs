@@ -51,7 +51,7 @@ fun SharedModal(
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .background(Color(0x80D9D9D9))
+                .background(Color(0xE5FFFFFF))
         )
 
         Box(
@@ -73,7 +73,7 @@ fun SharedModal(
                         .height(62.dp),
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFD9D9D9)
+                        containerColor = Color(0xFFBDDBF0)
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
@@ -94,7 +94,7 @@ fun SharedModal(
                         .height(62.dp),
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFD9D9D9)
+                        containerColor = Color(0xFFBDDBF0)
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {

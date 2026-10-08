@@ -33,6 +33,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,6 +65,20 @@ fun ScoreView(
             .fillMaxSize()
             .background(Background)
     ) {
+
+        // Imagen peopleHappy.svg en la mera esquina izquierda abajo con sombra
+        Box(
+            modifier = Modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.BottomStart
+        ) {
+            AsyncImage(
+                model = Res.getUri("files/peopleHappy.svg"),
+                contentDescription = "Mascota feliz",
+                modifier = Modifier
+                    .fillMaxWidth(0.70f)
+            )
+        }
 
         // Navbar
         Navbar(
@@ -249,6 +264,8 @@ fun ScoreView(
                         fontWeight = FontWeight.Medium
                     )
                 }
+
+                //Aqui va la imagen people en la mera esquina izquierda
             }
 
             Spacer(
@@ -261,7 +278,6 @@ fun ScoreView(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.25f))
                     .clickable { showShareModal = false },
                 contentAlignment = Alignment.BottomCenter
             ) {
