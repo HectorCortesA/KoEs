@@ -46,7 +46,6 @@ fun CameraView(
     onNavigate: (String) -> Unit = {},
     onPhotoApproved: (ByteArray) -> Unit = {}
 ) {
-
     var isFrontCamera by remember {
         mutableStateOf(false)
     }
@@ -65,7 +64,7 @@ fun CameraView(
             .background(Background)
     ) {
 
-        // Contenedor adaptable de la cámara
+        // Contenedor adaptable de la cámara (wrapper no recortado)
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.90f)
@@ -74,7 +73,7 @@ fun CameraView(
                 .padding(top = 20.dp)
         ) {
 
-            // Área principal de cámara / preview de foto
+            // Área principal de cámara / preview de foto (con clip redondeado)
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -117,63 +116,16 @@ fun CameraView(
                             capturedPhotoBytes = bytes
                         }
                     )
-
-                    // Botón para cambiar a cámara frontal / trasera dentro de la vista de cámara
-                    Box(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .align(Alignment.BottomEnd)
-                            .offset(
-                                x = (-20).dp,
-                                y = (-20).dp
-                            )
-                            .shadow(
-                                elevation = 4.dp,
-                                shape = CircleShape,
-                                spotColor = Color(0x40000000),
-                                ambientColor = Color(0x40000000)
-                            )
-                            .clip(CircleShape)
-                            .background(
-                                color = Color(0x80FFFFFF)
-                            )
-                            .border(
-                                width = 1.dp,
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.White.copy(alpha = 0.8f),
-                                        Color.White.copy(alpha = 0.2f)
-                                    )
-                                ),
-                                shape = CircleShape
-                            )
-                            .clickable {
-                                isFrontCamera = !isFrontCamera
-                            },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "↻",
-                            fontSize = 22.sp,
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
                 }
             }
 
-            // Botón superior derecho
-            // Solo aparece mientras está activa la cámara
+            // Botón para voltear cámara (frontal / trasera) colocado en el contenedor wrapper (fuera del clip del card)
             if (capturedPhotoBytes == null) {
-
                 Box(
                     modifier = Modifier
-                        .size(59.dp)
+                        .size(48.dp)
                         .align(Alignment.TopEnd)
-                        .offset(
-                            x = 12.dp,
-                            y = (-10).dp
-                        )
+                        .offset(x = (-16).dp, y = 16.dp)
                         .shadow(
                             elevation = 4.dp,
                             shape = CircleShape,
@@ -195,15 +147,15 @@ fun CameraView(
                             shape = CircleShape
                         )
                         .clickable {
-                            onNavigate("score")
+                            isFrontCamera = !isFrontCamera
                         },
                     contentAlignment = Alignment.Center
                 ) {
-
                     Text(
-                        text = "←",
-                        fontSize = 24.sp,
-                        color = Color.Black
+                        text = "↻",
+                        fontSize = 22.sp,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
@@ -223,13 +175,8 @@ fun CameraView(
                         bottomEnd = 0.dp
                     )
                 )
+                .background(Color(0xE5FFFFFF))
         ) {
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .background(Color(0x80D9D9D9))
-            )
-
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -248,7 +195,7 @@ fun CameraView(
                         .size(86.dp),
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0x80FFFFFF)
+                        containerColor = Color(0x80BDDBF0)
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
@@ -281,7 +228,7 @@ fun CameraView(
                             .size(86.dp),
                         shape = CircleShape,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0x80FFFFFF)
+                            containerColor = Color(0x80BDDBF0)
                         ),
                         contentPadding = PaddingValues(0.dp)
                     ) {
@@ -310,7 +257,7 @@ fun CameraView(
                             .size(86.dp),
                         shape = CircleShape,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0x80FFFFFF)
+                            containerColor = Color(0x80BDDBF0)
                         ),
                         contentPadding = PaddingValues(0.dp)
                     ) {
@@ -323,8 +270,50 @@ fun CameraView(
                     }
                 }
             }
+          }
         }
-      }
+
+        // Botón X (Regresar / Cerrar) en la esquina derecha del panel inferior
+        Box(
+            modifier = Modifier
+                .size(54.dp)
+                .align(Alignment.BottomEnd)
+                .offset(
+                    x = (-24).dp,
+                    y = (-123).dp
+                )
+                .shadow(
+                    elevation = 6.dp,
+                    shape = CircleShape,
+                    spotColor = Color(0x40000000),
+                    ambientColor = Color(0x40000000)
+                )
+                .clip(CircleShape)
+                .background(
+                    color = Color(0x80FFFFFF)
+                )
+                .border(
+                    width = 1.dp,
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.5f),
+                            Color.White.copy(alpha = 0.1f)
+                        )
+                    ),
+                    shape = CircleShape
+                )
+                .clickable {
+                    onNavigate("score")
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "✕",
+                fontSize = 22.sp,
+                color = Color(0xFF6FA2E1),
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
