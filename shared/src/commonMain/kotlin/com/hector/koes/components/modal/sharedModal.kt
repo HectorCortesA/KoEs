@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -20,10 +21,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import com.hector.koes.resources.Res
 
 @Composable
 fun SharedModal(
@@ -73,11 +77,11 @@ fun SharedModal(
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
-                    Text(
-                        text = "A",
-                        color = Color.Black,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                    AsyncImage(
+                        model = Res.getUri("files/sharedIcon.svg"),
+                        contentDescription = "shared",
+                        modifier = Modifier.size(24.dp),
+                        colorFilter = ColorFilter.tint(Color.Black)
                     )
                 }
 
@@ -94,11 +98,11 @@ fun SharedModal(
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
-                    Text(
-                        text = "📷",
-                        color = Color.Black,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                    AsyncImage(
+                        model = Res.getUri("files/cameraIcon.svg"),
+                        contentDescription = "Cámara",
+                        modifier = Modifier.size(24.dp),
+                        colorFilter = ColorFilter.tint(Color.Black)
                     )
                 }
             }
