@@ -38,7 +38,7 @@ import com.hector.koes.components.KoreanKeyboard.KoreanKeyboard
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.components.loading.BouncingDotsLoadingAnimation
-import com.hector.koes.ui.theme.Background
+import com.hector.koes.ui.theme.*
 import com.hector.koes.util.HangulUtils
 import com.hector.koes.viewModel.HomeViewModel
 import com.hector.koes.viewModel.WritingMode
@@ -102,7 +102,7 @@ fun Home(
                 if (displaySpanish != null) {
                     Text(
                         text = displaySpanish,
-                        color = Color.Black,
+                        color = TextPrimary,
                         fontSize = 18.sp,
                         modifier = if (showTooltip && writingMode == WritingMode.PALABRAS) {
                             Modifier.blur(5.dp)
@@ -113,7 +113,7 @@ fun Home(
                 } else {
                     BouncingDotsLoadingAnimation(
                         dotSize = 10.dp,
-                        dotColorActive = Color(0xFF75A5E3),
+                        dotColorActive = ButtonActiveBlue,
                         dotColorInactive = Color.White
                     )
                 }

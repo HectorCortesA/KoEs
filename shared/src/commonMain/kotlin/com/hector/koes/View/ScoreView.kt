@@ -43,7 +43,7 @@ import com.hector.koes.components.Calendar.HeatCalendar
 import com.hector.koes.components.modal.SharedModal
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.resources.Res
-import com.hector.koes.ui.theme.Background
+import com.hector.koes.ui.theme.*
 import com.hector.koes.viewModel.UserProgressManager
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -118,7 +118,7 @@ fun ScoreView(
                             RoundedCornerShape(14.dp)
                         )
                         .background(
-                            color = Color.White,
+                            color = CardBackground,
                             shape = RoundedCornerShape(14.dp)
                         )
                 ) {
@@ -128,7 +128,7 @@ fun ScoreView(
                         modifier = Modifier
                             .align(Alignment.TopCenter)
                             .padding(top = 16.dp),
-                        color = Color.Black,
+                        color = TextPrimary,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Normal
                     )
@@ -141,7 +141,7 @@ fun ScoreView(
                                 top = 50.dp,
                                 end = 35.dp
                             ),
-                        color = Color.Black,
+                        color = TextPrimary,
                         fontSize = 34.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -172,7 +172,7 @@ fun ScoreView(
                         .width(145.dp)
                         .height(179.dp)
                         .background(
-                            color = Color.White,
+                            color = CardBackground,
                             shape = RoundedCornerShape(14.dp)
                         ),
                     contentAlignment = Alignment.Center
@@ -184,7 +184,7 @@ fun ScoreView(
 
                         Text(
                             text = wordsLearned.toString(),
-                            color = Color.Black,
+                            color = TextPrimary,
                             fontSize = 34.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -193,7 +193,7 @@ fun ScoreView(
                             text = "Palabras aprendidas",
                             modifier = Modifier
                                 .padding(top = 10.dp),
-                            color = Color.Black,
+                            color = TextPrimary,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Normal,
                             textAlign = TextAlign.Center
@@ -259,7 +259,7 @@ fun ScoreView(
 
                     Text(
                         text = "Compartir",
-                        color = Color(0xFF333333),
+                        color = TextSecondary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium
                     )

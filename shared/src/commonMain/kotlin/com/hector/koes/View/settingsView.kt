@@ -53,7 +53,7 @@ import com.hector.koes.components.Profile.ModaProfile
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.manager.BackupManager
 import com.hector.koes.model.Profile
-import com.hector.koes.ui.theme.Background
+import com.hector.koes.ui.theme.*
 import com.hector.koes.util.PreferencesStorage
 import com.hector.koes.viewModel.SettingsManager
 import com.hector.koes.viewModel.WritingMode
@@ -294,7 +294,7 @@ fun SettingsOption(
             .fillMaxWidth()
             .height(49.dp)
             .background(
-                color = Color(0xFFF8F8F8),
+                color = SurfaceLight,
                 shape = RoundedCornerShape(30.dp)
             )
             .clickable { onClick() }
@@ -305,7 +305,7 @@ fun SettingsOption(
         Text(
             text = text,
             fontSize = 16.sp,
-            color = Color.Black
+            color = TextPrimary
         )
     }
 }
@@ -319,7 +319,7 @@ fun SettingsClosetOption(
             .fillMaxWidth()
             .height(49.dp)
             .background(
-                color = Color(0xFF595959),
+                color = SurfaceGray,
                 shape = RoundedCornerShape(30.dp)
             )
             .padding(horizontal = 24.dp),
@@ -329,7 +329,7 @@ fun SettingsClosetOption(
         Text(
             text = text,
             fontSize = 16.sp,
-            color = Color.White
+            color = CardBackground
         )
     }
 }
@@ -527,7 +527,7 @@ fun SettingsWritingOption(
                                     text = category,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = Color(0xFF222222)
+                                    color = TextDark
                                 )
                             },
                             onClick = {
@@ -553,9 +553,9 @@ fun CustomSmallCheckbox(
             .height(15.dp)
             .background(
                 color = if (checked) {
-                    Color(0xFF5B5B5B)
+                    ButtonDarkGray
                 } else {
-                    Color(0x335B5B5B)
+                    ButtonDarkGray.copy(alpha = 0.2f)
                 },
                 shape = RoundedCornerShape(size = 100.dp)
             )
