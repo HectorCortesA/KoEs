@@ -1,3 +1,4 @@
+
 package com.hector.koes.View
 
 import androidx.compose.foundation.background
@@ -11,48 +12,51 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
-import com.hector.koes.components.Profile.ModaProfile
+import com.hector.koes.backup.rememberBackupExporter
 import com.hector.koes.components.Profile.ModaProfile
 import com.hector.koes.components.navbar.Navbar
+import com.hector.koes.manager.BackupManager
+import com.hector.koes.model.Profile
 import com.hector.koes.ui.theme.Background
+import com.hector.koes.util.PreferencesStorage
 import com.hector.koes.viewModel.SettingsManager
 import com.hector.koes.viewModel.WritingMode
-import com.hector.koes.util.PreferencesStorage
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsView(
@@ -60,10 +64,27 @@ fun SettingsView(
 ) {
     val viewModel = SettingsManager.instance
     val scrollState = rememberScrollState()
-    
-    var profileName by remember { mutableStateOf(PreferencesStorage.getUserName().ifEmpty { "Usuario" }) }
-    var profilePhotoUrl by remember { mutableStateOf(PreferencesStorage.getUserPhotoUrl()) }
-    var showProfileModal by remember { mutableStateOf(false) }
+    val exportBackup = rememberBackupExporter { success ->
+        if (success) {
+            println("Backup exportado con éxito")
+        } else {
+            println("Exportación cancelada o fallida")
+        }
+    }
+
+    var profileName by remember {
+        mutableStateOf(
+            PreferencesStorage.getUserName().ifEmpty { "Usuario" }
+        )
+    }
+
+    var profilePhotoUrl by remember {
+        mutableStateOf(PreferencesStorage.getUserPhotoUrl())
+    }
+
+    var showProfileModal by remember {
+        mutableStateOf(false)
+    }
 
     val writingMode by viewModel.writingMode.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
@@ -164,12 +185,22 @@ fun SettingsView(
 
                 SettingsWritingOption(
                     palabrasActivas = writingMode == WritingMode.PALABRAS,
-                    onPalabrasChange = { if (it) viewModel.setWritingMode(WritingMode.PALABRAS) },
+                    onPalabrasChange = {
+                        if (it) {
+                            viewModel.setWritingMode(WritingMode.PALABRAS)
+                        }
+                    },
                     oracionesActivas = writingMode == WritingMode.ORACIONES,
-                    onOracionesChange = { if (it) viewModel.setWritingMode(WritingMode.ORACIONES) },
+                    onOracionesChange = {
+                        if (it) {
+                            viewModel.setWritingMode(WritingMode.ORACIONES)
+                        }
+                    },
                     selectedCategory = selectedCategory,
                     categories = categories,
-                    onCategorySelected = { viewModel.setCategory(it) }
+                    onCategorySelected = {
+                        viewModel.setCategory(it)
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(140.dp))
@@ -187,8 +218,22 @@ fun SettingsView(
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+                // ÚNICO BOTÓN CON NUEVA FUNCIONALIDAD
                 SettingsOption(
-                    text = "Guardado de datos"
+                    text = "Guardado de datos",
+                    onClick = {
+                        val profile = Profile(
+                            nameProfile = profileName,
+                            photoUrl = profilePhotoUrl
+                        )
+
+                        val json = BackupManager.exportToJson(
+                            profile
+                        )
+
+                        exportBackup(json, "KoEs.data")
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -203,12 +248,16 @@ fun SettingsView(
             ModaProfile(
                 nameProfile = profileName,
                 photoUrl = profilePhotoUrl,
-                onBack = { showProfileModal = false },
+                onBack = {
+                    showProfileModal = false
+                },
                 onUpdateProfileWithPhoto = { newName, newPhoto ->
                     profileName = newName
                     profilePhotoUrl = newPhoto
+
                     PreferencesStorage.setUserName(newName)
                     PreferencesStorage.setUserPhotoUrl(newPhoto)
+
                     showProfileModal = false
                 }
             )
@@ -241,6 +290,7 @@ fun SettingsOption(
         )
     }
 }
+
 @Composable
 fun SettingsClosetOption(
     text: String
@@ -249,8 +299,10 @@ fun SettingsClosetOption(
         modifier = Modifier
             .fillMaxWidth()
             .height(49.dp)
-            .background(color = Color(0xFF595959), shape = RoundedCornerShape(size = 30.dp))
-
+            .background(
+                color = Color(0xFF595959),
+                shape = RoundedCornerShape(30.dp)
+            )
             .padding(horizontal = 24.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
@@ -273,8 +325,14 @@ fun SettingsWritingOption(
     categories: List<String>,
     onCategorySelected: (String) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    var selectorWidthDp by remember { mutableStateOf(0.dp) }
+    var expanded by remember {
+        mutableStateOf(false)
+    }
+
+    var selectorWidthDp by remember {
+        mutableStateOf(0.dp)
+    }
+
     val density = LocalDensity.current
 
     Column(
@@ -352,7 +410,9 @@ fun SettingsWritingOption(
                     .fillMaxWidth()
                     .height(43.dp)
                     .onGloballyPositioned { coordinates ->
-                        selectorWidthDp = with(density) { coordinates.size.width.toDp() }
+                        selectorWidthDp = with(density) {
+                            coordinates.size.width.toDp()
+                        }
                     }
                     .background(
                         color = Color(0x33D9D9D9),
@@ -369,6 +429,7 @@ fun SettingsWritingOption(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     Text(
                         text = selectedCategory,
                         fontSize = 14.sp,
@@ -385,12 +446,20 @@ fun SettingsWritingOption(
 
             DropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false },
+                onDismissRequest = {
+                    expanded = false
+                },
                 offset = DpOffset(x = 0.dp, y = 4.dp),
                 containerColor = Color.White,
                 shadowElevation = 0.dp,
                 modifier = Modifier
-                    .width(if (selectorWidthDp > 0.dp) selectorWidthDp else 280.dp)
+                    .width(
+                        if (selectorWidthDp > 0.dp) {
+                            selectorWidthDp
+                        } else {
+                            280.dp
+                        }
+                    )
                     .heightIn(max = 240.dp)
                     .clip(RoundedCornerShape(20.dp))
                     .background(
@@ -398,18 +467,28 @@ fun SettingsWritingOption(
                         shape = RoundedCornerShape(20.dp)
                     )
             ) {
-                var visibleCount by remember { mutableStateOf(10) }
+
+                var visibleCount by remember {
+                    mutableStateOf(10)
+                }
+
                 val menuScrollState = rememberScrollState()
 
                 val shouldLoadMore by remember {
                     derivedStateOf {
-                        menuScrollState.maxValue > 0 && menuScrollState.value >= (menuScrollState.maxValue - 150)
+                        menuScrollState.maxValue > 0 &&
+                                menuScrollState.value >=
+                                (menuScrollState.maxValue - 150)
                     }
                 }
 
                 LaunchedEffect(shouldLoadMore) {
-                    if (shouldLoadMore && visibleCount < categories.size) {
-                        visibleCount = (visibleCount + 10).coerceAtMost(categories.size)
+                    if (
+                        shouldLoadMore &&
+                        visibleCount < categories.size
+                    ) {
+                        visibleCount = (visibleCount + 10)
+                            .coerceAtMost(categories.size)
                     }
                 }
 
@@ -419,7 +498,8 @@ fun SettingsWritingOption(
                         .heightIn(max = 240.dp)
                         .verticalScroll(menuScrollState)
                 ) {
-                    val currentVisibleCategories = categories.take(visibleCount)
+                    val currentVisibleCategories =
+                        categories.take(visibleCount)
 
                     currentVisibleCategories.forEach { category ->
                         DropdownMenuItem(

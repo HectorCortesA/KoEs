@@ -40,14 +40,25 @@ class HomeViewModel : ViewModel() {
             try {
                 val category = settings.selectedCategory.value
                 
-                val item = if (category == "Todas") {
+                var item = if (category == "Todas") {
                     repository.getRandomAll()
                 } else {
                     repository.getRandomByCategory(category)
                 }
                 
                 if (item == null) {
-                    println("HomeViewModel: No se encontró ningún ítem para la categoría: $category")
+                    println("HomeViewModel: No se encontró ningún ítem para la categoría: $category. Usando fallback.")
+                    item = FullDictionaryItem(
+                        id = 0,
+                        wordSpanish = "Hola",
+                        wordCoreano = "안녕하세요",
+                        romanization = "annyeonghaseyo",
+                        pronunciation = "an-nyong-ha-se-yo",
+                        categoria = "Saludos",
+                        subcategoria = "General",
+                        ejemploSpanish = "Hola, ¿cómo estás?",
+                        ejemploKoreano = "안녕하세요, 어떻게 지내세요?"
+                    )
                 } else {
                     println("HomeViewModel: Nuevo ítem cargado: ${item.wordSpanish} (${item.categoria})")
                 }
@@ -55,6 +66,17 @@ class HomeViewModel : ViewModel() {
                 _currentItem.value = item
             } catch (e: Exception) {
                 println("HomeViewModel: Error cargando ítem aleatorio: ${e.message}")
+                _currentItem.value = FullDictionaryItem(
+                    id = 0,
+                    wordSpanish = "Hola",
+                    wordCoreano = "안녕하세요",
+                    romanization = "annyeonghaseyo",
+                    pronunciation = "an-nyong-ha-se-yo",
+                    categoria = "Saludos",
+                    subcategoria = "General",
+                    ejemploSpanish = "Hola, ¿cómo estás?",
+                    ejemploKoreano = "안녕하세요, 어떻게 지내세요?"
+                )
             }
         }
     }

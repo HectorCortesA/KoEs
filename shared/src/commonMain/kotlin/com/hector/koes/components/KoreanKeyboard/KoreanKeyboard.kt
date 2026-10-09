@@ -1366,15 +1366,15 @@ fun KoreanKey(
         modifier = Modifier
             .width(35.dp)
             .height(42.dp)
-            .background(
-                color = NormalKeyBackground,
-                shape = RoundedCornerShape(10.dp)
-            )
             .shadow(
                 elevation = 2.dp,
                 shape = RoundedCornerShape(10.dp),
                 spotColor = Color(0x40000000),
                 ambientColor = Color(0x40000000)
+            )
+            .background(
+                color = NormalKeyBackground,
+                shape = RoundedCornerShape(10.dp)
             )
             .clickable {
 
@@ -1422,6 +1422,12 @@ private fun TenKey(
         modifier = Modifier
             .width(72.dp)
             .height(48.dp)
+            .shadow(
+                elevation = 2.dp,
+                shape = RoundedCornerShape(10.dp),
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
+            )
             .background(
                 color =
                     NormalKeyBackground,
@@ -1430,12 +1436,6 @@ private fun TenKey(
                     RoundedCornerShape(
                         10.dp
                     )
-            )
-            .shadow(
-                elevation = 2.dp,
-                shape = RoundedCornerShape(10.dp),
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
             )
             .clickable {
 
@@ -1499,6 +1499,12 @@ private fun TenKeySpecialKey(
         modifier = Modifier
             .width(width)
             .height(height)
+            .shadow(
+                elevation = 2.dp,
+                shape = RoundedCornerShape(10.dp),
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
+            )
             .background(
                 color =
                     SpecialKeyBackground,
@@ -1507,12 +1513,6 @@ private fun TenKeySpecialKey(
                     RoundedCornerShape(
                         10.dp
                     )
-            )
-            .shadow(
-                elevation = 2.dp,
-                shape = RoundedCornerShape(10.dp),
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
             )
             .clickable {
 
@@ -1567,6 +1567,12 @@ fun SpecialTextKey(
         modifier = Modifier
             .width(width)
             .height(height)
+            .shadow(
+                elevation = 2.dp,
+                shape = RoundedCornerShape(10.dp),
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
+            )
             .background(
                 color =
                     if (selected) {
@@ -1579,12 +1585,6 @@ fun SpecialTextKey(
                     RoundedCornerShape(
                         10.dp
                     )
-            )
-            .shadow(
-                elevation = 2.dp,
-                shape = RoundedCornerShape(10.dp),
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
             )
             .clickable {
 

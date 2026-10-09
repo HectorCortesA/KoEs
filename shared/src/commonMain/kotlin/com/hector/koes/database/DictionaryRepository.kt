@@ -8,6 +8,18 @@ class DictionaryRepository {
     private val database = KoEsDatabase(createDriver())
     private val queries = database.dictionaryQueries
 
+    init {
+        try {
+            if (countWords() == 0L) {
+                insertWord(DictionaryItem("Hola", "안녕하세요", "annyeonghaseyo", "an-nyong-ha-se-yo", "Hola, ¿cómo estás?", "안녕하세요, 어떻게 지내세요?"), "Saludos", "General", "Hola, ¿cómo estás?", "안녕하세요, 어떻게 지내세요?")
+                insertWord(DictionaryItem("Perro", "개", "gae", "ke", "Mi perro...", "우리 개는..."), "animal", "", "Mi perro siempre espera junto a la puerta.", "우리 개는 항상 문 옆에서 기다려요.")
+                insertWord(DictionaryItem("Gato", "고양이", "goyangi", "go-yang-i", "El gato...", "고양이가..."), "animal", "", "El gato duerme sobre el sofá.", "고양이가 소파 위에서 자고 있어요.")
+            }
+        } catch (e: Exception) {
+            println("DictionaryRepository init seed error: ${e.message}")
+        }
+    }
+
     private fun DictionaryItemEntity.toDomain(): DictionaryItem {
         return DictionaryItem(
             spanish = wordSpanish,
