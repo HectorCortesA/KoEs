@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.hector.koes.backup.rememberBackupExporter
+import com.hector.koes.backup.rememberBackupImporter
 import com.hector.koes.components.Profile.ModaProfile
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.manager.BackupManager
@@ -64,13 +65,6 @@ fun SettingsView(
 ) {
     val viewModel = SettingsManager.instance
     val scrollState = rememberScrollState()
-    val exportBackup = rememberBackupExporter { success ->
-        if (success) {
-            println("Backup exportado con éxito")
-        } else {
-            println("Exportación cancelada o fallida")
-        }
-    }
 
     var profileName by remember {
         mutableStateOf(
@@ -80,6 +74,28 @@ fun SettingsView(
 
     var profilePhotoUrl by remember {
         mutableStateOf(PreferencesStorage.getUserPhotoUrl())
+    }
+
+    val exportBackup = rememberBackupExporter { success ->
+        if (success) {
+            println("Backup exportado con éxito")
+        } else {
+            println("Exportación cancelada o fallida")
+        }
+    }
+    val importBackup = rememberBackupImporter { jsonString ->
+        if (jsonString != null) {
+            try {
+                val profile = BackupManager.importFromJson(jsonString)
+                profileName = profile.nameProfile
+                profilePhotoUrl = profile.photoUrl
+                PreferencesStorage.setUserName(profile.nameProfile)
+                PreferencesStorage.setUserPhotoUrl(profile.photoUrl)
+                println("Datos importados con éxito")
+            } catch (e: Exception) {
+                println("Error importando backup: ${e.message}")
+            }
+        }
     }
 
     var showProfileModal by remember {
@@ -238,8 +254,11 @@ fun SettingsView(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                SettingsClosetOption(
-                    text = "Cerrar sesión"
+                SettingsOption(
+                    text = "Importar datos",
+                    onClick = {
+                        importBackup()
+                    }
                 )
             }
         }
