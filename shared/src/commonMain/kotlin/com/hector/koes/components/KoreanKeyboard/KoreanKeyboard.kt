@@ -19,11 +19,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -43,9 +40,6 @@ private val SpecialKeyBackground =
 
 private val NormalKeyBackground =
     Color.White.copy(alpha = 0.80f)
-
-private val KeyBorderColor =
-    Color.Black
 
 
 /*
@@ -1372,12 +1366,15 @@ fun KoreanKey(
         modifier = Modifier
             .width(35.dp)
             .height(42.dp)
-            .dashedBorder(
-                color =
-                    KeyBorderColor,
-
-                cornerRadius =
-                    10.dp
+            .background(
+                color = NormalKeyBackground,
+                shape = RoundedCornerShape(10.dp)
+            )
+            .shadow(
+                elevation = 2.dp,
+                shape = RoundedCornerShape(10.dp),
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
             )
             .clickable {
 
@@ -1434,12 +1431,11 @@ private fun TenKey(
                         10.dp
                     )
             )
-            .dashedBorder(
-                color =
-                    KeyBorderColor,
-
-                cornerRadius =
-                    10.dp
+            .shadow(
+                elevation = 2.dp,
+                shape = RoundedCornerShape(10.dp),
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
             )
             .clickable {
 
@@ -1512,12 +1508,11 @@ private fun TenKeySpecialKey(
                         10.dp
                     )
             )
-            .dashedBorder(
-                color =
-                    KeyBorderColor,
-
-                cornerRadius =
-                    10.dp
+            .shadow(
+                elevation = 2.dp,
+                shape = RoundedCornerShape(10.dp),
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
             )
             .clickable {
 
@@ -1585,12 +1580,11 @@ fun SpecialTextKey(
                         10.dp
                     )
             )
-            .dashedBorder(
-                color =
-                    KeyBorderColor,
-
-                cornerRadius =
-                    10.dp
+            .shadow(
+                elevation = 2.dp,
+                shape = RoundedCornerShape(10.dp),
+                spotColor = Color(0x40000000),
+                ambientColor = Color(0x40000000)
             )
             .clickable {
 
@@ -1613,53 +1607,6 @@ fun SpecialTextKey(
 
             color =
                 Color.Black
-        )
-    }
-}
-
-
-/*
- * ============================================================
- * BORDE PUNTEADO
- * ============================================================
- */
-
-fun Modifier.dashedBorder(
-    color: Color,
-
-    cornerRadius: Dp
-): Modifier {
-
-    return this.drawBehind {
-
-        drawRoundRect(
-            color =
-                color,
-
-            cornerRadius =
-                CornerRadius(
-                    x =
-                        cornerRadius.toPx(),
-
-                    y =
-                        cornerRadius.toPx()
-                ),
-
-            style =
-                Stroke(
-                    width =
-                        1.dp.toPx(),
-
-                    pathEffect =
-                        PathEffect
-                            .dashPathEffect(
-                                intervals =
-                                    floatArrayOf(
-                                        7.dp.toPx(),
-                                        5.dp.toPx()
-                                    )
-                            )
-                )
         )
     }
 }

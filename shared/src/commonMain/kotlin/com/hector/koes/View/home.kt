@@ -37,6 +37,7 @@ import androidx.compose.ui.text.TextRange
 import com.hector.koes.components.KoreanKeyboard.KoreanKeyboard
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hector.koes.components.navbar.Navbar
+import com.hector.koes.components.loading.BouncingDotsLoadingAnimation
 import com.hector.koes.ui.theme.Background
 import com.hector.koes.util.HangulUtils
 import com.hector.koes.viewModel.HomeViewModel
@@ -63,9 +64,9 @@ fun Home(
 
     // Obtenemos el texto en español para mostrar
     val displaySpanish = if (writingMode == WritingMode.PALABRAS) {
-        currentItem?.wordSpanish ?: "Cargando..."
+        currentItem?.wordSpanish
     } else {
-        currentItem?.ejemploSpanish ?: "Cargando..."
+        currentItem?.ejemploSpanish
     }
 
     // Limpiamos el texto cuando cambia la palabra
@@ -98,16 +99,24 @@ fun Home(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.height(60.dp)
             ) {
-                Text(
-                    text = displaySpanish,
-                    color = Color.Black,
-                    fontSize = 18.sp,
-                    modifier = if (showTooltip && writingMode == WritingMode.PALABRAS) {
-                        Modifier.blur(5.dp)
-                    } else {
-                        Modifier
-                    }
-                )
+                if (displaySpanish != null) {
+                    Text(
+                        text = displaySpanish,
+                        color = Color.Black,
+                        fontSize = 18.sp,
+                        modifier = if (showTooltip && writingMode == WritingMode.PALABRAS) {
+                            Modifier.blur(5.dp)
+                        } else {
+                            Modifier
+                        }
+                    )
+                } else {
+                    BouncingDotsLoadingAnimation(
+                        dotSize = 10.dp,
+                        dotColorActive = Color(0xFF75A5E3),
+                        dotColorInactive = Color.White
+                    )
+                }
 
                 if (showTooltip && writingMode == WritingMode.PALABRAS) {
                     Box(
