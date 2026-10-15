@@ -1,4 +1,3 @@
-
 package com.hector.koes.View
 
 import androidx.compose.foundation.background
@@ -55,12 +54,11 @@ fun LearnView(
         ) {
             Text(
                 text = "Formación de palabras",
-                fontSize = 22.sp,
+                fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black,
-                        modifier = Modifier
-
-                            .padding(top = 80.dp, start = 21.dp)
+                modifier = Modifier
+                    .padding(top = 80.dp, start = 21.dp)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -123,7 +121,7 @@ fun OracionItem(
     ) {
         Text(
             text = titulo,
-            fontSize = 16.sp,
+            fontSize = 15.sp,
             fontWeight = FontWeight.Medium,
             color = Color.Black
         )

@@ -1,4 +1,3 @@
-
 package com.hector.koes.components.card
 
 import androidx.compose.foundation.background
@@ -60,8 +59,8 @@ fun ModalOracion(
         ) {
             Text(
                 text = oracion.titulo,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Medium,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
 
@@ -91,12 +90,13 @@ fun ModalOracion(
                                 Text(
                                     text = palabra.palabra,
                                     fontSize = 18.sp,
+                                    fontWeight = FontWeight.SemiBold,
                                     color = Color.Black,
                                     textAlign = TextAlign.Center
                                 )
                                 Text(
                                     text = palabra.funcion,
-                                    fontSize = 15.sp,
+                                    fontSize = 14.sp,
                                     color = SecondaryText,
                                     textAlign = TextAlign.Center
                                 )
@@ -225,8 +225,8 @@ fun ModalOracion(
 private fun SectionTitle(text: String) {
     Text(
         text = text,
-        fontSize = 18.sp,
-        fontWeight = FontWeight.Medium,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.SemiBold,
         color = Color.Black
     )
 }
@@ -242,7 +242,7 @@ private fun TableText(
         modifier = modifier.padding(end = 8.dp),
         fontSize = 15.sp,
         lineHeight = 22.sp,
-        fontWeight = if (header) FontWeight.Medium else FontWeight.Normal,
+        fontWeight = if (header) FontWeight.SemiBold else FontWeight.Normal,
         color = Color.Black
     )
 }

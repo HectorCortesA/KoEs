@@ -89,14 +89,14 @@ fun ModalDictionary(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp),
-                fontSize = 24.sp,
+                fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 40.dp)
+                    .padding(top = 35.dp)
             ) {
                 Box(
                     modifier = Modifier.weight(1f)
@@ -104,12 +104,13 @@ fun ModalDictionary(
                     Column(modifier = Modifier.padding(start = 25.dp)) {
                         Text(
                             text = "Coreano",
-                            fontSize = 16.sp
+                            fontSize = 14.sp,
+                            color = Color.Black.copy(alpha = 0.6f)
                         )
                         Text(
                             text = wordCorea,
-                            modifier = Modifier.padding(top = 5.dp),
-                            fontSize = 16.sp,
+                            modifier = Modifier.padding(top = 4.dp),
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -120,12 +121,13 @@ fun ModalDictionary(
                     Column(modifier = Modifier.padding(start = 25.dp)) {
                         Text(
                             text = "Romanización",
-                            fontSize = 16.sp
+                            fontSize = 14.sp,
+                            color = Color.Black.copy(alpha = 0.6f)
                         )
                         Text(
                             text = romanization,
-                            modifier = Modifier.padding(top = 5.dp),
-                            fontSize = 16.sp,
+                            modifier = Modifier.padding(top = 4.dp),
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -135,16 +137,17 @@ fun ModalDictionary(
                 text = "Pronunciación",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 40.dp),
-                fontSize = 16.sp,
+                    .padding(top = 35.dp),
+                fontSize = 14.sp,
+                color = Color.Black.copy(alpha = 0.6f),
                 textAlign = TextAlign.Center
             )
             Text(
                 text = pronunciation,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp),
-                fontSize = 16.sp,
+                    .padding(top = 4.dp),
+                fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center
             )
@@ -153,7 +156,7 @@ fun ModalDictionary(
                 text = ejemploSpanish,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 40.dp),
+                    .padding(top = 35.dp, start = 24.dp, end = 24.dp),
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center
             )
@@ -162,8 +165,8 @@ fun ModalDictionary(
                 text = ejemploKoreano,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 10.dp),
-                fontSize = 16.sp,
+                    .padding(top = 6.dp, start = 24.dp, end = 24.dp),
+                fontSize = 17.sp,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center
             )

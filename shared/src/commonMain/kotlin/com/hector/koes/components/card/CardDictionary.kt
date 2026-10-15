@@ -39,7 +39,7 @@ fun CardDictionary(
         Spacer(modifier = Modifier.width(15.dp))
         Text(
             text = wordSpanish,
-            fontSize = 12.sp,
+            fontSize = 14.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
@@ -47,7 +47,7 @@ fun CardDictionary(
         Spacer(modifier = Modifier.width(22.dp))
         Text(
             text = wordCorea,
-            fontSize = 12.sp,
+            fontSize = 14.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
@@ -56,7 +56,7 @@ fun CardDictionary(
         Spacer(modifier = Modifier.width(22.dp))
         Text(
             text = pronunciation,
-            fontSize = 12.sp,
+            fontSize = 14.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
