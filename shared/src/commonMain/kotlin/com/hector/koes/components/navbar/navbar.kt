@@ -1,8 +1,13 @@
 
 package com.hector.koes.components.navbar
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -17,9 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.positionChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.text.font.FontWeight
@@ -27,9 +30,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.hector.koes.resources.Res
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withTimeoutOrNull
-import kotlin.math.abs
+import kotlin.math.PI
+import kotlin.math.hypot
 
 private val GlassBorder = Brush.verticalGradient(
     colors = listOf(
@@ -99,27 +102,28 @@ fun DictionaryWaterButton(
         mutableStateOf(false)
     }
 
-    val isLearnActive = activeOption == "oracion"
+    val learnActive = activeOption == "oracion"
 
-    val mainIcon = if (isLearnActive) {
+    // El icono principal depende de la selección global.
+    val mainIcon = if (learnActive) {
         "files/learn.svg"
     } else {
         "files/dicionary.svg"
     }
 
-    val secondaryIcon = if (isLearnActive) {
+    val secondaryIcon = if (learnActive) {
         "files/dicionary.svg"
     } else {
         "files/learn.svg"
     }
 
-    val mainRoute = if (isLearnActive) {
+    val mainRoute = if (learnActive) {
         "oracion"
     } else {
         "dictionary"
     }
 
-    val secondaryRoute = if (isLearnActive) {
+    val secondaryRoute = if (learnActive) {
         "dictionary"
     } else {
         "oracion"
@@ -134,69 +138,87 @@ fun DictionaryWaterButton(
     val configuration = LocalViewConfiguration.current
 
     val buttonPx = with(density) { 50.dp.toPx() }
-    val topPx = with(density) { 64.dp.toPx() }
-    val bottomPx = with(density) { 114.dp.toPx() }
-
-    val progress by animateFloatAsState(
-        targetValue = if (expanded) 1f else 0f,
-        animationSpec = tween(durationMillis = 320),
-        label = "WaterDrop"
-    )
+    val optionCenterPx = with(density) { 89.dp.toPx() }
+    val optionRadiusPx = with(density) { 25.dp.toPx() }
 
     val selectionProgress by animateFloatAsState(
         targetValue = if (selected) 1f else 0f,
-        animationSpec = tween(durationMillis = 150),
-        label = "DropSelection"
+        animationSpec = tween(150),
+        label = "WaterSelection"
+    )
+
+    val dropProgress by animateFloatAsState(
+        targetValue = if (expanded) 1f else 0f,
+        animationSpec = tween(320),
+        label = "WaterDropPosition"
     )
 
     Box(
         modifier = Modifier.size(50.dp),
         contentAlignment = Alignment.TopCenter
     ) {
-        // Partículas radiales continuas.
+
+        // Partículas que salen continuamente durante la pulsación.
         WaterParticles(
             active = expanded,
             modifier = Modifier.align(Alignment.Center)
         )
 
-        // Botón secundario: nace detrás del principal.
-        Surface(
+        // BOTÓN SECUNDARIO
+        // AnimatedVisibility evita que quede visible en reposo.
+        AnimatedVisibility(
+            visible = expanded,
             modifier = Modifier
-                .offset(y = 64.dp * progress)
-                .size(50.dp)
-                .graphicsLayer {
-                    scaleX = 0.25f + 0.75f * progress
-                    scaleY = 0.25f + 0.75f * progress
-                    alpha = progress
-                },
-            shape = CircleShape,
-            color = Color(0xFFDAE4EA).copy(
-                alpha = 0.25f + 0.75f * selectionProgress
+                .align(Alignment.TopCenter)
+                .offset(y = 64.dp * dropProgress),
+            enter = fadeIn(
+                animationSpec = tween(240)
+            ) + scaleIn(
+                initialScale = 0.25f,
+                animationSpec = tween(320)
             ),
-            border = BorderStroke(
-                width = 1.dp,
-                brush = GlassBorder
-            ),
-            shadowElevation = if (selected) 6.dp else 0.dp
+            exit = fadeOut(
+                animationSpec = tween(150)
+            ) + scaleOut(
+                targetScale = 0.25f,
+                animationSpec = tween(200)
+            )
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                AsyncImage(
-                    model = Res.getUri(secondaryIcon),
-                    contentDescription = "Opción secundaria",
-                    modifier = Modifier.size(26.dp)
-                )
+            Surface(
+                modifier = Modifier.size(50.dp),
+                shape = CircleShape,
+                color = Color(0xFFDAE4EA).copy(
+                    alpha = 0.25f + 0.75f * selectionProgress
+                ),
+                border = BorderStroke(
+                    width = 1.dp,
+                    brush = GlassBorder
+                ),
+                shadowElevation = if (selected) 6.dp else 0.dp
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    key(secondaryIcon) {
+                        AsyncImage(
+                            model = Res.getUri(secondaryIcon),
+                            contentDescription = "Opción secundaria",
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
+                }
             }
         }
 
-        // Botón principal.
+        // BOTÓN PRINCIPAL
         Surface(
             modifier = Modifier
                 .size(50.dp)
                 .clip(CircleShape)
                 .pointerInput(
                     buttonPx,
-                    topPx,
-                    bottomPx,
+                    optionCenterPx,
+                    optionRadiusPx,
                     configuration.longPressTimeoutMillis
                 ) {
                     awaitEachGesture {
@@ -205,15 +227,14 @@ fun DictionaryWaterButton(
                         var quickTap = false
                         var cancelled = false
 
-                        // Primero distinguimos el toque corto
-                        // de una pulsación prolongada.
-                        val finishedEarly = withTimeoutOrNull(
+                        val completedBeforeHold = withTimeoutOrNull(
                             configuration.longPressTimeoutMillis
                         ) {
                             var finished = false
 
                             while (!finished) {
                                 val event = awaitPointerEvent()
+
                                 val change = event.changes
                                     .firstOrNull { it.id == down.id }
 
@@ -221,24 +242,31 @@ fun DictionaryWaterButton(
                                     cancelled = true
                                     finished = true
                                 } else if (!change.pressed) {
-                                    quickTap = true
+                                    quickTap = !change.isConsumed
                                     finished = true
                                     change.consume()
-                                } else if (
-                                    change.isConsumed ||
-                                    abs(change.position.x - down.position.x) >
-                                    viewConfiguration.touchSlop ||
-                                    abs(change.position.y - down.position.y) >
-                                    viewConfiguration.touchSlop
-                                ) {
-                                    cancelled = true
-                                    finished = true
+                                } else {
+                                    val dx =
+                                        change.position.x - down.position.x
+                                    val dy =
+                                        change.position.y - down.position.y
+
+                                    val distance = hypot(dx, dy)
+
+                                    if (
+                                        change.isConsumed ||
+                                        distance > viewConfiguration.touchSlop
+                                    ) {
+                                        cancelled = true
+                                        finished = true
+                                    }
                                 }
                             }
+
                             true
                         }
 
-                        if (finishedEarly == true) {
+                        if (completedBeforeHold == true) {
                             if (quickTap && !cancelled) {
                                 navigateState(mainRouteState)
                             }
@@ -249,28 +277,35 @@ fun DictionaryWaterButton(
                             holdState(true)
 
                             var activateSecondary = false
+                            var fingerDown = true
 
                             try {
-                                var fingerDown = true
-
                                 while (fingerDown) {
                                     val event = awaitPointerEvent()
+
                                     val change = event.changes
                                         .firstOrNull { it.id == down.id }
 
                                     if (change == null) {
                                         fingerDown = false
                                     } else {
-                                        val pos = change.position
+                                        val dx =
+                                            change.position.x -
+                                                    buttonPx / 2f
 
+                                        val dy =
+                                            change.position.y -
+                                                    optionCenterPx
+
+                                        // Detecta el círculo de la gota.
                                         selected =
-                                            pos.x >= 0f &&
-                                                    pos.x <= buttonPx &&
-                                                    pos.y >= topPx &&
-                                                    pos.y <= bottomPx
+                                            hypot(dx, dy) <= optionRadiusPx &&
+                                                    dropProgress >= 0.8f
 
                                         if (!change.pressed) {
-                                            activateSecondary = selected
+                                            activateSecondary =
+                                                selected && !change.isConsumed
+
                                             fingerDown = false
                                         }
 
@@ -295,14 +330,27 @@ fun DictionaryWaterButton(
             } else {
                 Color.Transparent
             },
-            border = BorderStroke(1.dp, GlassBorder)
+            border = BorderStroke(
+                width = 1.dp,
+                brush = GlassBorder
+            )
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                AsyncImage(
-                    model = Res.getUri(mainIcon),
-                    contentDescription = "Opción principal",
-                    modifier = Modifier.size(26.dp)
-                )
+            Box(
+                contentAlignment = Alignment.Center
+            ) {
+                // Fuerza a Compose a actualizar el SVG
+                // cuando cambie la opción principal.
+                key(mainIcon) {
+                    AsyncImage(
+                        model = Res.getUri(mainIcon),
+                        contentDescription = if (learnActive) {
+                            "Learn"
+                        } else {
+                            "Diccionario"
+                        },
+                        modifier = Modifier.size(26.dp)
+                    )
+                }
             }
         }
     }
@@ -326,7 +374,9 @@ fun NavButton(
             brush = GlassBorder
         )
     ) {
-        Box(contentAlignment = Alignment.Center) {
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
             if (iconUri != null) {
                 AsyncImage(
                     model = Res.getUri(iconUri),
@@ -350,7 +400,7 @@ fun NavButton(
     heightDp = 180
 )
 @Composable
-fun NavbarPreview() {
+fun NavbarDictionaryPreview() {
     Navbar(activeOption = "dictionary")
 }
 

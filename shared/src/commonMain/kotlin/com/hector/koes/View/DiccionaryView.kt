@@ -59,6 +59,7 @@ import kotlinx.coroutines.flow.filter
 @Composable
 fun DiccionaryView(
     onNavigate: (String) -> Unit = {},
+    showNavbar: Boolean = true,
     placeholder: String = "Busca la palabra",
     viewModel: DictionaryViewModel = viewModel { DictionaryViewModel() }
 ) {
@@ -94,14 +95,16 @@ fun DiccionaryView(
             .fillMaxSize()
             .background(Background)
     ) {
-        Navbar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .statusBarsPadding()
-                .padding(top = 10.dp),
-            onNavigate = onNavigate
-        )
+        if (showNavbar) {
+            Navbar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(top = 10.dp),
+                onNavigate = onNavigate
+            )
+        }
 
         BasicTextField(
             value = query,

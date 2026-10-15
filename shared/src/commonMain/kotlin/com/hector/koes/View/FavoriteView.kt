@@ -44,7 +44,8 @@ import com.hector.koes.resources.Res
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteView(
-    onNavigate: (String) -> Unit = {}
+    onNavigate: (String) -> Unit = {},
+    showNavbar: Boolean = true,
 ) {
     val favoritesList by FavoritesManager.favorites.collectAsState()
     var visibleCount by remember { mutableStateOf(20) }
@@ -79,15 +80,16 @@ fun FavoriteView(
             .background(Background)
     ) {
 
-        // Navbar superior
-        Navbar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .statusBarsPadding()
-                .padding(top = 10.dp),
-            onNavigate = onNavigate
-        )
+        if (showNavbar) {
+            Navbar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(top = 10.dp),
+                onNavigate = onNavigate
+            )
+        }
 
         // Título "Favoritos" alineado a la izquierda debajo de Navbar
         Text(

@@ -78,7 +78,8 @@ private val vowelsDoubleMixed = listOf(
 
 @Composable
 fun HangulView(
-    onNavigate: (String) -> Unit = {}
+    onNavigate: (String) -> Unit = {},
+    showNavbar: Boolean = true
 ) {
     val scrollState = rememberScrollState()
 
@@ -87,15 +88,16 @@ fun HangulView(
             .fillMaxSize()
             .background(Background)
     ) {
-
-        Navbar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .statusBarsPadding()
-                .padding(top = 10.dp),
-            onNavigate = onNavigate
-        )
+        if (showNavbar) {
+            Navbar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(top = 10.dp),
+                onNavigate = onNavigate
+            )
+        }
 
         Column(
             modifier = Modifier

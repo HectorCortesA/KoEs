@@ -50,7 +50,8 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 fun ScoreView(
-    onNavigate: (String) -> Unit = {}
+    onNavigate: (String) -> Unit = {},
+    showNavbar: Boolean = true
 ) {
     val scrollState = rememberScrollState()
     val isPreview = LocalInspectionMode.current
@@ -79,16 +80,17 @@ fun ScoreView(
                     .fillMaxWidth(0.70f)
             )
         }
-
-        // Navbar
-        Navbar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .statusBarsPadding()
-                .padding(top = 10.dp),
-            onNavigate = onNavigate
-        )
+        if (showNavbar) {
+            // Navbar
+            Navbar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(top = 10.dp),
+                onNavigate = onNavigate
+            )
+        }
 
         // Contenido principal
         Column(

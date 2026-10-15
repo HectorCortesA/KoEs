@@ -61,7 +61,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsView(
-    onNavigate: (String) -> Unit = {}
+    onNavigate: (String) -> Unit = {},
+    showNavbar: Boolean = true
 ) {
     val viewModel = SettingsManager.instance
     val scrollState = rememberScrollState()
@@ -117,15 +118,16 @@ fun SettingsView(
                 .fillMaxSize()
                 .blur(if (showProfileModal) 16.dp else 0.dp)
         ) {
-            Navbar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopCenter)
-                    .statusBarsPadding()
-                    .padding(top = 10.dp),
-                onNavigate = onNavigate
-            )
-
+            if (showNavbar) {
+                Navbar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                        .statusBarsPadding()
+                        .padding(top = 10.dp),
+                    onNavigate = onNavigate
+                )
+            }
             Column(
                 modifier = Modifier
                     .fillMaxSize()

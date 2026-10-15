@@ -46,6 +46,7 @@ import com.hector.koes.viewModel.WritingMode
 @Composable
 fun Home(
     onNavigate: (String) -> Unit = {},
+    showNavbar: Boolean = true,
     viewModel: HomeViewModel = viewModel { HomeViewModel() }
 ) {
     val currentItem by viewModel.currentItem.collectAsState()
@@ -79,14 +80,16 @@ fun Home(
             .fillMaxSize()
             .background(Background)
     ) {
-        Navbar(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter)
-                .statusBarsPadding()
-                .padding(top = 10.dp),
-            onNavigate = onNavigate
-        )
+        if (showNavbar) {
+            Navbar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+                    .statusBarsPadding()
+                    .padding(top = 10.dp),
+                onNavigate = onNavigate
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -137,7 +140,7 @@ fun Home(
                     }
                 }
             }
-            
+
             Text(
                 text = suggestion,
                 color = Color.Black,

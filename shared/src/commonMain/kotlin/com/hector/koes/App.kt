@@ -23,41 +23,70 @@ import com.hector.koes.View.OnBoardingName
 import com.hector.koes.View.OnboardingPreferences
 import com.hector.koes.View.ScoreView
 import com.hector.koes.View.SettingsView
+
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.util.PreferencesStorage
 
 @Composable
 @Preview
 fun App() {
+
+    // ----------------------------------------
+    // 1. ONBOARDING
+    // ----------------------------------------
+
     val isCompleted = remember {
         PreferencesStorage.isOnboardingCompleted()
     }
 
     var currentScreen by remember {
         mutableStateOf(
-            if (isCompleted) "home" else "onboardingName"
+            if (isCompleted) "home"
+            else "onboardingName"
         )
     }
+
+    // ----------------------------------------
+    // 2. CÁMARA
+    // ----------------------------------------
 
     var capturedPhotoBytes by remember {
         mutableStateOf<ByteArray?>(null)
     }
 
-    // Última opción seleccionada del botón intercambiable.
+    // ----------------------------------------
+    // 3. BOTÓN PRINCIPAL DEL NAVBAR
+    // ----------------------------------------
+
+    // Diccionario es la opción inicial.
+    // Cuando se selecciona Learn, cambia a "oracion".
     var activeNavbarOption by remember {
         mutableStateOf("dictionary")
     }
 
-    // Control global del desenfoque.
+    // ----------------------------------------
+    // 4. EFECTO BLUR GLOBAL
+    // ----------------------------------------
+
     var isNavbarHolding by remember {
         mutableStateOf(false)
     }
 
     val blurRadius by animateDpAsState(
-        targetValue = if (isNavbarHolding) 15.dp else 0.dp,
-        animationSpec = tween(durationMillis = 250),
-        label = "NavbarBlur"
+        targetValue = if (isNavbarHolding) {
+            15.dp
+        } else {
+            0.dp
+        },
+        animationSpec = tween(
+            durationMillis = 250
+        ),
+        label = "GlobalNavbarBlur"
     )
+
+    // ----------------------------------------
+    // 5. PANTALLAS CON NAVBAR
+    // ----------------------------------------
 
     val showGlobalNavbar = currentScreen in setOf(
         "home",
@@ -71,106 +100,220 @@ fun App() {
         "favoriteView"
     )
 
+    // ----------------------------------------
+    // 6. NAVEGACIÓN
+    // ----------------------------------------
+
     val navigate: (String) -> Unit = { route ->
+
+        // Desactivar blur al navegar.
         isNavbarHolding = false
 
-        // Sólo estas dos rutas intercambian los iconos.
-        if (route == "dictionary" || route == "oracion") {
+        // Intercambiar los botones únicamente cuando
+        // el usuario selecciona Diccionario o Learn.
+        if (
+            route == "dictionary" ||
+            route == "oracion"
+        ) {
             activeNavbarOption = route
         }
 
+        // Cambiar pantalla.
         currentScreen = route
     }
 
+    // ----------------------------------------
+    // 7. INTERFAZ PRINCIPAL
+    // ----------------------------------------
+
     MaterialTheme {
+
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            // La pantalla actual se desenfoca durante
-            // la pulsación prolongada.
+
+            // CONTENIDO DE LA PANTALLA
+            // El blur se aplica a la vista actual,
+            // pero NO al Navbar global.
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .blur(
-                        if (showGlobalNavbar) blurRadius
-                        else 0.dp
+                        radius = if (showGlobalNavbar) {
+                            blurRadius
+                        } else {
+                            0.dp
+                        }
                     )
             ) {
+
                 when (currentScreen) {
 
-                    "onboardingName" -> OnBoardingName(
-                        onNext = {
-                            navigate("onboardingPreferences")
-                        }
-                    )
+                    // --------------------------------
+                    // ONBOARDING
+                    // --------------------------------
 
-                    "onboardingPreferences" -> OnboardingPreferences(
-                        onFinalize = {
-                            navigate("home")
-                        }
-                    )
+                    "onboardingName" -> {
+                        OnBoardingName(
+                            onNext = {
+                                navigate("onboardingPreferences")
+                            }
+                        )
+                    }
 
-                    "home" -> Home(
-                        onNavigate = navigate
-                    )
+                    "onboardingPreferences" -> {
+                        OnboardingPreferences(
+                            onFinalize = {
+                                navigate("home")
+                            }
+                        )
+                    }
 
-                    "dictionary" -> DiccionaryView(
-                        onNavigate = navigate
-                    )
+                    // --------------------------------
+                    // HOME
+                    // --------------------------------
 
-                    "oracion" -> LearnView(
-                        onNavigate = navigate,
-                        showNavbar = false
-                    )
+                    "home" -> {
+                        Home(
+                            onNavigate = navigate,
+                            showNavbar = false
+                        )
+                    }
 
-                    "hangul" -> HangulView(
-                        onNavigate = navigate
-                    )
+                    // --------------------------------
+                    // DICCIONARIO
+                    // --------------------------------
 
-                    "score" -> ScoreView(
-                        onNavigate = navigate
-                    )
+                    "dictionary" -> {
+                        DiccionaryView(
+                            onNavigate = navigate,
+                            showNavbar = false
+                        )
+                    }
 
-                    "settings" -> SettingsView(
-                        onNavigate = navigate
-                    )
+                    // --------------------------------
+                    // LEARN / ORACIONES
+                    // --------------------------------
+
+                    "oracion" -> {
+                        LearnView(
+                            onNavigate = navigate,
+                            showNavbar = false,
+
+
+                        )
+                    }
+
+                    // --------------------------------
+                    // HANGUL
+                    // --------------------------------
+
+                    "hangul" -> {
+                        HangulView(
+                            onNavigate = navigate,
+                            showNavbar = false
+                        )
+                    }
+
+                    // --------------------------------
+                    // SCORE
+                    // --------------------------------
+
+                    "score" -> {
+                        ScoreView(
+                            onNavigate = navigate,
+                            showNavbar = false
+                        )
+                    }
+
+                    // --------------------------------
+                    // SETTINGS
+                    // --------------------------------
+
+                    "settings" -> {
+                        SettingsView(
+                            onNavigate = navigate,
+                            showNavbar = false
+                        )
+                    }
+
+                    // --------------------------------
+                    // FAVORITOS
+                    // --------------------------------
 
                     "favorite",
                     "favorites",
-                    "favoriteView" -> FavoriteView(
-                        onNavigate = navigate
-                    )
+                    "favoriteView" -> {
+                        FavoriteView(
+                            onNavigate = navigate,
+                            showNavbar = false
+                        )
+                    }
 
-                    "camera", "cameraView" -> CameraView(
-                        onNavigate = navigate,
-                        onPhotoApproved = { photo ->
-                            capturedPhotoBytes = photo
-                            navigate("editCamera")
-                        }
-                    )
+                    // --------------------------------
+                    // CÁMARA
+                    // --------------------------------
+
+                    "camera",
+                    "cameraView" -> {
+                        CameraView(
+                            onNavigate = navigate,
+                            onPhotoApproved = { photo ->
+                                capturedPhotoBytes = photo
+                                navigate("editCamera")
+                            }
+                        )
+                    }
+
+                    // --------------------------------
+                    // EDITAR FOTOGRAFÍA
+                    // --------------------------------
 
                     "editCamera",
-                    "editCameraView" -> EditCameraView(
-                        onNavigate = navigate,
-                        photoBytes = capturedPhotoBytes
-                    )
+                    "editCameraView" -> {
+                        EditCameraView(
+                            onNavigate = navigate,
+                            photoBytes = capturedPhotoBytes
+                        )
+                    }
 
-                    else -> Home(
-                        onNavigate = navigate
-                    )
+                    // --------------------------------
+                    // PANTALLA PREDETERMINADA
+                    // --------------------------------
+
+                    else -> {
+                        Home(
+                            onNavigate = navigate
+                        )
+                    }
                 }
             }
 
-            // Único Navbar por encima del contenido.
+            // ----------------------------------------
+            // 8. NAVBAR GLOBAL
+            // ----------------------------------------
+
+            // Se dibuja encima del contenido.
+            // No recibe el efecto blur.
+            // Conserva el botón intercambiable.
+
             if (showGlobalNavbar) {
+
                 Navbar(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.TopCenter)
                         .statusBarsPadding()
                         .padding(top = 10.dp),
+
+                    // Botón actualmente seleccionado.
                     activeOption = activeNavbarOption,
+
+                    // Navegación.
                     onNavigate = navigate,
+
+                    // Control del blur global.
                     onHoldChange = { holding ->
                         isNavbarHolding = holding
                     }
@@ -179,3 +322,12 @@ fun App() {
         }
     }
 }
+/*
+Tienes dos Navbar mostrándose al mismo tiempo, exactamente como sospechábamos.
+Revisando tu código:
+- DiccionaryView.kt tiene su propio Navbar.
+- Home.kt también tiene su propio Navbar.
+- Tu App.kt ya muestra un Navbar global.
+Por eso, cuando seleccionas Learn y después navegas a otra pantalla, aparecen learn.svg y dicionary.svg uno encima del otro.
+La solución es sencilla y no necesitas cambiar Navbar.kt, WaterParticles.kt ni tus animaciones.
+ */
