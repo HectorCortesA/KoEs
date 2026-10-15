@@ -43,6 +43,12 @@ fun App() {
         mutableStateOf<ByteArray?>(null)
     }
 
+    // Última opción seleccionada del botón intercambiable.
+    var activeNavbarOption by remember {
+        mutableStateOf("dictionary")
+    }
+
+    // Control global del desenfoque.
     var isNavbarHolding by remember {
         mutableStateOf(false)
     }
@@ -50,7 +56,7 @@ fun App() {
     val blurRadius by animateDpAsState(
         targetValue = if (isNavbarHolding) 15.dp else 0.dp,
         animationSpec = tween(durationMillis = 250),
-        label = "GlobalNavbarBlur"
+        label = "NavbarBlur"
     )
 
     val showGlobalNavbar = currentScreen in setOf(
@@ -67,6 +73,12 @@ fun App() {
 
     val navigate: (String) -> Unit = { route ->
         isNavbarHolding = false
+
+        // Sólo estas dos rutas intercambian los iconos.
+        if (route == "dictionary" || route == "oracion") {
+            activeNavbarOption = route
+        }
+
         currentScreen = route
     }
 
@@ -74,30 +86,27 @@ fun App() {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-
-            // Contenido de la pantalla actual.
+            // La pantalla actual se desenfoca durante
+            // la pulsación prolongada.
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .blur(
-                        radius = if (showGlobalNavbar) {
-                            blurRadius
-                        } else {
-                            0.dp
-                        }
+                        if (showGlobalNavbar) blurRadius
+                        else 0.dp
                     )
             ) {
                 when (currentScreen) {
 
                     "onboardingName" -> OnBoardingName(
                         onNext = {
-                            currentScreen = "onboardingPreferences"
+                            navigate("onboardingPreferences")
                         }
                     )
 
                     "onboardingPreferences" -> OnboardingPreferences(
                         onFinalize = {
-                            currentScreen = "home"
+                            navigate("home")
                         }
                     )
 
@@ -126,7 +135,9 @@ fun App() {
                         onNavigate = navigate
                     )
 
-                    "favorite", "favorites", "favoriteView" -> FavoriteView(
+                    "favorite",
+                    "favorites",
+                    "favoriteView" -> FavoriteView(
                         onNavigate = navigate
                     )
 
@@ -134,11 +145,12 @@ fun App() {
                         onNavigate = navigate,
                         onPhotoApproved = { photo ->
                             capturedPhotoBytes = photo
-                            currentScreen = "editCamera"
+                            navigate("editCamera")
                         }
                     )
 
-                    "editCamera", "editCameraView" -> EditCameraView(
+                    "editCamera",
+                    "editCameraView" -> EditCameraView(
                         onNavigate = navigate,
                         photoBytes = capturedPhotoBytes
                     )
@@ -149,7 +161,7 @@ fun App() {
                 }
             }
 
-            // Navbar permanece nítido, por encima del blur.
+            // Único Navbar por encima del contenido.
             if (showGlobalNavbar) {
                 Navbar(
                     modifier = Modifier
@@ -157,6 +169,7 @@ fun App() {
                         .align(Alignment.TopCenter)
                         .statusBarsPadding()
                         .padding(top = 10.dp),
+                    activeOption = activeNavbarOption,
                     onNavigate = navigate,
                     onHoldChange = { holding ->
                         isNavbarHolding = holding
