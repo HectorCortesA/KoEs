@@ -147,11 +147,10 @@ fun DictionaryWaterButton(
             shadowElevation = if (selected) 6.dp else 0.dp
         ) {
             Box(contentAlignment = Alignment.Center) {
-                Text(
-                    text = "Learn",
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF253B52)
+                AsyncImage(
+                    model = Res.getUri("files/learn.svg"),
+                    contentDescription = "learn",
+                    modifier = Modifier.size(26.dp)
                 )
             }
         }
