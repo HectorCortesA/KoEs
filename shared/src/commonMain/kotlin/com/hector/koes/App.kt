@@ -322,12 +322,3 @@ fun App() {
         }
     }
 }
-/*
-Tienes dos Navbar mostrándose al mismo tiempo, exactamente como sospechábamos.
-Revisando tu código:
-- DiccionaryView.kt tiene su propio Navbar.
-- Home.kt también tiene su propio Navbar.
-- Tu App.kt ya muestra un Navbar global.
-Por eso, cuando seleccionas Learn y después navegas a otra pantalla, aparecen learn.svg y dicionary.svg uno encima del otro.
-La solución es sencilla y no necesitas cambiar Navbar.kt, WaterParticles.kt ni tus animaciones.
- */
