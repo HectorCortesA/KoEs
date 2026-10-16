@@ -1,6 +1,8 @@
+
 package com.hector.koes.components.card
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -27,16 +29,20 @@ fun CardDictionary(
     pronunciation: String,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
-){
+) {
     Row(
         modifier = modifier
             .width(362.dp)
             .height(60.dp)
             .clickable { onClick() }
-            .background(color = Color(0xFFDAE4EA), shape = RoundedCornerShape(size = 5.dp)),
+            .background(
+                color = Color(0xFFDAE4EA),
+                shape = RoundedCornerShape(size = 5.dp)
+            ),
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         Spacer(modifier = Modifier.width(15.dp))
+
         Text(
             text = wordSpanish,
             fontSize = 14.sp,
@@ -44,30 +50,42 @@ fun CardDictionary(
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
         )
+
         Spacer(modifier = Modifier.width(22.dp))
+
         Text(
             text = wordCorea,
             fontSize = 14.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
-
         )
+
         Spacer(modifier = Modifier.width(22.dp))
+
+        // ÚNICA MODIFICACIÓN:
+        // Desplazamiento automático de la pronunciación.
         Text(
             text = pronunciation,
+            modifier = Modifier
+                .basicMarquee(
+                    iterations = Int.MAX_VALUE,
+                    repeatDelayMillis = 1200,
+                    initialDelayMillis = 1000
+                ),
             fontSize = 14.sp,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+            overflow = TextOverflow.Clip,
             textAlign = TextAlign.Center,
         )
+
         Spacer(modifier = Modifier.width(15.dp))
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun CardDictionaryPreview(){
+fun CardDictionaryPreview() {
     CardDictionary(
         wordSpanish = "Hola",
         wordCorea = "안녕하세요",
