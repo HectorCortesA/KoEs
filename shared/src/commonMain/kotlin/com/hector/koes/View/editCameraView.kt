@@ -267,7 +267,7 @@ fun EditCameraView(
                             previewSize.width.toFloat(), previewSize.height.toFloat(), dailyWordCounts
                         )
                         if (finalPhotoBytes != null) {
-                            shareLauncher("¡Mira mi avance en KoEs! 🇰🇷✨", finalPhotoBytes)
+                            shareLauncher("¡Mira mi avance en KoEs!", finalPhotoBytes)
                         }
                     },
                 contentAlignment = Alignment.Center

@@ -1,3 +1,4 @@
+
 package com.hector.koes.components.share
 
 import android.graphics.Bitmap
@@ -7,6 +8,9 @@ import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.RectF
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.exifinterface.media.ExifInterface
@@ -131,7 +135,7 @@ actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: Lis
                 val calWidth = if (previewWidth > 0f) {
                     minOf(260f * displayMetrics.density, validPreviewWidth * 0.72f) * scaleX
                 } else 500f
-                val calHeight = calWidth * 360f / 500f
+
 
                 canvas.save()
                 canvas.clipRect(0f, 0f, exportWidth, exportHeight)
@@ -140,62 +144,17 @@ actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: Lis
                     val x = item.normalizedX.coerceIn(0f, 1f) * exportWidth
                     val y = item.normalizedY.coerceIn(0f, 1f) * exportHeight
                     if (item.isCalendar) {
-                        val calX = x
-                        val calY = y
-
-                        val bgPaint = Paint().apply {
-                            color = Color.WHITE
-                            style = Paint.Style.FILL
-                            isAntiAlias = true
-                        }
-                        canvas.drawRoundRect(RectF(calX, calY, calX + calWidth, calY + calHeight), 32f, 32f, bgPaint)
-
-                        // Draw heatmap grid (12 cols x 5 rows) and flowers
-                        val cols = 12
-                        val rows = 5
-                        val padding = 24f
-                        val innerW = calWidth - (padding * 2f)
-                        val innerH = calHeight - (padding * 2f)
-                        val cellW = innerW / cols
-                        val cellH = innerH / rows
-
-                        val cellBgPaint = Paint().apply {
-                            color = Color.parseColor("#B3D2DC")
-                            style = Paint.Style.FILL
-                            isAntiAlias = true
-                        }
-                        val petalPaint = Paint().apply {
-                            color = Color.parseColor("#C058A8")
-                            style = Paint.Style.FILL
-                            isAntiAlias = true
-                        }
-                        val centerPaint = Paint().apply {
-                            color = Color.parseColor("#F7CFE1")
-                            style = Paint.Style.FILL
-                            isAntiAlias = true
-                        }
-
-                        for (col in 0 until cols) {
-                            for (row in 0 until rows) {
-                                val index = col * rows + row
-                                val count = dailyWordCounts[index] ?: 0
-                                val cellLeft = calX + padding + (col * cellW) + 2f
-                                val cellTop = calY + padding + (row * cellH) + 2f
-                                val cellRight = calX + padding + ((col + 1) * cellW) - 2f
-                                val cellBottom = calY + padding + ((row + 1) * cellH) - 2f
-
-                                if (count > 0) {
-                                    val cx = (cellLeft + cellRight) / 2f
-                                    val cy = (cellTop + cellBottom) / 2f
-                                    val radius = cellW * 0.45f
-                                    canvas.drawCircle(cx, cy, radius, petalPaint)
-                                    canvas.drawCircle(cx, cy, radius * 0.4f, centerPaint)
-                                } else {
-                                    canvas.drawRoundRect(RectF(cellLeft, cellTop, cellRight, cellBottom), 6f, 6f, cellBgPaint)
-                                }
-                            }
-                        }
-
+                        // Dibuja el Mini Calendario con las mismas proporciones y colores
+                        // que HeatCalendar.kt, sin modificar ese componente de Compose.
+                        drawMiniHeatCalendar(
+                            canvas = canvas,
+                            left = x,
+                            top = y,
+                            width = calWidth,
+                            previewToExport = scaleX,
+                            density = displayMetrics.density,
+                            wordCounts = dailyWordCounts
+                        )
                     } else {
                         val textPaint = Paint().apply {
                             isAntiAlias = true
@@ -231,3 +190,86 @@ actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: Lis
     }
 }
 
+
+/** Versión estática para exportación del componente HeatCalendar.kt. */
+private fun drawMiniHeatCalendar(
+    canvas: Canvas,
+    left: Float,
+    top: Float,
+    width: Float,
+    previewToExport: Float,
+    density: Float,
+    wordCounts: Map<Int, Int>
+) {
+    val cols = 12
+    val rows = 5
+    // Equivalentes a 16.dp de padding, 8.dp de separación y 10.dp de esquinas.
+    val pxPerDp = density * previewToExport
+    val padding = 16f * pxPerDp
+    val gap = 8f * pxPerDp
+    val cellWidth = (width - 2f * padding - (cols - 1) * gap) / cols
+    if (cellWidth <= 0f) return
+    val cellHeight = cellWidth * 27f / 23f
+    val height = 2f * padding + rows * cellHeight + (rows - 1) * gap
+
+    val background = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.WHITE
+        alpha = 204 // Color.White.copy(alpha = 0.8f)
+    }
+    canvas.drawRoundRect(
+        RectF(left, top, left + width, top + height),
+        10f * pxPerDp, 10f * pxPerDp, background
+    )
+
+    val emptyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.parseColor("#B3D2DC")
+    }
+    val petalPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    val centerPaint = Paint(Paint.ANTI_ALIAS_FLAG)
+    val angles = doubleArrayOf(-90.0, -18.0, 54.0, 126.0, 198.0)
+
+    for (row in 0 until rows) {
+        for (col in 0 until cols) {
+            val index = col * rows + row
+            val count = wordCounts[index] ?: 0
+            val cellLeft = left + padding + col * (cellWidth + gap)
+            val cellTop = top + padding + row * (cellHeight + gap)
+            val cellRect = RectF(cellLeft, cellTop, cellLeft + cellWidth, cellTop + cellHeight)
+            if (count <= 0) {
+                canvas.drawRoundRect(cellRect, 3f * pxPerDp, 3f * pxPerDp, emptyPaint)
+            } else {
+                val colors = when {
+                    count >= 10 -> intArrayOf(
+                        Color.parseColor("#7A287A"), Color.parseColor("#6B1863"),
+                        Color.parseColor("#F7CFE1")
+                    )
+                    count >= 5 -> intArrayOf(
+                        Color.parseColor("#C058A8"), Color.parseColor("#A84893"),
+                        Color.parseColor("#F7CFE1")
+                    )
+                    else -> intArrayOf(
+                        Color.parseColor("#F7CFE1"), Color.parseColor("#E882AD"),
+                        Color.parseColor("#C75E5B")
+                    )
+                }
+                // Flower ocupa el 85 % de la celda, igual que AnimatedFlower.
+                val flowerSize = minOf(cellWidth, cellHeight) * 0.85f
+                val cx = cellRect.centerX()
+                val cy = cellRect.centerY()
+                val petalRadius = flowerSize * 0.28f
+                val petalDistance = flowerSize * 0.26f
+                for (i in angles.indices) {
+                    val angle = angles[i] * PI / 180.0
+                    petalPaint.color = if (i % 2 == 0) colors[0] else colors[1]
+                    canvas.drawCircle(
+                        cx + (petalDistance * cos(angle)).toFloat(),
+                        cy + (petalDistance * sin(angle)).toFloat(),
+                        petalRadius, petalPaint
+                    )
+                }
+                centerPaint.color = colors[2]
+                canvas.drawCircle(cx, cy, flowerSize * 0.16f, centerPaint)
+            }
+        }
+    }
+}
