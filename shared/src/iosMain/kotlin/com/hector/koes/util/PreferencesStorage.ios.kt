@@ -3,7 +3,7 @@ package com.hector.koes.util
 import platform.Foundation.NSUserDefaults
 
 actual object PreferencesStorage {
-    private val defaults = NSUserDefaults.standardUserDefaults
+    private val defaults = NSUserDefaults(suiteName = "group.com.hector.koes")
 
     actual fun isOnboardingCompleted(): Boolean {
         return defaults.boolForKey("onboarding_completed")
@@ -30,5 +30,17 @@ actual object PreferencesStorage {
     actual fun setUserPhotoUrl(url: String) {
         defaults.setObject(url, forKey = "user_photo_url")
         defaults.synchronize()
+    }
+
+    actual fun getProgressJson(): String {
+        val jsonStr = defaults.stringForKey("progress_json") ?: ""
+        println("PreferencesStorage (iOS): getProgressJson() -> length = ${jsonStr.length}, content = $jsonStr")
+        return jsonStr
+    }
+
+    actual fun setProgressJson(json: String) {
+        defaults.setObject(json, forKey = "progress_json")
+        val success = defaults.synchronize()
+        println("PreferencesStorage (iOS): setProgressJson() -> length = ${json.length}, success = $success")
     }
 }

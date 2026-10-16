@@ -31,4 +31,15 @@ actual object PreferencesStorage {
     actual fun setUserPhotoUrl(url: String) {
         prefs.edit().putString("user_photo_url", url).apply()
     }
+
+    actual fun getProgressJson(): String {
+        val jsonStr = prefs.getString("progress_json", "") ?: ""
+        println("PreferencesStorage (Android): getProgressJson() -> length = ${jsonStr.length}, content = $jsonStr")
+        return jsonStr
+    }
+
+    actual fun setProgressJson(json: String) {
+        val success = prefs.edit().putString("progress_json", json).commit()
+        println("PreferencesStorage (Android): setProgressJson() -> length = ${json.length}, success = $success")
+    }
 }

@@ -1,13 +1,21 @@
 package com.hector.koes.viewModel
 
+import com.hector.koes.model.ProgressBackup
+import com.hector.koes.util.PreferencesStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 object UserProgressManager {
+
+    private val json = Json {
+        ignoreUnknownKeys = true
+    }
 
     // Palabras aprendidas (únicas)
     private val _completedWords =
@@ -46,6 +54,60 @@ object UserProgressManager {
 
     // Número de celdas del calendario
     private const val CALENDAR_DAYS = 60
+
+    private val _isInitialized = MutableStateFlow(false)
+    val isInitialized: StateFlow<Boolean> = _isInitialized
+
+    init {
+        loadProgress()
+    }
+
+    private fun loadProgress() {
+        try {
+            val jsonStr = PreferencesStorage.getProgressJson()
+            println("UserProgressManager: loadProgress() retrieved jsonStr (length=${jsonStr.length}): $jsonStr")
+            if (jsonStr.isNotBlank()) {
+                val backup = json.decodeFromString<ProgressBackup>(jsonStr)
+                _completedWords.value = backup.completedWords
+                _wordsLearnedCount.value = backup.completedWords.size
+                _activeDays.value = backup.activeDays
+                wordCountsByDay.clear()
+                wordCountsByDay.putAll(backup.dailyCounts)
+
+                startEpochDay = backup.activeDays.minOrNull() ?: backup.dailyCounts.keys.minOrNull()
+
+                calculateStreak(
+                    activeDaysSet = backup.activeDays,
+                    todayEpoch = getTodayEpochDay()
+                )
+                updateCalendar()
+                println("UserProgressManager: loadProgress() SUCCESS. Words: ${_wordsLearnedCount.value}, Streak: ${_currentStreak.value}, ActiveDays: ${_activeDays.value}")
+            } else {
+                println("UserProgressManager: loadProgress() found empty/blank storage.")
+            }
+        } catch (e: Exception) {
+            println("UserProgressManager: Error loading progress: ${e.message}")
+            e.printStackTrace()
+        } finally {
+            _isInitialized.value = true
+        }
+    }
+
+    private fun saveProgress() {
+        try {
+            val backup = ProgressBackup(
+                completedWords = _completedWords.value,
+                activeDays = _activeDays.value,
+                dailyCounts = wordCountsByDay.toMap()
+            )
+            val jsonStr = json.encodeToString(backup)
+            PreferencesStorage.setProgressJson(jsonStr)
+            println("UserProgressManager: saveProgress() SUCCESS. Words: ${_wordsLearnedCount.value}, ActiveDays: ${_activeDays.value}, JSON: $jsonStr")
+        } catch (e: Exception) {
+            println("UserProgressManager: Error saving progress: ${e.message}")
+            e.printStackTrace()
+        }
+    }
 
     /**
      * Obtiene el día actual usando la fecha local del dispositivo.
@@ -96,6 +158,7 @@ object UserProgressManager {
 
         // 6. Actualizar calendario
         updateCalendar()
+        saveProgress()
     }
 
     /**
@@ -198,6 +261,7 @@ object UserProgressManager {
         )
 
         updateCalendar()
+        saveProgress()
     }
 
     /**
@@ -212,5 +276,6 @@ object UserProgressManager {
 
         wordCountsByDay.clear()
         startEpochDay = null
+        saveProgress()
     }
 }

@@ -9,4 +9,7 @@ expect object PreferencesStorage {
 
     fun getUserPhotoUrl(): String
     fun setUserPhotoUrl(url: String)
+
+    fun getProgressJson(): String
+    fun setProgressJson(json: String)
 }

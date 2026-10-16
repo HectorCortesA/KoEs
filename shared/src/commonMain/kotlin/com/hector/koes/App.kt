@@ -26,6 +26,8 @@ import com.hector.koes.View.SettingsView
 
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.util.PreferencesStorage
+import com.hector.koes.viewModel.UserProgressManager
+import com.hector.koes.widgets.KoesWidgetSync
 
 @Composable
 @Preview
@@ -125,6 +127,9 @@ fun App() {
     // ----------------------------------------
     // 7. INTERFAZ PRINCIPAL
     // ----------------------------------------
+
+    val dailyWordCounts by UserProgressManager.dailyWordCounts.collectAsState()
+    KoesWidgetSync(dailyWordCounts)
 
     MaterialTheme {
 

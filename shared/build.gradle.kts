@@ -56,6 +56,8 @@ kotlin {
             implementation("androidx.exifinterface:exifinterface:1.3.7")
 
             implementation("app.cash.sqldelight:android-driver:2.3.2")
+            implementation("androidx.glance:glance:1.2.0")
+            implementation("androidx.glance:glance-appwidget:1.2.0")
         }
 
         iosMain.dependencies {
