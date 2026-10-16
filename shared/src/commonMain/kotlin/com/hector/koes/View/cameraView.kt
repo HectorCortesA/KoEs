@@ -68,7 +68,7 @@ fun CameraView(
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.90f)
-                .aspectRatio(361f / 676f)
+                .aspectRatio(9f / 16f)
                 .align(Alignment.TopCenter)
                 .padding(top = 20.dp)
         ) {

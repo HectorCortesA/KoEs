@@ -95,7 +95,7 @@ fun decodeAndRotateBitmap(photoBytes: ByteArray?): Bitmap {
 @Composable
 actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: List<OverlayItem>, previewWidth: Float, previewHeight: Float, dailyWordCounts: Map<Int, Int>) -> ByteArray? {
     return remember {
-        val compositor: (ByteArray?, List<OverlayItem>, Float, Float, Map<Int, Int>) -> ByteArray? = { photoBytes, overlayItems, _, _, dailyWordCounts ->
+        val compositor: (ByteArray?, List<OverlayItem>, Float, Float, Map<Int, Int>) -> ByteArray? = { photoBytes, overlayItems, previewWidth, previewHeight, dailyWordCounts ->
             try {
                 val baseBitmap = decodeAndRotateBitmap(photoBytes)
                 val exportWidth = 1080f
@@ -118,26 +118,30 @@ actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: Lis
                 )
                 canvas.drawBitmap(baseBitmap, null, destRect, null)
 
-                // Calculate total height needed for the items column to render from bottom-right upwards or downwards correctly
-                var totalBlockHeight = 0f
-                overlayItems.forEach { item ->
-                    if (item.isCalendar) {
-                        totalBlockHeight += 360f + 20f
-                    } else {
-                        totalBlockHeight += 70f + 16f
-                    }
-                }
+                // Coordenadas normalizadas: (0,0) es la esquina superior izquierda.
+                // previewWidth y previewHeight son las dimensiones reales, en px, del editor.
+                val validPreviewWidth = previewWidth.takeIf { it > 0f } ?: 1080f
+                val validPreviewHeight = previewHeight.takeIf { it > 0f } ?: 1920f
+                val scaleX = exportWidth / validPreviewWidth
+                val scaleY = exportHeight / validPreviewHeight
+                val displayMetrics = android.content.res.Resources.getSystem().displayMetrics
+                val exportTextSize = if (previewWidth > 0f) {
+                    22f * displayMetrics.scaledDensity * scaleY
+                } else 54f
+                val calWidth = if (previewWidth > 0f) {
+                    minOf(260f * displayMetrics.density, validPreviewWidth * 0.72f) * scaleX
+                } else 500f
+                val calHeight = calWidth * 360f / 500f
 
-                var currentY = (exportHeight - 140f - totalBlockHeight).coerceAtLeast(100f)
-                val marginX = 60f
-
+                canvas.save()
+                canvas.clipRect(0f, 0f, exportWidth, exportHeight)
                 overlayItems.forEach { item ->
                     canvas.save()
+                    val x = item.normalizedX.coerceIn(0f, 1f) * exportWidth
+                    val y = item.normalizedY.coerceIn(0f, 1f) * exportHeight
                     if (item.isCalendar) {
-                        val calWidth = 500f
-                        val calHeight = 360f
-                        val calX = exportWidth - calWidth - marginX
-                        val calY = currentY
+                        val calX = x
+                        val calY = y
 
                         val bgPaint = Paint().apply {
                             color = Color.WHITE
@@ -192,19 +196,17 @@ actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: Lis
                             }
                         }
 
-                        currentY += calHeight + 20f
                     } else {
                         val textPaint = Paint().apply {
                             isAntiAlias = true
                             color = Color.WHITE
-                            textSize = 54f
+                            textSize = exportTextSize
                             isFakeBoldText = true
                             setShadowLayer(8f, 2f, 2f, Color.BLACK)
                         }
 
-                        val textWidth = textPaint.measureText(item.text)
-                        val drawX = exportWidth - textWidth - marginX
-                        val drawY = currentY
+                        val drawX = x
+                        val drawY = y
 
                         canvas.drawText(
                             item.text,
@@ -212,10 +214,10 @@ actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: Lis
                             drawY - textPaint.fontMetrics.ascent,
                             textPaint
                         )
-                        currentY += textPaint.textSize + 24f
                     }
                     canvas.restore()
                 }
+                canvas.restore()
 
                 val outputStream = ByteArrayOutputStream()
                 exportBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
@@ -228,3 +230,4 @@ actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: Lis
         compositor
     }
 }
+

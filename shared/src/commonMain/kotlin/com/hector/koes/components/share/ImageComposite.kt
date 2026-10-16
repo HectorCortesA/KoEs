@@ -17,23 +17,44 @@ fun calculateImageTransform(
     imageWidth: Float,
     imageHeight: Float
 ): ImageTransform {
-    if (containerWidth <= 0f || containerHeight <= 0f || imageWidth <= 0f || imageHeight <= 0f) {
-        return ImageTransform(1f, 0f, 0f, containerWidth, containerHeight)
+    if (containerWidth <= 0f ||
+        containerHeight <= 0f ||
+        imageWidth <= 0f ||
+        imageHeight <= 0f
+    ) {
+        return ImageTransform(
+            1f, 0f, 0f,
+            containerWidth,
+            containerHeight
+        )
     }
-    val scaleX = containerWidth / imageWidth
-    val scaleY = containerHeight / imageHeight
-    val scale = maxOf(scaleX, scaleY)
+
+    val scale = maxOf(
+        containerWidth / imageWidth,
+        containerHeight / imageHeight
+    )
 
     val renderedWidth = imageWidth * scale
     val renderedHeight = imageHeight * scale
 
-    val offsetX = (containerWidth - renderedWidth) / 2f
-    val offsetY = (containerHeight - renderedHeight) / 2f
-
-    return ImageTransform(scale, offsetX, offsetY, renderedWidth, renderedHeight)
+    return ImageTransform(
+        scale = scale,
+        offsetX = (containerWidth - renderedWidth) / 2f,
+        offsetY = (containerHeight - renderedHeight) / 2f,
+        renderedWidth = renderedWidth,
+        renderedHeight = renderedHeight
+    )
 }
 
-expect fun getImageDimensions(photoBytes: ByteArray?): Pair<Float, Float>
+expect fun getImageDimensions(
+    photoBytes: ByteArray?
+): Pair<Float, Float>
 
 @Composable
-expect fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: List<OverlayItem>, previewWidth: Float, previewHeight: Float, dailyWordCounts: Map<Int, Int>) -> ByteArray?
+expect fun rememberImageCompositor(): (
+    photoBytes: ByteArray?,
+    overlayItems: List<OverlayItem>,
+    previewWidth: Float,
+    previewHeight: Float,
+    dailyWordCounts: Map<Int, Int>
+) -> ByteArray?

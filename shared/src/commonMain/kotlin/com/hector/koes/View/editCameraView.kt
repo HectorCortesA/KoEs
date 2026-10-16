@@ -3,6 +3,7 @@ package com.hector.koes.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
@@ -35,11 +37,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -49,13 +55,17 @@ import com.hector.koes.components.share.rememberImageCompositor
 import com.hector.koes.components.share.rememberShareLauncher
 import com.hector.koes.ui.theme.Background
 import com.hector.koes.viewModel.UserProgressManager
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 data class OverlayItem(
     val id: Long = Random.nextLong(),
     val text: String,
-    var normalizedFontSize: Float = 0.045f,
-    val isCalendar: Boolean = false
+    val normalizedFontSize: Float = 0.045f,
+    val isCalendar: Boolean = false,
+    // Posición de la esquina superior izquierda respecto al lienzo (0 a 1).
+    val normalizedX: Float = 0.45f,
+    val normalizedY: Float = 0.78f
 )
 
 @Composable
@@ -64,80 +74,52 @@ fun EditCameraView(
     photoBytes: ByteArray? = null
 ) {
     var isDropdownExpanded by remember { mutableStateOf(false) }
-
     val streak by UserProgressManager.currentStreak.collectAsState()
     val wordsLearned by UserProgressManager.wordsLearnedCount.collectAsState()
     val dailyWordCounts by UserProgressManager.dailyWordCounts.collectAsState()
 
     var overlayItems by remember {
-        mutableStateOf(
-            listOf(
-                OverlayItem(text = "KoEs")
-            )
-        )
+        mutableStateOf(listOf(OverlayItem(text = "KoEs")))
     }
-
+    var previewSize by remember { mutableStateOf(IntSize.Zero) }
+    val density = LocalDensity.current
     val shareLauncher = rememberShareLauncher()
     val compositor = rememberImageCompositor()
-    val density = LocalDensity.current
-
     val availableBadges = listOf(
         "Racha: $streak días",
         "$wordsLearned Palabras aprendidas",
-        "Mini Calendario",
+        "Mini Calendario"
     )
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Background)
-    ) {
-
+    Box(modifier = Modifier.fillMaxSize().background(Background)) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            // Barra superior con selector desplegable y botón de cerrar
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
+                modifier = Modifier.fillMaxWidth().statusBarsPadding()
                     .padding(horizontal = 21.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-
-                // Selector con estilo glass
                 Box {
                     Box(
-                        modifier = Modifier
-                            .width(180.dp)
-                            .height(45.dp)
+                        modifier = Modifier.width(180.dp).height(45.dp)
                             .clip(RoundedCornerShape(12.dp))
                             .background(Color.White.copy(alpha = 0.18f))
                             .border(
-                                width = 1.dp,
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.White.copy(alpha = 0.70f),
-                                        Color.White.copy(alpha = 0.15f)
-                                    )
+                                1.dp,
+                                Brush.verticalGradient(
+                                    listOf(Color.White.copy(alpha = 0.70f), Color.White.copy(alpha = 0.15f))
                                 ),
-                                shape = RoundedCornerShape(12.dp)
+                                RoundedCornerShape(12.dp)
                             )
                             .clickable { isDropdownExpanded = true }
                             .padding(horizontal = 14.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        Text(
-                            text = "Añadir elemento ▾",
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Color(0xFF333333)
-                        )
+                        Text("Añadir elemento ▾", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Color(0xFF333333))
                     }
-
                     DropdownMenu(
                         expanded = isDropdownExpanded,
                         onDismissRequest = { isDropdownExpanded = false },
@@ -146,20 +128,15 @@ fun EditCameraView(
                     ) {
                         availableBadges.forEach { badge ->
                             DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        text = badge,
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        color = Color(0xFF222222)
-                                    )
-                                },
+                                text = { Text(badge, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color(0xFF222222)) },
                                 onClick = {
                                     val isCal = badge.contains("Calendario")
                                     overlayItems = overlayItems + OverlayItem(
                                         text = if (isCal) "Calendario" else badge,
                                         normalizedFontSize = if (isCal) 0.25f else 0.045f,
-                                        isCalendar = isCal
+                                        isCalendar = isCal,
+                                        normalizedX = if (isCal) 0.08f else 0.20f,
+                                        normalizedY = if (isCal) 0.55f else 0.68f
                                     )
                                     isDropdownExpanded = false
                                 }
@@ -167,40 +144,26 @@ fun EditCameraView(
                         }
                     }
                 }
-
-                // Botón cancelar / regresar
                 Box(
-                    modifier = Modifier
-                        .width(59.dp)
-                        .height(55.dp)
-                        .clip(CircleShape)
+                    modifier = Modifier.width(59.dp).height(55.dp).clip(CircleShape)
                         .background(Color.White.copy(alpha = 0.50f))
                         .clickable { onNavigate("score") },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "✕",
-                        fontSize = 20.sp,
-                        color = Color.Black,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text("✕", fontSize = 20.sp, color = Color.Black, fontWeight = FontWeight.Bold)
                 }
             }
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Área de edición estricta 9:16 con columna de elementos estática en la esquina inferior derecha
+            // Lienzo 9:16. Cada elemento arrastrable vive en sus propias coordenadas.
             Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.90f)
-                    .aspectRatio(9f / 16f)
-                    .shadow(
-                        elevation = 6.dp,
-                        shape = RoundedCornerShape(23.dp)
-                    )
+                modifier = Modifier.fillMaxWidth(0.90f).aspectRatio(9f / 16f)
+                    .shadow(6.dp, RoundedCornerShape(23.dp))
                     .clip(RoundedCornerShape(23.dp))
-                    .background(Color(0xFF050505)),
-                contentAlignment = Alignment.Center
+                    .background(Color(0xFF050505))
+                    .onSizeChanged { previewSize = it },
+                contentAlignment = Alignment.TopStart
             ) {
                 if (photoBytes != null) {
                     AsyncImage(
@@ -213,21 +176,41 @@ fun EditCameraView(
                     CameraPreview(modifier = Modifier.fillMaxSize())
                 }
 
-                // Columna de elementos en la esquina inferior derecha (con calendario y textos más grandes)
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    overlayItems.forEach { item ->
-                        val fontSizeSp = 22.sp
-
+                overlayItems.forEach { item ->
+                    var itemSize by remember(item.id) { mutableStateOf(IntSize.Zero) }
+                    val maxX = (previewSize.width - itemSize.width).coerceAtLeast(0)
+                    val maxY = (previewSize.height - itemSize.height).coerceAtLeast(0)
+                    // El valor normalizado se refiere al lienzo completo, no al rango de desplazamiento.
+                    val x = (item.normalizedX * previewSize.width).roundToInt().coerceIn(0, maxX)
+                    val y = (item.normalizedY * previewSize.height).roundToInt().coerceIn(0, maxY)
+                    Box(
+                        modifier = Modifier
+                            .offset { IntOffset(x, y) }
+                            .onSizeChanged { itemSize = it }
+                            .pointerInput(item.id, previewSize, itemSize) {
+                                detectDragGestures { change, dragAmount ->
+                                    change.consume()
+                                    if (previewSize.width > 0 && previewSize.height > 0) {
+                                        overlayItems = overlayItems.map { existing ->
+                                            if (existing.id != item.id) existing else {
+                                                val nextX = (existing.normalizedX * previewSize.width + dragAmount.x)
+                                                    .coerceIn(0f, maxX.toFloat())
+                                                val nextY = (existing.normalizedY * previewSize.height + dragAmount.y)
+                                                    .coerceIn(0f, maxY.toFloat())
+                                                existing.copy(
+                                                    normalizedX = nextX / previewSize.width,
+                                                    normalizedY = nextY / previewSize.height
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                    ) {
                         if (item.isCalendar) {
                             Box(
                                 modifier = Modifier
-                                    .width(260.dp)
+                                    .width(with(density) { (previewSize.width * 0.72f).toDp() }.coerceAtMost(260.dp))
                                     .clip(RoundedCornerShape(16.dp))
                                     .background(Color.White.copy(alpha = 0.90f))
                                     .padding(12.dp)
@@ -238,35 +221,23 @@ fun EditCameraView(
                                 )
                             }
                         } else {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                                 Text(
                                     text = item.text,
                                     color = Color.White,
-                                    fontSize = fontSizeSp,
+                                    fontSize = 22.sp,
                                     fontWeight = FontWeight.Bold,
-                                    style = TextStyle(
-                                        shadow = Shadow(
-                                            color = Color.Black,
-                                            offset = Offset(2f, 2f),
-                                            blurRadius = 6f
-                                        )
-                                    )
+                                    style = TextStyle(shadow = Shadow(Color.Black, Offset(2f, 2f), 6f))
                                 )
-
                                 if (item.text != "KoEs") {
                                     Text(
                                         text = "✕",
                                         color = Color.Red,
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold,
-                                        modifier = Modifier
-                                            .clickable {
-                                                overlayItems = overlayItems.filter { it.id != item.id }
-                                            }
-                                            .padding(4.dp)
+                                        modifier = Modifier.clickable {
+                                            overlayItems = overlayItems.filter { it.id != item.id }
+                                        }.padding(4.dp)
                                     )
                                 }
                             }
@@ -276,49 +247,32 @@ fun EditCameraView(
             }
         }
 
-        // Botón Compartir
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .navigationBarsPadding()
-                .padding(bottom = 30.dp),
+            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter)
+                .navigationBarsPadding().padding(bottom = 30.dp),
             contentAlignment = Alignment.Center
         ) {
             Box(
-                modifier = Modifier
-                    .width(111.dp)
-                    .height(35.dp)
+                modifier = Modifier.width(111.dp).height(35.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(Color.White.copy(alpha = 0.18f))
                     .border(
-                        width = 1.dp,
-                        brush = Brush.verticalGradient(
-                            colors = listOf(Color.White.copy(alpha = 0.70f), Color.White.copy(alpha = 0.15f))
-                        ),
-                        shape = RoundedCornerShape(12.dp)
+                        1.dp,
+                        Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.70f), Color.White.copy(alpha = 0.15f))),
+                        RoundedCornerShape(12.dp)
                     )
                     .clickable {
                         val finalPhotoBytes = compositor(
-                            photoBytes,
-                            overlayItems,
-                            0f,
-                            0f,
-                            dailyWordCounts
+                            photoBytes, overlayItems,
+                            previewSize.width.toFloat(), previewSize.height.toFloat(), dailyWordCounts
                         )
-
                         if (finalPhotoBytes != null) {
                             shareLauncher("¡Mira mi avance en KoEs! 🇰🇷✨", finalPhotoBytes)
                         }
                     },
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "Compartir",
-                    color = Color(0xFF333333),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
-                )
+                Text("Compartir", color = Color(0xFF333333), fontSize = 14.sp, fontWeight = FontWeight.Medium)
             }
         }
     }
