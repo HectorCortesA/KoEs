@@ -1,15 +1,29 @@
+
 package com.hector.koes.components.plantilla
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -23,6 +37,10 @@ import com.hector.koes.resources.Res
 import com.hector.koes.viewModel.UserProgressManager
 
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+
+// ========================================
+// PLANTILLA PRINCIPAL
+// ========================================
 
 @Composable
 fun ShareTemplateView(
@@ -40,6 +58,10 @@ fun ShareTemplateView(
     )
 }
 
+// ========================================
+// DISEÑO DE LA PLANTILLA 9:16
+// ========================================
+
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun ShareTemplateContent(
@@ -47,29 +69,47 @@ private fun ShareTemplateContent(
     wordCounts: Map<Int, Int>,
     modifier: Modifier = Modifier
 ) {
+    val isPreview = LocalInspectionMode.current
+
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(9f / 16f)
             .background(Color(0xFFB7CAD7))
     ) {
+
         val width = maxWidth
         val height = maxHeight
         val scale = width.value / 360f
 
-        // IMAGEN SVG
-        AsyncImage(
-            model = Res.getUri("files/peoplenormal.svg"),
-            contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .width(width * 0.64f)
-                .height(height * 0.42f),
-            contentScale = ContentScale.Fit,
-            alignment = Alignment.BottomEnd
-        )
+        // ========================================
+        // 1. IMAGEN SVG
+        // Esquina inferior derecha
+        // ========================================
 
-        // NOMBRE Y LOGOTIPO
+        // Se oculta únicamente durante la Preview
+        // para evitar problemas de carga del SVG.
+        // En la aplicación sí se mostrará.
+
+        if (!isPreview) {
+            AsyncImage(
+                model = Res.getUri(
+                    "files/peoplenormal.svg"
+                ),
+                contentDescription = "Mascota de KOES",
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .width(width * 0.64f)
+                    .height(height * 0.42f),
+                contentScale = ContentScale.Fit,
+                alignment = Alignment.BottomEnd
+            )
+        }
+
+        // ========================================
+        // 2. LOGOTIPO Y NOMBRE
+        // ========================================
+
         Column(
             modifier = Modifier
                 .align(Alignment.TopStart)
@@ -78,6 +118,7 @@ private fun ShareTemplateContent(
                     top = height * 0.051f
                 )
         ) {
+
             Text(
                 text = "KoEs",
                 color = Color.Black,
@@ -95,7 +136,10 @@ private fun ShareTemplateContent(
             )
         }
 
-        // CALENDARIO ORIGINAL DE KOES
+        // ========================================
+        // 3. CALENDARIO ORIGINAL DE KOES
+        // ========================================
+
         Box(
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -106,15 +150,12 @@ private fun ShareTemplateContent(
                 .width(width * 0.555f)
                 .clip(
                     RoundedCornerShape(
-                        (5f * scale).dp
+                        (19f * scale).dp
                     )
                 )
-                .background(Color(0xFFF1F5F8))
-                .padding(
-                    horizontal = width * 0.024f,
-                    vertical = height * 0.014f
-                )
+
         ) {
+
             HeatCalendar(
                 modifier = Modifier.fillMaxWidth(),
                 wordCounts = wordCounts
@@ -123,6 +164,10 @@ private fun ShareTemplateContent(
     }
 }
 
+// ========================================
+// PREVIEW
+// ========================================
+
 @Preview(
     showBackground = true,
     widthDp = 360,
@@ -130,11 +175,14 @@ private fun ShareTemplateContent(
 )
 @Composable
 fun ShareTemplateViewPreview() {
+
     ShareTemplateContent(
         userName = "Hector Cortes",
         wordCounts = mapOf(
             0 to 1,
-            13 to 1
+            13 to 1,
+            25 to 5,
+            40 to 10
         )
     )
 }
