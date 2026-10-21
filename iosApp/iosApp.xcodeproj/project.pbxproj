@@ -45,14 +45,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		5E49A46F3082DAAE0025FCD1 /* Exceptions for "KoesCalendarWidgetExtension" folder in "KoesCalendarWidgetExtensionExtension" target */ = {
+		5E49A46F3082DAAE0025FCD1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
 			target = 5E49A45D3082DAAE0025FCD1 /* KoesCalendarWidgetExtensionExtension */;
 		};
-		BF4ABA853EDF0D66EE30CD22 /* Exceptions for "iosApp" folder in "iosApp" target */ = {
+		BF4ABA853EDF0D66EE30CD22 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -65,7 +65,7 @@
 		0C603657731956217DBFD443 /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				BF4ABA853EDF0D66EE30CD22 /* Exceptions for "iosApp" folder in "iosApp" target */,
+				BF4ABA853EDF0D66EE30CD22 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -73,7 +73,7 @@
 		5E49A4613082DAAE0025FCD1 /* KoesCalendarWidgetExtension */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				5E49A46F3082DAAE0025FCD1 /* Exceptions for "KoesCalendarWidgetExtension" folder in "KoesCalendarWidgetExtensionExtension" target */,
+				5E49A46F3082DAAE0025FCD1 /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
 			);
 			path = KoesCalendarWidgetExtension;
 			sourceTree = "<group>";
@@ -458,6 +458,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = 5M9826SCJ5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;

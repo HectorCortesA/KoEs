@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- ===================================== -->
+    <!-- PERMISOS -->
+    <!-- ===================================== -->
+
+    <uses-permission
+        android:name="android.permission.CAMERA" />
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
+
+    <!-- ===================================== -->
+    <!-- APLICACIÓN KOES -->
+    <!-- ===================================== -->
 
     <application
         android:allowBackup="false"
@@ -15,16 +24,27 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
 
+        <!-- ================================= -->
+        <!-- ACTIVIDAD PRINCIPAL -->
+        <!-- ================================= -->
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
 
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action
+                    android:name="android.intent.action.MAIN" />
+
+                <category
+                    android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
         </activity>
+
+        <!-- ================================= -->
+        <!-- FILE PROVIDER -->
+        <!-- ================================= -->
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -38,13 +58,17 @@
 
         </provider>
 
-        <!-- Widget Mini Calendario KOES -->
+        <!-- ================================= -->
+        <!-- WIDGET CALENDARIO KOES -->
+        <!-- ================================= -->
+
         <receiver
             android:name="com.hector.koes.widgets.KoesCalendarWidgetReceiver"
             android:exported="true">
 
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action
+                    android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data

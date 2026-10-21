@@ -23,7 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,8 +44,11 @@ import androidx.compose.runtime.collectAsState
 import com.hector.koes.components.Calendar.HeatCalendar
 import com.hector.koes.components.modal.SharedModal
 import com.hector.koes.components.navbar.Navbar
+import com.hector.koes.components.share.rememberShareLauncher
+import com.hector.koes.components.share.rememberShareTemplateCompositor
 import com.hector.koes.resources.Res
 import com.hector.koes.ui.theme.*
+import com.hector.koes.util.PreferencesStorage
 import com.hector.koes.viewModel.UserProgressManager
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -60,6 +65,10 @@ fun ScoreView(
     val streak by UserProgressManager.currentStreak.collectAsState()
     val wordsLearned by UserProgressManager.wordsLearnedCount.collectAsState()
     val dailyWordCounts by UserProgressManager.dailyWordCounts.collectAsState()
+
+    val templateCompositor = rememberShareTemplateCompositor()
+    val shareLauncher = rememberShareLauncher()
+    val coroutineScope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
@@ -294,6 +303,22 @@ fun ScoreView(
                         onCameraClick = {
                             showShareModal = false
                             onNavigate("cameraView")
+                        },
+                        onOptionAClick = {
+                            showShareModal = false
+                            coroutineScope.launch {
+                                val rawName = PreferencesStorage.getUserName().ifEmpty { "Hector Cortes" }
+                                val userName = rawName.substringBefore("android.graphics")
+                                val imageBytes = templateCompositor(
+                                    userName,
+                                    wordsLearned,
+                                    streak,
+                                    dailyWordCounts
+                                )
+                                if (imageBytes != null) {
+                                    shareLauncher("¡Mira mi avance en KoEs! 🇰🇷✨", imageBytes)
+                                }
+                            }
                         }
                     )
                 }

@@ -2,14 +2,7 @@
 package com.hector.koes.components.plantilla
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material3.Text
@@ -21,9 +14,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +28,7 @@ import coil3.compose.AsyncImage
 import com.hector.koes.components.Calendar.HeatCalendar
 import com.hector.koes.model.Profile
 import com.hector.koes.resources.Res
+import com.hector.koes.util.PreferencesStorage
 import com.hector.koes.viewModel.UserProgressManager
 
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -44,15 +39,22 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 @Composable
 fun ShareTemplateView(
-    profile: Profile,
-    modifier: Modifier = Modifier
+    profile: Profile? = null,
+    modifier: Modifier = Modifier,
+    learnedWords: Int? = null,
+    streakDays: Int? = null
 ) {
-    val dailyWordCounts by UserProgressManager
-        .dailyWordCounts
-        .collectAsState()
+    val currentStreak by UserProgressManager.currentStreak.collectAsState()
+    val wordsLearnedCount by UserProgressManager.wordsLearnedCount.collectAsState()
+    val dailyWordCounts by UserProgressManager.dailyWordCounts.collectAsState()
+
+    val userName = profile?.nameProfile?.ifEmpty { null }
+        ?: PreferencesStorage.getUserName().ifEmpty { "Hector Cortes" }
 
     ShareTemplateContent(
-        userName = profile.nameProfile,
+        userName = userName,
+        learnedWords = learnedWords ?: wordsLearnedCount,
+        streakDays = streakDays ?: currentStreak,
         wordCounts = dailyWordCounts,
         modifier = modifier
     )
@@ -64,65 +66,62 @@ fun ShareTemplateView(
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-private fun ShareTemplateContent(
+fun ShareTemplateContent(
     userName: String,
+    learnedWords: Int,
+    streakDays: Int,
     wordCounts: Map<Int, Int>,
     modifier: Modifier = Modifier
 ) {
-    val isPreview = LocalInspectionMode.current
 
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(9f / 16f)
             .background(Color(0xFFB7CAD7))
+            .clipToBounds()
     ) {
 
         val width = maxWidth
         val height = maxHeight
+
         val scale = width.value / 360f
 
-        // ========================================
-        // 1. IMAGEN SVG
-        // Esquina inferior derecha
-        // ========================================
+        // =====================================
+        // 1. ÁRBOL DE CEREZO
+        // SVG: 846 x 1316
+        // =====================================
 
-        // Se oculta únicamente durante la Preview
-        // para evitar problemas de carga del SVG.
-        // En la aplicación sí se mostrará.
+        AsyncImage(
+            model = Res.getUri(
+                "files/arbolcerezo.svg"
+            ),
+            contentDescription = "Árbol de cerezo",
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .width(width * 0.69f)
+                .aspectRatio(846f / 1316f),
+            contentScale = ContentScale.Fit,
+            alignment = Alignment.TopEnd
+        )
 
-        if (!isPreview) {
-            AsyncImage(
-                model = Res.getUri(
-                    "files/peoplenormal.svg"
-                ),
-                contentDescription = "Mascota de KOES",
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .width(width * 0.64f)
-                    .height(height * 0.42f),
-                contentScale = ContentScale.Fit,
-                alignment = Alignment.BottomEnd
-            )
-        }
-
-        // ========================================
-        // 2. LOGOTIPO Y NOMBRE
-        // ========================================
+        // =====================================
+        // 2. LOGO KOES Y NOMBRE
+        // =====================================
 
         Column(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(
                     start = width * 0.047f,
-                    top = height * 0.051f
+                    top = height * 0.055f
                 )
         ) {
 
             Text(
                 text = "KoEs",
                 color = Color.Black,
-                fontSize = (22f * scale).sp,
+                fontSize = (23f * scale).sp,
                 lineHeight = (26f * scale).sp,
                 fontWeight = FontWeight.Bold
             )
@@ -136,31 +135,110 @@ private fun ShareTemplateContent(
             )
         }
 
-        // ========================================
-        // 3. CALENDARIO ORIGINAL DE KOES
-        // ========================================
+        // =====================================
+        // 3. PALABRAS APRENDIDAS
+        // =====================================
+
+        Text(
+            text = "$learnedWords palabras aprendidas",
+            color = Color.Black,
+            fontSize = (14f * scale).sp,
+            fontWeight = FontWeight.Normal,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .offset(
+                    x = width * 0.047f,
+                    y = height * 0.195f
+                )
+        )
+
+        // =====================================
+        // 4. RACHA DE DÍAS
+        // =====================================
+
+        Text(
+            text = "Racha de $streakDays días",
+            color = Color.Black,
+            fontSize = (14f * scale).sp,
+            fontWeight = FontWeight.Normal,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .offset(
+                    x = width * 0.047f,
+                    y = height * 0.233f
+                )
+        )
+
+        // =====================================
+        // 5. CALENDARIO DE ACTIVIDAD
+        // POSICIÓN INFERIOR DERECHA
+        // =====================================
+
+
+        // =====================================
+        // 5. CALENDARIO DE ACTIVIDAD
+        // TAMAÑO AUMENTADO
+        // =====================================
 
         Box(
             modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(
-                    start = width * 0.052f,
-                    bottom = height * 0.030f
+                .align(Alignment.TopStart)
+                .offset(
+                    x = width * 0.30f,
+                    y = height * 0.620f
                 )
-                .width(width * 0.555f)
+                .width(width * 0.65f)
+                .height(height * 0.205f)
                 .clip(
                     RoundedCornerShape(
-                        (19f * scale).dp
+                        (5f * scale).dp
                     )
                 )
 
+                .padding(
+                    horizontal = width * 0.012f,
+                    vertical = height * 0.008f
+                ),
+            contentAlignment = Alignment.Center
         ) {
-
             HeatCalendar(
                 modifier = Modifier.fillMaxWidth(),
                 wordCounts = wordCounts
             )
         }
+
+
+
+
+        // =====================================
+        // 7. PERSONAJE KOES
+        // SVG: 402 x 602
+        // TAMAÑO REDUCIDO
+        // =====================================
+
+        // Se dibuja por delante del calendario
+        // y las flores para mantener la
+        // composición original.
+
+        AsyncImage(
+            model = Res.getUri(
+                "files/peoplenormal.svg"
+            ),
+            contentDescription = "Personaje de KOES",
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .offset(
+                    x = -width * 0.035f,
+                    y = height * 0.140f
+                )
+                .width(width * 0.72f)
+                .aspectRatio(402f / 602f)
+                .graphicsLayer {
+                    scaleX = -1f
+                },
+            contentScale = ContentScale.Fit,
+            alignment = Alignment.BottomStart
+        )
     }
 }
 
@@ -178,6 +256,8 @@ fun ShareTemplateViewPreview() {
 
     ShareTemplateContent(
         userName = "Hector Cortes",
+        learnedWords = 24,
+        streakDays = 24,
         wordCounts = mapOf(
             0 to 1,
             13 to 1,

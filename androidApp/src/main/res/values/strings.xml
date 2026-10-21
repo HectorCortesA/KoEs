@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">KoEs</string>
+    <string name="koes_widget_preview_description">Vista previa del calendario KOES</string>
 </resources>

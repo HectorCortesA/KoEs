@@ -2,6 +2,7 @@
 package com.hector.koes.widgets
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -14,8 +15,10 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.glance.appwidget.action.actionStartActivity
 import androidx.glance.appwidget.provideContent
 import androidx.glance.layout.ContentScale
 import androidx.glance.layout.fillMaxSize
@@ -26,7 +29,7 @@ import kotlin.math.min
 import kotlin.math.sin
 
 // ========================================
-// WIDGET DEL CALENDARIO KOES
+// WIDGET CALENDARIO KOES
 // ========================================
 
 class KoesCalendarWidget : GlanceAppWidget() {
@@ -36,6 +39,7 @@ class KoesCalendarWidget : GlanceAppWidget() {
         id: GlanceId
     ) {
 
+        // Obtener el progreso real del usuario
         val data = context
             .getSharedPreferences(
                 "koes_calendar_widget",
@@ -48,16 +52,41 @@ class KoesCalendarWidget : GlanceAppWidget() {
             ?.map { it.toIntOrNull() ?: 0 }
             ?: emptyList()
 
+        // Crear el calendario
         val bitmap = drawCalendarBitmap(counts)
 
+        // Intent para abrir MainActivity
+        // Sin importar directamente la clase
+        val launchIntent = Intent().apply {
+
+            setClassName(
+                context.packageName,
+                "com.hector.koes.MainActivity"
+            )
+
+            action = Intent.ACTION_MAIN
+
+            addCategory(
+                Intent.CATEGORY_LAUNCHER
+            )
+
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+
+        // Mostrar el widget
         provideContent {
-            CalendarWidgetImage(bitmap)
+
+            CalendarWidgetImage(
+                bitmap = bitmap,
+                launchIntent = launchIntent
+            )
         }
     }
 }
 
 // ========================================
-// RECEIVER
+// RECEIVER DEL WIDGET
 // ========================================
 
 class KoesCalendarWidgetReceiver :
@@ -68,19 +97,30 @@ class KoesCalendarWidgetReceiver :
 }
 
 // ========================================
-// IMAGEN DEL WIDGET
+// IMAGEN INTERACTIVA DEL WIDGET
 // ========================================
 
 @Composable
 private fun CalendarWidgetImage(
-    bitmap: Bitmap
+    bitmap: Bitmap,
+    launchIntent: Intent
 ) {
 
     Image(
         provider = ImageProvider(bitmap),
-        contentDescription = "KOES, calendario de actividad",
+
+        contentDescription =
+            "KOES, calendario de actividad de 60 días",
+
         contentScale = ContentScale.Fit,
-        modifier = GlanceModifier.fillMaxSize()
+
+        modifier = GlanceModifier
+            .fillMaxSize()
+
+            // Abrir KOES al tocar el widget
+            .clickable(
+                actionStartActivity(launchIntent)
+            )
     )
 }
 
@@ -92,29 +132,19 @@ private fun drawCalendarBitmap(
     counts: List<Int>
 ): Bitmap {
 
-    val width = 600f
-    val height = 300f
+    // Dimensiones de la imagen
+    val w = 600f
+    val h = 300f
 
     val bitmap = Bitmap.createBitmap(
-        width.toInt(),
-        height.toInt(),
+        w.toInt(),
+        h.toInt(),
         Bitmap.Config.ARGB_8888
     )
 
     val canvas = Canvas(bitmap)
 
-    val backgroundPaint = Paint(
-        Paint.ANTI_ALIAS_FLAG
-    ).apply {
-        color = Color.WHITE
-    }
-
-    canvas.drawRoundRect(
-        RectF(0f, 0f, width, height),
-        20f,
-        20f,
-        backgroundPaint
-    )
+    canvas.drawColor(Color.TRANSPARENT)
 
     // ========================================
     // DIMENSIONES DE LA CUADRÍCULA
@@ -126,20 +156,41 @@ private fun drawCalendarBitmap(
     val padding = 20f
     val gap = 10f
 
-    val cellWidth = (
-            width - (padding * 2f) -
-                    ((columns - 1) * gap)
+    val cellW = (
+            w - 2f * padding -
+                    (columns - 1) * gap
             ) / columns
 
-    val cellHeight = cellWidth * 27f / 23f
+    val cellH = cellW * 27f / 23f
 
-    val calendarHeight =
-        (rows * cellHeight) +
-                ((rows - 1) * gap)
+    val actualHeight =
+        2f * padding +
+                rows * cellH +
+                (rows - 1) * gap
 
-    val offsetY = (
-            height - calendarHeight
-            ) / 2f
+    val offsetY = (h - actualHeight) / 2f
+
+    // ========================================
+    // FONDO BLANCO
+    // ========================================
+
+    val backgroundPaint = Paint(
+        Paint.ANTI_ALIAS_FLAG
+    ).apply {
+        color = Color.WHITE
+    }
+
+    canvas.drawRoundRect(
+        RectF(
+            0f,
+            0f,
+            w,
+            h
+        ),
+        20f,
+        20f,
+        backgroundPaint
+    )
 
     // ========================================
     // PINCELES
@@ -163,7 +214,6 @@ private fun drawCalendarBitmap(
         Paint.ANTI_ALIAS_FLAG
     )
 
-    // Posiciones de los cinco pétalos
     val angles = doubleArrayOf(
         -90.0,
         -18.0,
@@ -173,7 +223,7 @@ private fun drawCalendarBitmap(
     )
 
     // ========================================
-    // DIBUJAR LAS 60 CELDAS
+    // GENERAR LAS 60 CELDAS
     // ========================================
 
     for (col in 0 until columns) {
@@ -187,10 +237,17 @@ private fun drawCalendarBitmap(
             }
 
             val left =
-                padding + col * (cellWidth + gap)
+                padding +
+                        col * (cellW + gap)
 
             val top =
-                offsetY + row * (cellHeight + gap)
+                offsetY +
+                        padding +
+                        row * (cellH + gap)
+
+            // =================================
+            // CELDA SIN ACTIVIDAD
+            // =================================
 
             if (count <= 0) {
 
@@ -198,8 +255,8 @@ private fun drawCalendarBitmap(
                     RectF(
                         left,
                         top,
-                        left + cellWidth,
-                        top + cellHeight
+                        left + cellW,
+                        top + cellH
                     ),
                     3f,
                     3f,
@@ -209,7 +266,7 @@ private fun drawCalendarBitmap(
             } else {
 
                 // =================================
-                // COLORES SEGÚN PALABRAS APRENDIDAS
+                // COLORES SEGÚN ACTIVIDAD
                 // =================================
 
                 val colors = when {
@@ -234,24 +291,24 @@ private fun drawCalendarBitmap(
                 }
 
                 // =================================
-                // FLOR PROPORCIONAL A SU CELDA
+                // PROPORCIONES DE LA FLOR
                 // =================================
 
                 val flowerSize = min(
-                    cellWidth,
-                    cellHeight
+                    cellW,
+                    cellH
                 ) * 0.85f
 
                 val centerX =
-                    left + cellWidth / 2f
+                    left + cellW / 2f
 
                 val centerY =
-                    top + cellHeight / 2f
+                    top + cellH / 2f
 
                 val petalRadius =
                     flowerSize * 0.28f
 
-                val petalDistance =
+                val distance =
                     flowerSize * 0.26f
 
                 // =================================
@@ -264,20 +321,20 @@ private fun drawCalendarBitmap(
                         angles[i] * PI / 180.0
 
                     petalPaint.color =
-                        colors[if (i % 2 == 0) 0 else 1]
+                        colors[
+                            if (i % 2 == 0) 0 else 1
+                        ]
 
                     val petalX =
                         centerX +
                                 (
-                                        petalDistance *
-                                                cos(radians)
+                                        distance * cos(radians)
                                         ).toFloat()
 
                     val petalY =
                         centerY +
                                 (
-                                        petalDistance *
-                                                sin(radians)
+                                        distance * sin(radians)
                                         ).toFloat()
 
                     canvas.drawCircle(

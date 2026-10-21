@@ -192,7 +192,7 @@ actual fun rememberImageCompositor(): (photoBytes: ByteArray?, overlayItems: Lis
 
 
 /** Versión estática para exportación del componente HeatCalendar.kt. */
-private fun drawMiniHeatCalendar(
+internal fun drawMiniHeatCalendar(
     canvas: Canvas,
     left: Float,
     top: Float,
