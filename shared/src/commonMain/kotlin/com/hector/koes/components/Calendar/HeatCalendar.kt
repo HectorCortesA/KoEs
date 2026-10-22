@@ -32,6 +32,15 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hector.koes.ui.theme.GlassBorderTopLight
+import com.hector.koes.ui.theme.HeatmapEmptyToken
+import com.hector.koes.ui.theme.HeatmapLevel1AltToken
+import com.hector.koes.ui.theme.HeatmapLevel1CenterToken
+import com.hector.koes.ui.theme.HeatmapLevel1Token
+import com.hector.koes.ui.theme.HeatmapLevel2AltToken
+import com.hector.koes.ui.theme.HeatmapLevel2Token
+import com.hector.koes.ui.theme.HeatmapLevel3AltToken
+import com.hector.koes.ui.theme.HeatmapLevel3Token
 import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.cos
@@ -56,7 +65,7 @@ fun HeatCalendar(
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(10.dp),
-        color = Color.White.copy(alpha = 0.8f),
+        color = GlassBorderTopLight,
     ) {
         Column(
             modifier = Modifier
@@ -96,7 +105,7 @@ private fun HeatCell(
         modifier = modifier
             .aspectRatio(23f / 27f)
             .clip(RoundedCornerShape(3.dp))
-            .background(if (isActive) Color.Transparent else Color(0xFFB3D2DC))
+            .background(if (isActive) Color.Transparent else HeatmapEmptyToken)
             .semantics {
                 contentDescription = if (isActive) "Día con $wordCount palabras resueltas" else "Día sin actividad"
             },
@@ -176,9 +185,9 @@ private fun Flower(
 ) {
     // Selección de tonalidad según cantidad de palabras resueltas en el día
     val (petalColor, petalColorAlt, centerColor) = when {
-        wordCount >= 10 -> Triple(Color(0xFF7A287A), Color(0xFF6B1863), Color(0xFFF7CFE1)) // Púrpura
-        wordCount >= 5  -> Triple(Color(0xFFC058A8), Color(0xFFA84893), Color(0xFFF7CFE1)) // Rosa entre Púrpura
-        else            -> Triple(Color(0xFFF7CFE1), Color(0xFFE882AD), Color(0xFFC75E5B)) // Rosa (1 palabra)
+        wordCount >= 10 -> Triple(HeatmapLevel3Token, HeatmapLevel3AltToken, HeatmapLevel1Token) // Púrpura
+        wordCount >= 5  -> Triple(HeatmapLevel2Token, HeatmapLevel2AltToken, HeatmapLevel1Token) // Rosa entre Púrpura
+        else            -> Triple(HeatmapLevel1Token, HeatmapLevel1AltToken, HeatmapLevel1CenterToken) // Rosa (1 palabra)
     }
 
     Canvas(modifier = modifier) {

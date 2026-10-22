@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hector.koes.ui.theme.CardDictionaryBackgroundColor
 
 @Composable
 fun CardDictionary(
@@ -36,7 +37,7 @@ fun CardDictionary(
             .height(60.dp)
             .clickable { onClick() }
             .background(
-                color = Color(0xFFDAE4EA),
+                color = CardDictionaryBackgroundColor,
                 shape = RoundedCornerShape(size = 5.dp)
             ),
         verticalAlignment = Alignment.CenterVertically

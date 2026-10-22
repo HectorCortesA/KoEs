@@ -15,11 +15,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hector.koes.components.navbar.Navbar
+import androidx.compose.material3.MaterialTheme
 import com.hector.koes.components.card.ModalOracion
+import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.data.OracionData
 import com.hector.koes.model.Oracion
 import com.hector.koes.ui.theme.Background
+import com.hector.koes.ui.theme.LearnItemBackgroundColor
+import com.hector.koes.ui.theme.TextPrimary
 
 @Composable
 fun LearnView(
@@ -33,7 +36,7 @@ fun LearnView(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         if (showNavbar) {
             Navbar(
@@ -56,7 +59,7 @@ fun LearnView(
                 text = "Formación de palabras",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black,
+                color = TextPrimary,
                 modifier = Modifier
                     .padding(top = 80.dp, start = 21.dp)
             )
@@ -112,7 +115,7 @@ fun OracionItem(
             .fillMaxWidth()
             .height(60.dp)
             .background(
-                color = Color(0xFFDAE4EA),
+                color = LearnItemBackgroundColor,
                 shape = RoundedCornerShape(5.dp)
             )
             .clickable { onClick() }
@@ -123,7 +126,7 @@ fun OracionItem(
             text = titulo,
             fontSize = 15.sp,
             fontWeight = FontWeight.Medium,
-            color = Color.Black
+            color = TextPrimary
         )
     }
 }

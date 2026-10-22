@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -78,7 +79,7 @@ fun Home(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         if (showNavbar) {
             Navbar(
@@ -117,7 +118,7 @@ fun Home(
                     BouncingDotsLoadingAnimation(
                         dotSize = 10.dp,
                         dotColorActive = ButtonActiveBlue,
-                        dotColorInactive = Color.White
+                        dotColorInactive = CardBackground
                     )
                 }
 
@@ -128,13 +129,13 @@ fun Home(
                             .height(39.dp)
                             .clip(RoundedCornerShape(10.dp))
                             .background(
-                                Color.White.copy(alpha = 0.50f)
+                                GlassBackgroundLight
                             ),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = currentItem?.romanization ?: "",
-                            color = Color.Black,
+                            color = TextPrimary,
                             fontSize = 14.sp
                         )
                     }
@@ -143,7 +144,7 @@ fun Home(
 
             Text(
                 text = suggestion,
-                color = Color.Black,
+                color = TextPrimary,
                 fontSize = 18.sp,
                 modifier = Modifier
                     .pointerInput(Unit) {
@@ -174,12 +175,12 @@ fun Home(
 
                         for (i in text.indices) {
                             val isCorrect = isWordFullyComplete || validation.getOrElse(i) { false }
-                            withStyle(style = SpanStyle(color = if (isCorrect) Color.Black else Color.Red)) {
+                            withStyle(style = SpanStyle(color = if (isCorrect) TextPrimary else TextRed)) {
                                 append(text[i])
                             }
                         }
                         if (text.length < suggestion.length && !isWordFullyComplete) {
-                            withStyle(style = SpanStyle(color = Color.Black.copy(alpha = 0.15f))) {
+                            withStyle(style = SpanStyle(color = TextGhostAlphaColor)) {
                                 append(suggestion.substring(text.length))
                             }
                         }
@@ -213,7 +214,7 @@ fun Home(
                                 }
                             )
                         },
-                    cursorBrush = SolidColor(Color.Black),
+                    cursorBrush = SolidColor(TextPrimary),
                     singleLine = writingMode == WritingMode.PALABRAS,
                     decorationBox = { innerTextField ->
                         Box(contentAlignment = Alignment.Center) {

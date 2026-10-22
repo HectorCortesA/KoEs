@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.hector.koes.resources.Res
+import com.hector.koes.ui.theme.*
 
 @Composable
 fun SharedModal(
@@ -51,7 +52,7 @@ fun SharedModal(
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .background(Color(0xE5FFFFFF))
+                .background(GlassDropdownBackground)
         )
 
         Box(
@@ -73,7 +74,7 @@ fun SharedModal(
                         .height(62.dp),
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFBDDBF0)
+                        containerColor = ButtonLightBlue
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
@@ -81,7 +82,7 @@ fun SharedModal(
                         model = Res.getUri("files/sharedIcon.svg"),
                         contentDescription = "shared",
                         modifier = Modifier.size(24.dp),
-                        colorFilter = ColorFilter.tint(Color.Black)
+                        colorFilter = ColorFilter.tint(TextPrimary)
                     )
                 }
 
@@ -94,7 +95,7 @@ fun SharedModal(
                         .height(62.dp),
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFBDDBF0)
+                        containerColor = ButtonLightBlue
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
@@ -102,7 +103,7 @@ fun SharedModal(
                         model = Res.getUri("files/cameraIcon.svg"),
                         contentDescription = "Cámara",
                         modifier = Modifier.size(24.dp),
-                        colorFilter = ColorFilter.tint(Color.Black)
+                        colorFilter = ColorFilter.tint(TextPrimary)
                     )
                 }
             }

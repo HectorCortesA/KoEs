@@ -25,6 +25,7 @@ import com.hector.koes.View.ScoreView
 import com.hector.koes.View.SettingsView
 
 import com.hector.koes.components.navbar.Navbar
+import com.hector.koes.ui.theme.KoesTheme
 import com.hector.koes.util.PreferencesStorage
 import com.hector.koes.viewModel.UserProgressManager
 import com.hector.koes.widgets.KoesWidgetSync
@@ -131,7 +132,7 @@ fun App() {
     val dailyWordCounts by UserProgressManager.dailyWordCounts.collectAsState()
     KoesWidgetSync(dailyWordCounts)
 
-    MaterialTheme {
+    KoesTheme {
 
         Box(
             modifier = Modifier.fillMaxSize()

@@ -36,7 +36,11 @@ import com.hector.koes.components.card.CardDictionary
 import com.hector.koes.components.card.ModalDictionary
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.model.DictionaryItem
+import androidx.compose.material3.MaterialTheme
 import com.hector.koes.ui.theme.Background
+import com.hector.koes.ui.theme.GlassSheetContainerColor
+import com.hector.koes.ui.theme.ModalBottomSheetScrimColor
+import com.hector.koes.ui.theme.TextPrimary
 import com.hector.koes.viewModel.FavoritesManager
 import coil3.compose.AsyncImage
 import com.hector.koes.resources.Res
@@ -77,7 +81,7 @@ fun FavoriteView(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
 
         if (showNavbar) {
@@ -96,7 +100,7 @@ fun FavoriteView(
             text = "Favoritos",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black,
+            color = TextPrimary,
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .statusBarsPadding()
@@ -152,13 +156,13 @@ fun FavoriteView(
             ModalBottomSheet(
                 onDismissRequest = { showModal = false },
                 sheetState = sheetState,
-                containerColor = Color(0x80FFFFFF),
+                containerColor = GlassSheetContainerColor,
                 dragHandle = null,
                 tonalElevation = 0.dp,
-                scrimColor = Color.Black.copy(alpha = 0.32f),
+                scrimColor = ModalBottomSheetScrimColor,
                 shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp),
             ) {
-                Box(modifier = Modifier.fillMaxWidth().background(Color(0x80FFFFFF))) {
+                Box(modifier = Modifier.fillMaxWidth().background(GlassSheetContainerColor)) {
                     ModalDictionary(
                         wordSpanish = item.spanish,
                         wordCorea = item.korean,

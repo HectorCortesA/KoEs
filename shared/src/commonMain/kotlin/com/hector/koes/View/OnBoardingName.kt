@@ -34,8 +34,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
+import androidx.compose.material3.MaterialTheme
 import com.hector.koes.resources.Res
 import com.hector.koes.ui.theme.Background
+import com.hector.koes.ui.theme.GlassBackground
+import com.hector.koes.ui.theme.GlassBorderColorEnd
+import com.hector.koes.ui.theme.GlassBorderColorStart
+import com.hector.koes.ui.theme.TextPlaceholderColor
+import com.hector.koes.ui.theme.TextPrimary
 import com.hector.koes.viewModel.OnboardingViewModel
 
 @Composable
@@ -50,7 +56,7 @@ fun OnBoardingName(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // 1. Imagen de fondo colocada en la parte derecha de abajo (atrás del texto y botones)
         Box(
@@ -76,7 +82,7 @@ fun OnBoardingName(
         ) {
             Text(
                 text = "Bienvenido",
-                color = Color.Black,
+                color = TextPrimary,
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -95,16 +101,16 @@ fun OnBoardingName(
                         query = it
                     },
                     singleLine = true,
-                    cursorBrush = SolidColor(Color.Black),
+                    cursorBrush = SolidColor(TextPrimary),
                     textStyle = TextStyle(
-                        color = Color.Black,
+                        color = TextPrimary,
                         fontSize = 16.sp
                     ),
                     modifier = Modifier
                         .width(268.dp)
                         .height(39.dp)
                         .background(
-                            color = Color(0x33D9D9D9),
+                            color = GlassBackground,
                             shape = RoundedCornerShape(10.dp)
                         )
                         .border(
@@ -112,8 +118,8 @@ fun OnBoardingName(
                                 width = 1.dp,
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
-                                        Color.White.copy(alpha = 0.5f),
-                                        Color.White.copy(alpha = 0.1f)
+                                        GlassBorderColorStart,
+                                        GlassBorderColorEnd
                                     )
                                 )
                             ),
@@ -128,7 +134,7 @@ fun OnBoardingName(
                             if (query.isEmpty()) {
                                 Text(
                                     text = "Escribe tu nombre",
-                                    color = Color.Black.copy(alpha = 0.4f),
+                                    color = TextPlaceholderColor,
                                     fontSize = 16.sp
                                 )
                             }
@@ -144,14 +150,14 @@ fun OnBoardingName(
                         .width(111.dp)
                         .height(39.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(Color(0x33D9D9D9))
+                        .background(GlassBackground)
                         .border(
                             border = BorderStroke(
                                 width = 1.dp,
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
-                                        Color.White.copy(alpha = 0.5f),
-                                        Color.White.copy(alpha = 0.1f)
+                                        GlassBorderColorStart,
+                                        GlassBorderColorEnd
                                     )
                                 )
                             ),
@@ -165,7 +171,7 @@ fun OnBoardingName(
                 ) {
                     Text(
                         text = "Siguiente",
-                        color = Color.Black,
+                        color = TextPrimary,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
                     )

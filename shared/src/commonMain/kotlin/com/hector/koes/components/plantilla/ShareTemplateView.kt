@@ -28,6 +28,7 @@ import coil3.compose.AsyncImage
 import com.hector.koes.components.Calendar.HeatCalendar
 import com.hector.koes.model.Profile
 import com.hector.koes.resources.Res
+import com.hector.koes.ui.theme.*
 import com.hector.koes.util.PreferencesStorage
 import com.hector.koes.viewModel.UserProgressManager
 
@@ -78,7 +79,7 @@ fun ShareTemplateContent(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(9f / 16f)
-            .background(Color(0xFFB7CAD7))
+            .background(ShareTemplateBackgroundColor)
             .clipToBounds()
     ) {
 

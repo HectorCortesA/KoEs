@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hector.koes.ui.theme.CardHangulBackgroundColor
 
 
 @Composable
@@ -36,7 +37,7 @@ fun CardHangul(
             .width(80.dp)
             .height(80.dp)
             .background(
-                color = Color(0xFFA0B7C4),
+                color = CardHangulBackgroundColor,
                 shape = RoundedCornerShape(10.dp)
             ),
         horizontalAlignment = Alignment.CenterHorizontally,

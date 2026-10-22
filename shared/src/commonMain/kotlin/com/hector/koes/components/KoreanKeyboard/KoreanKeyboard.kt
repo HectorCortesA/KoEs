@@ -27,19 +27,24 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hector.koes.ui.theme.CardBackground
+import com.hector.koes.ui.theme.GlassBorderTopLight
+import com.hector.koes.ui.theme.KeyboardBackgroundToken
+import com.hector.koes.ui.theme.ShadowColorToken
+import com.hector.koes.ui.theme.SpecialKeyBackgroundToken
+import com.hector.koes.ui.theme.TextPrimary
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
-
 private val KeyboardBackground =
-    Color(0xFFA4B6C2)
+    KeyboardBackgroundToken
 
 private val SpecialKeyBackground =
-    Color(0xFFE3E9EC)
+    SpecialKeyBackgroundToken
 
 private val NormalKeyBackground =
-    Color.White.copy(alpha = 0.80f)
+    GlassBorderTopLight
 
 
 /*
@@ -1369,8 +1374,8 @@ fun KoreanKey(
             .shadow(
                 elevation = 2.dp,
                 shape = RoundedCornerShape(10.dp),
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
+                spotColor = ShadowColorToken,
+                ambientColor = ShadowColorToken
             )
             .background(
                 color = NormalKeyBackground,
@@ -1396,7 +1401,7 @@ fun KoreanKey(
                 FontWeight.Medium,
 
             color =
-                Color.Black
+                TextPrimary
         )
     }
 }
@@ -1425,8 +1430,8 @@ private fun TenKey(
             .shadow(
                 elevation = 2.dp,
                 shape = RoundedCornerShape(10.dp),
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
+                spotColor = ShadowColorToken,
+                ambientColor = ShadowColorToken
             )
             .background(
                 color =
@@ -1469,7 +1474,7 @@ private fun TenKey(
                 FontWeight.Medium,
 
             color =
-                Color.Black
+                TextPrimary
         )
     }
 }
@@ -1502,8 +1507,8 @@ private fun TenKeySpecialKey(
             .shadow(
                 elevation = 2.dp,
                 shape = RoundedCornerShape(10.dp),
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
+                spotColor = ShadowColorToken,
+                ambientColor = ShadowColorToken
             )
             .background(
                 color =
@@ -1534,7 +1539,7 @@ private fun TenKeySpecialKey(
                 FontWeight.Medium,
 
             color =
-                Color.Black
+                TextPrimary
         )
     }
 }
@@ -1570,13 +1575,13 @@ fun SpecialTextKey(
             .shadow(
                 elevation = 2.dp,
                 shape = RoundedCornerShape(10.dp),
-                spotColor = Color(0x40000000),
-                ambientColor = Color(0x40000000)
+                spotColor = ShadowColorToken,
+                ambientColor = ShadowColorToken
             )
             .background(
                 color =
                     if (selected) {
-                        Color.White
+                        CardBackground
                     } else {
                         SpecialKeyBackground
                     },
@@ -1606,7 +1611,7 @@ fun SpecialTextKey(
                 FontWeight.Medium,
 
             color =
-                Color.Black
+                TextPrimary
         )
     }
 }

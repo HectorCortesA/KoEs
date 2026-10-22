@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.hector.koes.ui.theme.*
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -104,7 +105,7 @@ fun ModaProfile(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    Color.Black.copy(alpha = scrimAlpha)
+                    TextPrimary.copy(alpha = scrimAlpha)
                 )
                 .clickable { onBack() }
         )
@@ -130,7 +131,7 @@ fun ModaProfile(
                     )
                 }
                 .background(
-                    color = Color(0xF2FFFFFF),
+                    color = GlassModalBackground,
                     shape = RoundedCornerShape(
                         topStart = 50.dp,
                         topEnd = 50.dp,
@@ -159,7 +160,7 @@ fun ModaProfile(
                         .width(45.dp)
                         .height(5.dp)
                         .background(
-                            color = Color(0xFFBDBDBD),
+                            color = ModalProfileLineColor,
                             shape = RoundedCornerShape(10.dp)
                         )
                 )
@@ -176,7 +177,7 @@ fun ModaProfile(
                     },
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF333333)
+                    color = TextSecondary
                 )
 
                 Spacer(
@@ -188,7 +189,7 @@ fun ModaProfile(
                     modifier = Modifier
                         .size(120.dp)
                         .clip(CircleShape)
-                        .background(Color.White)
+                        .background(CardBackground)
                         .clickable(
                             enabled = isEditing
                         ) {
@@ -216,7 +217,7 @@ fun ModaProfile(
                             } else {
                                 "Foto"
                             },
-                            color = Color(0xFF333333)
+                            color = TextSecondary
                         )
                     }
                 }
@@ -229,7 +230,7 @@ fun ModaProfile(
 
                     Text(
                         text = name,
-                        color = Color(0xFF333333),
+                        color = TextSecondary,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -265,8 +266,8 @@ fun ModaProfile(
                         modifier = Modifier
                             .shadow(
                                 elevation = 1.dp,
-                                spotColor = Color(0x40000000),
-                                ambientColor = Color(0x40000000),
+                                spotColor = ShadowColorToken,
+                                ambientColor = ShadowColorToken,
                                 shape = RoundedCornerShape(5.dp)
                             )
                             .width(237.dp)
@@ -274,14 +275,14 @@ fun ModaProfile(
                         singleLine = true,
                         shape = RoundedCornerShape(5.dp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = Color(0xFFEDEDED),
-                            unfocusedContainerColor = Color(0xFFEDEDED),
+                            focusedContainerColor = SurfaceInput,
+                            unfocusedContainerColor = SurfaceInput,
                             focusedBorderColor = Color.Transparent,
                             unfocusedBorderColor = Color.Transparent,
-                            focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black,
-                            focusedPlaceholderColor = Color.Gray,
-                            unfocusedPlaceholderColor = Color.Gray
+                            focusedTextColor = TextPrimary,
+                            unfocusedTextColor = TextPrimary,
+                            focusedPlaceholderColor = TextMuted,
+                            unfocusedPlaceholderColor = TextMuted
                         )
                     )
                     Spacer(
@@ -318,13 +319,13 @@ fun GlassButton(
                 onClick()
             },
         shape = RoundedCornerShape(25.dp),
-        color = Color.Black.copy(alpha = 0.05f),
+        color = GlassButtonBackgroundColor,
         border = BorderStroke(
             width = 1.dp,
             brush = Brush.verticalGradient(
                 colors = listOf(
-                    Color.White.copy(alpha = 0.60f),
-                    Color.White.copy(alpha = 0.15f)
+                    GlassBorderColorStart,
+                    GlassBorderColorEnd
                 )
             )
         )
@@ -337,7 +338,7 @@ fun GlassButton(
 
             Text(
                 text = text,
-                color = Color(0xFF333333),
+                color = TextSecondary,
                 fontWeight = FontWeight.Bold
             )
         }

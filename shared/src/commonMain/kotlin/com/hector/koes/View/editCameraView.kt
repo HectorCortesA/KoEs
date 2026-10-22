@@ -49,11 +49,12 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import androidx.compose.material3.MaterialTheme
 import com.hector.koes.components.Calendar.HeatCalendar
 import com.hector.koes.components.camera.CameraPreview
 import com.hector.koes.components.share.rememberImageCompositor
 import com.hector.koes.components.share.rememberShareLauncher
-import com.hector.koes.ui.theme.Background
+import com.hector.koes.ui.theme.*
 import com.hector.koes.viewModel.UserProgressManager
 import kotlin.math.roundToInt
 import kotlin.random.Random
@@ -91,7 +92,7 @@ fun EditCameraView(
         "Mini Calendario"
     )
 
-    Box(modifier = Modifier.fillMaxSize().background(Background)) {
+    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -106,11 +107,11 @@ fun EditCameraView(
                     Box(
                         modifier = Modifier.width(180.dp).height(45.dp)
                             .clip(RoundedCornerShape(12.dp))
-                            .background(Color.White.copy(alpha = 0.18f))
+                            .background(GlassBackground)
                             .border(
                                 1.dp,
                                 Brush.verticalGradient(
-                                    listOf(Color.White.copy(alpha = 0.70f), Color.White.copy(alpha = 0.15f))
+                                    listOf(GlassGradientStart, GlassGradientEnd)
                                 ),
                                 RoundedCornerShape(12.dp)
                             )
@@ -118,17 +119,17 @@ fun EditCameraView(
                             .padding(horizontal = 14.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        Text("Añadir elemento ▾", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = Color(0xFF333333))
+                        Text("Añadir elemento ▾", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = TextSecondary)
                     }
                     DropdownMenu(
                         expanded = isDropdownExpanded,
                         onDismissRequest = { isDropdownExpanded = false },
-                        containerColor = Color.White.copy(alpha = 0.85f),
+                        containerColor = GlassDropdownBackground,
                         modifier = Modifier.width(220.dp)
                     ) {
                         availableBadges.forEach { badge ->
                             DropdownMenuItem(
-                                text = { Text(badge, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color(0xFF222222)) },
+                                text = { Text(badge, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = TextDark) },
                                 onClick = {
                                     val isCal = badge.contains("Calendario")
                                     overlayItems = overlayItems + OverlayItem(
@@ -146,11 +147,11 @@ fun EditCameraView(
                 }
                 Box(
                     modifier = Modifier.width(59.dp).height(55.dp).clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.50f))
+                        .background(GlassBackgroundLight)
                         .clickable { onNavigate("score") },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("✕", fontSize = 20.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+                    Text("✕", fontSize = 20.sp, color = TextPrimary, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -161,7 +162,7 @@ fun EditCameraView(
                 modifier = Modifier.fillMaxWidth(0.90f).aspectRatio(9f / 16f)
                     .shadow(6.dp, RoundedCornerShape(23.dp))
                     .clip(RoundedCornerShape(23.dp))
-                    .background(Color(0xFF050505))
+                    .background(SurfaceDark)
                     .onSizeChanged { previewSize = it },
                 contentAlignment = Alignment.TopStart
             ) {
@@ -212,7 +213,7 @@ fun EditCameraView(
                                 modifier = Modifier
                                     .width(with(density) { (previewSize.width * 0.72f).toDp() }.coerceAtMost(260.dp))
                                     .clip(RoundedCornerShape(16.dp))
-                                    .background(Color.White.copy(alpha = 0.90f))
+                                    .background(GlassSheetContainerColor)
                                     .padding(12.dp)
                             ) {
                                 HeatCalendar(
@@ -224,15 +225,15 @@ fun EditCameraView(
                             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                                 Text(
                                     text = item.text,
-                                    color = Color.White,
+                                    color = TextWhite,
                                     fontSize = 22.sp,
                                     fontWeight = FontWeight.Bold,
-                                    style = TextStyle(shadow = Shadow(Color.Black, Offset(2f, 2f), 6f))
+                                    style = TextStyle(shadow = Shadow(TextPrimary, Offset(2f, 2f), 6f))
                                 )
                                 if (item.text != "KoEs") {
                                     Text(
                                         text = "✕",
-                                        color = Color.Red,
+                                        color = TextRed,
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.clickable {
@@ -255,10 +256,10 @@ fun EditCameraView(
             Box(
                 modifier = Modifier.width(111.dp).height(35.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White.copy(alpha = 0.18f))
+                    .background(GlassBackground)
                     .border(
                         1.dp,
-                        Brush.verticalGradient(listOf(Color.White.copy(alpha = 0.70f), Color.White.copy(alpha = 0.15f))),
+                        Brush.verticalGradient(listOf(GlassGradientStart, GlassGradientEnd)),
                         RoundedCornerShape(12.dp)
                     )
                     .clickable {
@@ -272,7 +273,7 @@ fun EditCameraView(
                     },
                 contentAlignment = Alignment.Center
             ) {
-                Text("Compartir", color = Color(0xFF333333), fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                Text("Compartir", color = TextSecondary, fontSize = 14.sp, fontWeight = FontWeight.Medium)
             }
         }
     }

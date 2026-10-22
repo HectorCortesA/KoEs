@@ -44,6 +44,15 @@ import com.hector.koes.components.card.CardDictionary
 import com.hector.koes.components.card.ModalDictionary
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.ui.theme.Background
+import com.hector.koes.ui.theme.DictionaryViewErrorTextColor
+import com.hector.koes.ui.theme.GlassBackground
+import com.hector.koes.ui.theme.GlassBorderColorEnd
+import com.hector.koes.ui.theme.GlassBorderColorStart
+import com.hector.koes.ui.theme.GlassSheetContainerColor
+import com.hector.koes.ui.theme.ModalBottomSheetScrimColor
+import com.hector.koes.ui.theme.TextPlaceholderColor
+import com.hector.koes.ui.theme.TextPrimary
+import androidx.compose.material3.MaterialTheme
 import com.hector.koes.viewModel.FavoritesManager
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -93,7 +102,7 @@ fun DiccionaryView(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         if (showNavbar) {
             Navbar(
@@ -110,9 +119,9 @@ fun DiccionaryView(
             value = query,
             onValueChange = { viewModel.onSearch(it) },
             singleLine = true,
-            cursorBrush = SolidColor(Color.Black),
+            cursorBrush = SolidColor(TextPrimary),
             textStyle = TextStyle(
-                color = Color.Black,
+                color = TextPrimary,
                 fontSize = 16.sp
             ),
             modifier = Modifier
@@ -122,7 +131,7 @@ fun DiccionaryView(
                 .width(362.dp)
                 .height(43.dp)
                 .background(
-                    color = Color(0x33D9D9D9),
+                    color = GlassBackground,
                     shape = RoundedCornerShape(size = 10.dp)
                 )
                 // Efecto Glass: Borde con degradado blanco
@@ -131,8 +140,8 @@ fun DiccionaryView(
                         width = 1.dp,
                         brush = Brush.verticalGradient(
                             colors = listOf(
-                                Color.White.copy(alpha = 0.5f),
-                                Color.White.copy(alpha = 0.1f)
+                                GlassBorderColorStart,
+                                GlassBorderColorEnd
                             )
                         )
                     ),
@@ -147,7 +156,7 @@ fun DiccionaryView(
                     if (query.isEmpty()) {
                         Text(
                             text = placeholder,
-                            color = Color.Black.copy(alpha = 0.4f),
+                            color = TextPlaceholderColor,
                             fontSize = 16.sp
                         )
                     }
@@ -177,7 +186,7 @@ fun DiccionaryView(
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "No hay palabra encontrada",
-                        color = Color(0xFF666666),
+                        color = DictionaryViewErrorTextColor,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -221,14 +230,14 @@ fun DiccionaryView(
             ModalBottomSheet(
                 onDismissRequest = { showModal = false },
                 sheetState = sheetState,
-                containerColor = Color(0x80FFFFFF),
+                containerColor = GlassSheetContainerColor,
                 dragHandle = null,
                 tonalElevation = 0.dp,
-                scrimColor = Color.Black.copy(alpha = 0.32f),
+                scrimColor = ModalBottomSheetScrimColor,
                 shape = RoundedCornerShape(topStart = 50.dp, topEnd = 50.dp),
             ) {
                 // El contenido del modal
-                Box(modifier = Modifier.fillMaxWidth().background(Color(0x80FFFFFF))) {
+                Box(modifier = Modifier.fillMaxWidth().background(GlassSheetContainerColor)) {
                     ModalDictionary(
                         wordSpanish = item.spanish,
                         wordCorea = item.korean,

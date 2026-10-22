@@ -38,8 +38,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import androidx.compose.material3.MaterialTheme
 import com.hector.koes.components.camera.CameraPreview
-import com.hector.koes.ui.theme.Background
+import com.hector.koes.ui.theme.*
 
 @Composable
 fun CameraView(
@@ -61,7 +62,7 @@ fun CameraView(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
 
         // Contenedor adaptable de la cámara (wrapper no recortado)
@@ -80,14 +81,14 @@ fun CameraView(
                     .shadow(
                         elevation = 4.dp,
                         shape = RoundedCornerShape(90.dp),
-                        spotColor = Color(0x40000000),
-                        ambientColor = Color(0x40000000)
+                        spotColor = ShadowColorToken,
+                        ambientColor = ShadowColorToken
                     )
                     .clip(
                         RoundedCornerShape(90.dp)
                     )
                     .background(
-                        color = Color(0xFF050505),
+                        color = CameraPreviewBackgroundColor,
                         shape = RoundedCornerShape(90.dp)
                     ),
                 contentAlignment = Alignment.Center
@@ -129,19 +130,19 @@ fun CameraView(
                         .shadow(
                             elevation = 4.dp,
                             shape = CircleShape,
-                            spotColor = Color(0x40000000),
-                            ambientColor = Color(0x40000000)
+                            spotColor = ShadowColorToken,
+                            ambientColor = ShadowColorToken
                         )
                         .clip(CircleShape)
                         .background(
-                            color = Color(0x80FFFFFF)
+                            color = GlassBackgroundLight
                         )
                         .border(
                             width = 1.dp,
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    Color.White.copy(alpha = 0.8f),
-                                    Color.White.copy(alpha = 0.2f)
+                                    GlassBorderTopLight,
+                                    GlassBorderBottomDark
                                 )
                             ),
                             shape = CircleShape
@@ -154,7 +155,7 @@ fun CameraView(
                     Text(
                         text = "↻",
                         fontSize = 22.sp,
-                        color = Color.Black,
+                        color = TextPrimary,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -175,7 +176,7 @@ fun CameraView(
                         bottomEnd = 0.dp
                     )
                 )
-                .background(Color(0xE5FFFFFF))
+                .background(GlassDropdownBackground)
         ) {
             Box(
                 modifier = Modifier
@@ -195,7 +196,7 @@ fun CameraView(
                         .size(86.dp),
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0x80BDDBF0)
+                        containerColor = CameraViewButtonContainerColor
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
@@ -204,7 +205,7 @@ fun CameraView(
                         modifier = Modifier
                             .size(68.dp)
                             .clip(CircleShape)
-                            .background(Color.White)
+                            .background(CardBackground)
                     )
                 }
 
@@ -228,14 +229,14 @@ fun CameraView(
                             .size(86.dp),
                         shape = CircleShape,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0x80BDDBF0)
+                            containerColor = CameraViewButtonContainerColor
                         ),
                         contentPadding = PaddingValues(0.dp)
                     ) {
 
                         Text(
                             text = "↻",
-                            color = Color.Black,
+                            color = TextPrimary,
                             fontSize = 28.sp
                         )
                     }
@@ -257,14 +258,14 @@ fun CameraView(
                             .size(86.dp),
                         shape = CircleShape,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0x80BDDBF0)
+                            containerColor = CameraViewButtonContainerColor
                         ),
                         contentPadding = PaddingValues(0.dp)
                     ) {
 
                         Text(
                             text = "✓",
-                            color = Color.Black,
+                            color = TextPrimary,
                             fontSize = 30.sp
                         )
                     }
@@ -285,19 +286,19 @@ fun CameraView(
                 .shadow(
                     elevation = 6.dp,
                     shape = CircleShape,
-                    spotColor = Color(0x40000000),
-                    ambientColor = Color(0x40000000)
+                    spotColor = ShadowColorToken,
+                    ambientColor = ShadowColorToken
                 )
                 .clip(CircleShape)
                 .background(
-                    color = Color(0x80FFFFFF)
+                    color = GlassBackgroundLight
                 )
                 .border(
                     width = 1.dp,
                     brush = Brush.verticalGradient(
                         colors = listOf(
-                            Color.White.copy(alpha = 0.5f),
-                            Color.White.copy(alpha = 0.1f)
+                            GlassBorderColorStart,
+                            GlassBorderColorEnd
                         )
                     ),
                     shape = CircleShape
@@ -310,7 +311,7 @@ fun CameraView(
             Text(
                 text = "✕",
                 fontSize = 22.sp,
-                color = Color(0xFF6FA2E1),
+                color = CameraCloseButtonTextColor,
                 fontWeight = FontWeight.Bold
             )
         }

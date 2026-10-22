@@ -17,9 +17,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hector.koes.model.*
+import com.hector.koes.ui.theme.*
 import kotlinx.coroutines.launch
 
-private val SecondaryText = Color(0xFF6C6C6C)
+private val SecondaryText = ModalOracionSecondaryTextColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +36,7 @@ fun ModalOracion(
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = Color.White,
+        containerColor = CardBackground,
         shape = RoundedCornerShape(
             topStart = 40.dp,
             topEnd = 40.dp
@@ -44,7 +45,7 @@ fun ModalOracion(
             BottomSheetDefaults.DragHandle(
                 width = 95.dp,
                 height = 5.dp,
-                color = Color(0xFF555555)
+                color = ModalOracionDragHandleColor
             )
         }
     ) {

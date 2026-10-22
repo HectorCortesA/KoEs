@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -73,7 +74,7 @@ fun ScoreView(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
 
         // Imagen peopleHappy.svg en la mera esquina izquierda abajo con sombra
@@ -242,20 +243,14 @@ fun ScoreView(
                             RoundedCornerShape(12.dp)
                         )
                         .background(
-                            color = Color.White.copy(
-                                alpha = 0.18f
-                            )
+                            color = GlassBackground
                         )
                         .border(
                             width = 1.dp,
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    Color.White.copy(
-                                        alpha = 0.70f
-                                    ),
-                                    Color.White.copy(
-                                        alpha = 0.15f
-                                    )
+                                    GlassGradientStart,
+                                    GlassGradientEnd
                                 )
                             ),
                             shape = RoundedCornerShape(

@@ -30,14 +30,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.hector.koes.resources.Res
+import com.hector.koes.ui.theme.*
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.PI
 import kotlin.math.hypot
 
 private val GlassBorder = Brush.verticalGradient(
     colors = listOf(
-        Color.White.copy(alpha = 0.5f),
-        Color.White.copy(alpha = 0.1f)
+        GlassBorderColorStart,
+        GlassBorderColorEnd
     )
 )
 
@@ -187,7 +188,7 @@ fun DictionaryWaterButton(
             Surface(
                 modifier = Modifier.size(50.dp),
                 shape = CircleShape,
-                color = Color(0xFFDAE4EA).copy(
+                color = CardDictionaryBackgroundColor.copy(
                     alpha = 0.25f + 0.75f * selectionProgress
                 ),
                 border = BorderStroke(
@@ -326,7 +327,7 @@ fun DictionaryWaterButton(
                 },
             shape = CircleShape,
             color = if (expanded) {
-                Color(0x6672B7EA)
+                NavbarWaterActiveGlowColor
             } else {
                 Color.Transparent
             },
@@ -386,7 +387,7 @@ fun NavButton(
             } else if (text != null) {
                 Text(
                     text = text,
-                    color = Color(0xFF333333),
+                    color = TextSecondary,
                     fontWeight = FontWeight.Bold
                 )
             }

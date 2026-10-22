@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -110,7 +111,7 @@ fun SettingsView(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
 
         Box(
@@ -162,7 +163,7 @@ fun SettingsView(
                             .height(106.dp)
                             .clip(CircleShape)
                             .background(
-                                color = Color(0x33D9D9D9),
+                                color = GlassBackground,
                                 shape = CircleShape
                             ),
                         contentAlignment = Alignment.Center
@@ -180,7 +181,7 @@ fun SettingsView(
                             Text(
                                 text = "IMG",
                                 fontSize = 12.sp,
-                                color = Color.Black.copy(alpha = 0.5f)
+                                color = ModalDetailDropdownIconColor
                             )
                         }
                     }
@@ -360,7 +361,7 @@ fun SettingsWritingOption(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = Color(0xFFF8F8F8),
+                color = SettingsOptionBackgroundColor,
                 shape = RoundedCornerShape(30.dp)
             )
             .padding(
@@ -373,7 +374,7 @@ fun SettingsWritingOption(
             text = "Escritura",
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = TextPrimary
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -386,7 +387,7 @@ fun SettingsWritingOption(
             Text(
                 text = "Palabras",
                 fontSize = 16.sp,
-                color = Color.Black
+                color = TextPrimary
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -401,7 +402,7 @@ fun SettingsWritingOption(
             Text(
                 text = "Oraciones",
                 fontSize = 16.sp,
-                color = Color.Black
+                color = TextPrimary
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -418,7 +419,7 @@ fun SettingsWritingOption(
             text = "Categoría",
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Black
+            color = TextPrimary
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -436,7 +437,7 @@ fun SettingsWritingOption(
                         }
                     }
                     .background(
-                        color = Color(0x33D9D9D9),
+                        color = GlassBackground,
                         shape = RoundedCornerShape(20.dp)
                     )
                     .clickable {
@@ -454,13 +455,13 @@ fun SettingsWritingOption(
                     Text(
                         text = selectedCategory,
                         fontSize = 14.sp,
-                        color = Color.Black.copy(alpha = 0.6f)
+                        color = ModalDetailLabelColor
                     )
 
                     Text(
                         text = if (expanded) "▲" else "▼",
                         fontSize = 12.sp,
-                        color = Color.Black.copy(alpha = 0.5f)
+                        color = ModalDetailDropdownIconColor
                     )
                 }
             }
@@ -471,7 +472,7 @@ fun SettingsWritingOption(
                     expanded = false
                 },
                 offset = DpOffset(x = 0.dp, y = 4.dp),
-                containerColor = Color.White,
+                containerColor = CardBackground,
                 shadowElevation = 0.dp,
                 modifier = Modifier
                     .width(
@@ -484,7 +485,7 @@ fun SettingsWritingOption(
                     .heightIn(max = 240.dp)
                     .clip(RoundedCornerShape(20.dp))
                     .background(
-                        color = Color.White,
+                        color = CardBackground,
                         shape = RoundedCornerShape(20.dp)
                     )
             ) {

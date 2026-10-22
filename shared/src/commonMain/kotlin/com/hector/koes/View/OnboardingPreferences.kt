@@ -31,9 +31,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
+import androidx.compose.material3.MaterialTheme
 import com.hector.koes.components.Profile.rememberImagePickerLauncher
 import com.hector.koes.resources.Res
 import com.hector.koes.ui.theme.Background
+import com.hector.koes.ui.theme.GlassBackground
+import com.hector.koes.ui.theme.GlassBorderColorEnd
+import com.hector.koes.ui.theme.GlassBorderColorStart
+import com.hector.koes.ui.theme.ModalDetailDropdownIconColor
+import com.hector.koes.ui.theme.TextPrimary
 import com.hector.koes.viewModel.OnboardingViewModel
 
 @Composable
@@ -55,7 +61,7 @@ fun OnboardingPreferences(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // 1. Imagen de fondo colocada en la parte izquierda de abajo
         Box(
@@ -88,14 +94,14 @@ fun OnboardingPreferences(
                         .width(174.dp)
                         .height(171.dp)
                         .clip(RoundedCornerShape(100.dp))
-                        .background(color = Color(0x33D9D9D9), shape = RoundedCornerShape(size = 100.dp))
+                        .background(color = GlassBackground, shape = RoundedCornerShape(size = 100.dp))
                         .border(
                             border = BorderStroke(
                                 width = 1.dp,
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
-                                        Color.White.copy(alpha = 0.5f),
-                                        Color.White.copy(alpha = 0.1f)
+                                        GlassBorderColorStart,
+                                        GlassBorderColorEnd
                                     )
                                 )
                             ),
@@ -118,7 +124,7 @@ fun OnboardingPreferences(
                     } else {
                         Text(
                             text = "Foto",
-                            color = Color.Black.copy(alpha = 0.5f),
+                            color = ModalDetailDropdownIconColor,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Medium
                         )
@@ -135,14 +141,14 @@ fun OnboardingPreferences(
                         .width(103.dp)
                         .height(39.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(color = Color(0x33D9D9D9))
+                        .background(color = GlassBackground)
                         .border(
                             border = BorderStroke(
                                 width = 1.dp,
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
-                                        Color.White.copy(alpha = 0.5f),
-                                        Color.White.copy(alpha = 0.1f)
+                                        GlassBorderColorStart,
+                                        GlassBorderColorEnd
                                     )
                                 )
                             ),
@@ -157,7 +163,7 @@ fun OnboardingPreferences(
                 ) {
                     Text(
                         text = "Finalizar",
-                        color = Color.Black,
+                        color = TextPrimary,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium
                     )

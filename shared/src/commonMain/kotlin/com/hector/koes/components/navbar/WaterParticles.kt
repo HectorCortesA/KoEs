@@ -9,6 +9,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import com.hector.koes.ui.theme.*
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import androidx.compose.runtime.withFrameNanos
@@ -166,7 +167,7 @@ fun WaterParticles(
                 particle.radius * (1f - progress * 0.55f)
 
             drawCircle(
-                color = Color(0xFF72B7EA).copy(
+                color = WaterParticleColor.copy(
                     alpha = alpha.coerceIn(0f, 1f)
                 ),
                 radius = currentRadius,

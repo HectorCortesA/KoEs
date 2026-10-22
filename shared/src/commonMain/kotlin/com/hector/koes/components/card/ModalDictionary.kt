@@ -26,6 +26,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.hector.koes.ui.theme.FavoriteRedAlphaColor
+import com.hector.koes.ui.theme.FavoriteWhiteAlphaColor
+import com.hector.koes.ui.theme.GlassBackgroundLight
+import com.hector.koes.ui.theme.GlassSheetContainerColor
+import com.hector.koes.ui.theme.ModalDetailLabelColor
 
 @Composable
 fun ModalDictionary(
@@ -49,7 +54,7 @@ fun ModalDictionary(
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .background(Color(0x80FFFFFF))
+                .background(GlassBackgroundLight)
                 .blur(15.dp)
         )
 

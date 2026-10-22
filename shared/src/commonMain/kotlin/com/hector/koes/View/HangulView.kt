@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.material3.MaterialTheme
 import com.hector.koes.components.card.CardHangul
 import com.hector.koes.components.navbar.Navbar
 import com.hector.koes.model.Hangul
@@ -86,7 +87,7 @@ fun HangulView(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         if (showNavbar) {
             Navbar(

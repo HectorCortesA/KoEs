@@ -14,13 +14,14 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.hector.koes.ui.theme.*
 
 @Composable
 fun BouncingDotsLoadingAnimation(
     modifier: Modifier = Modifier,
     dotSize: Dp = 24.dp,
-    dotColorActive: Color = Color(0xFF75A5E3),
-    dotColorInactive: Color = Color.White,
+    dotColorActive: Color = ButtonActiveBlue,
+    dotColorInactive: Color = CardBackground,
     jumpHeight: Dp = (-20).dp,
     spaceBetween: Dp = 8.dp
 ) {
