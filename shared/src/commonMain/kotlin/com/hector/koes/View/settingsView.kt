@@ -4,6 +4,7 @@ package com.hector.koes.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -152,7 +153,8 @@ fun SettingsView(
                         modifier = Modifier.width(220.dp),
                         fontSize = 36.sp,
                         fontWeight = FontWeight(600),
-                        lineHeight = 38.sp
+                        lineHeight = 38.sp,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
@@ -292,12 +294,16 @@ fun SettingsOption(
     text: String,
     onClick: () -> Unit = {}
 ) {
+    val isDark = isSystemInDarkTheme()
+    val bgColor = if (isDark) Color(0xFF303030) else SurfaceLight
+    val textColor = MaterialTheme.colorScheme.onSurface
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(49.dp)
             .background(
-                color = SurfaceLight,
+                color = bgColor,
                 shape = RoundedCornerShape(30.dp)
             )
             .clickable { onClick() }
@@ -308,7 +314,7 @@ fun SettingsOption(
         Text(
             text = text,
             fontSize = 16.sp,
-            color = TextPrimary
+            color = textColor
         )
     }
 }
@@ -317,12 +323,15 @@ fun SettingsOption(
 fun SettingsClosetOption(
     text: String
 ) {
+    val bgColor = SurfaceGray
+    val textColor = MaterialTheme.colorScheme.onSurface
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(49.dp)
             .background(
-                color = SurfaceGray,
+                color = bgColor,
                 shape = RoundedCornerShape(30.dp)
             )
             .padding(horizontal = 24.dp),
@@ -332,7 +341,7 @@ fun SettingsClosetOption(
         Text(
             text = text,
             fontSize = 16.sp,
-            color = CardBackground
+            color = textColor
         )
     }
 }
@@ -356,12 +365,15 @@ fun SettingsWritingOption(
     }
 
     val density = LocalDensity.current
+    val isDark = isSystemInDarkTheme()
+    val bgColor = if (isDark) Color(0xFF353535) else SettingsOptionBackgroundColor
+    val textColor = MaterialTheme.colorScheme.onSurface
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = SettingsOptionBackgroundColor,
+                color = bgColor,
                 shape = RoundedCornerShape(30.dp)
             )
             .padding(
@@ -374,7 +386,7 @@ fun SettingsWritingOption(
             text = "Escritura",
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary
+            color = textColor
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -387,7 +399,7 @@ fun SettingsWritingOption(
             Text(
                 text = "Palabras",
                 fontSize = 16.sp,
-                color = TextPrimary
+                color = textColor
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -402,7 +414,7 @@ fun SettingsWritingOption(
             Text(
                 text = "Oraciones",
                 fontSize = 16.sp,
-                color = TextPrimary
+                color = textColor
             )
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -419,10 +431,12 @@ fun SettingsWritingOption(
             text = "Categoría",
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary
+            color = textColor
         )
 
         Spacer(modifier = Modifier.height(10.dp))
+
+        val dropdownBg = if (isDark) Color(0xF2292929) else GlassDropdownBackground
 
         Box(
             modifier = Modifier.fillMaxWidth()
@@ -437,7 +451,7 @@ fun SettingsWritingOption(
                         }
                     }
                     .background(
-                        color = GlassBackground,
+                        color = if (isDark) Color(0x80202020) else GlassBackground,
                         shape = RoundedCornerShape(20.dp)
                     )
                     .clickable {
@@ -455,13 +469,13 @@ fun SettingsWritingOption(
                     Text(
                         text = selectedCategory,
                         fontSize = 14.sp,
-                        color = ModalDetailLabelColor
+                        color = textColor
                     )
 
                     Text(
                         text = if (expanded) "▲" else "▼",
                         fontSize = 12.sp,
-                        color = ModalDetailDropdownIconColor
+                        color = textColor
                     )
                 }
             }
@@ -472,7 +486,7 @@ fun SettingsWritingOption(
                     expanded = false
                 },
                 offset = DpOffset(x = 0.dp, y = 4.dp),
-                containerColor = CardBackground,
+                containerColor = dropdownBg,
                 shadowElevation = 0.dp,
                 modifier = Modifier
                     .width(
@@ -485,7 +499,7 @@ fun SettingsWritingOption(
                     .heightIn(max = 240.dp)
                     .clip(RoundedCornerShape(20.dp))
                     .background(
-                        color = CardBackground,
+                        color = dropdownBg,
                         shape = RoundedCornerShape(20.dp)
                     )
             ) {
@@ -530,7 +544,7 @@ fun SettingsWritingOption(
                                     text = category,
                                     fontSize = 14.sp,
                                     fontWeight = FontWeight.Medium,
-                                    color = TextDark
+                                    color = textColor
                                 )
                             },
                             onClick = {

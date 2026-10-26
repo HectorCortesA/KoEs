@@ -1,6 +1,7 @@
 package com.hector.koes.components.modal
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,6 +37,9 @@ fun SharedModal(
     onCameraClick: () -> Unit = {},
     onOptionAClick: () -> Unit = {}
 ) {
+    val isDark = isSystemInDarkTheme()
+    val modalBg = if (isDark) Color(0xF2292929) else GlassDropdownBackground
+    val buttonBg = if (isDark) Color.Transparent else ButtonLightBlue
 
     Box(
         modifier = Modifier
@@ -52,7 +57,7 @@ fun SharedModal(
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .background(GlassDropdownBackground)
+                .background(modalBg)
         )
 
         Box(
@@ -74,7 +79,7 @@ fun SharedModal(
                         .height(62.dp),
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = ButtonLightBlue
+                        containerColor = buttonBg
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
@@ -82,7 +87,7 @@ fun SharedModal(
                         model = Res.getUri("files/sharedIcon.svg"),
                         contentDescription = "shared",
                         modifier = Modifier.size(24.dp),
-                        colorFilter = ColorFilter.tint(TextPrimary)
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                     )
                 }
 
@@ -95,7 +100,7 @@ fun SharedModal(
                         .height(62.dp),
                     shape = RoundedCornerShape(10.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = ButtonLightBlue
+                        containerColor = buttonBg
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
@@ -103,7 +108,7 @@ fun SharedModal(
                         model = Res.getUri("files/cameraIcon.svg"),
                         contentDescription = "Cámara",
                         modifier = Modifier.size(24.dp),
-                        colorFilter = ColorFilter.tint(TextPrimary)
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                     )
                 }
             }

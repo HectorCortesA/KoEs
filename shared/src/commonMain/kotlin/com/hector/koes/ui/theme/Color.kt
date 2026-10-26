@@ -3,7 +3,7 @@ package com.hector.koes.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // ============================================================
-// DESIGN TOKENS - KOES COLOR SYSTEM
+// DESIGN TOKENS - KOES COLOR SYSTEM (FIGMA TOKENS)
 // ============================================================
 
 // App Default & Screen Backgrounds

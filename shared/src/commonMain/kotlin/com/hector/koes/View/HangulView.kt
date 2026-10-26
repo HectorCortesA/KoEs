@@ -114,7 +114,8 @@ fun HangulView(
                 modifier = Modifier.fillMaxWidth(),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -145,7 +146,8 @@ fun HangulView(
                 modifier = Modifier.fillMaxWidth(),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -176,7 +178,8 @@ fun HangulView(
                 modifier = Modifier.fillMaxWidth(),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(30.dp))
             vowelsHorizontal.chunked(3).forEach { rowItems ->
@@ -204,7 +207,8 @@ fun HangulView(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(30.dp))
             vowelsVerticalDouble.chunked(3).forEach { rowItems ->
@@ -232,7 +236,8 @@ fun HangulView(
                 modifier = Modifier.fillMaxWidth(),
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(30.dp))
             vowelsDoubleMixed.chunked(3).forEach { rowItems ->

@@ -2,6 +2,7 @@ package com.hector.koes.components.KoreanKeyboard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,14 +39,14 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
-private val KeyboardBackground =
-    KeyboardBackgroundToken
+private val KeyboardBackground: Color
+    @Composable get() = if (isSystemInDarkTheme()) Color(0xFF292929) else KeyboardBackgroundToken
 
-private val SpecialKeyBackground =
-    SpecialKeyBackgroundToken
+private val SpecialKeyBackground: Color
+    @Composable get() = if (isSystemInDarkTheme()) Color(0xFF444444) else SpecialKeyBackgroundToken
 
-private val NormalKeyBackground =
-    GlassBorderTopLight
+private val NormalKeyBackground: Color
+    @Composable get() = if (isSystemInDarkTheme()) Color(0xFF353535) else GlassBorderTopLight
 
 
 /*
@@ -1401,7 +1403,7 @@ fun KoreanKey(
                 FontWeight.Medium,
 
             color =
-                TextPrimary
+                if (isSystemInDarkTheme()) Color.White else Color.Black
         )
     }
 }
@@ -1474,7 +1476,7 @@ private fun TenKey(
                 FontWeight.Medium,
 
             color =
-                TextPrimary
+                if (isSystemInDarkTheme()) Color.White else Color.Black
         )
     }
 }
@@ -1539,7 +1541,7 @@ private fun TenKeySpecialKey(
                 FontWeight.Medium,
 
             color =
-                TextPrimary
+                if (isSystemInDarkTheme()) Color.White else Color.Black
         )
     }
 }
@@ -1611,7 +1613,7 @@ fun SpecialTextKey(
                 FontWeight.Medium,
 
             color =
-                TextPrimary
+                if (isSystemInDarkTheme()) Color.White else Color.Black
         )
     }
 }

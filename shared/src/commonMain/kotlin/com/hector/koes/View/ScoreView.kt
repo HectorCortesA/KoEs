@@ -3,6 +3,7 @@ package com.hector.koes.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -130,7 +131,7 @@ fun ScoreView(
                             RoundedCornerShape(14.dp)
                         )
                         .background(
-                            color = CardBackground,
+                            color = MaterialTheme.colorScheme.surface,
                             shape = RoundedCornerShape(14.dp)
                         )
                 ) {
@@ -140,7 +141,7 @@ fun ScoreView(
                         modifier = Modifier
                             .align(Alignment.TopCenter)
                             .padding(top = 16.dp),
-                        color = TextPrimary,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Normal
                     )
@@ -153,7 +154,7 @@ fun ScoreView(
                                 top = 50.dp,
                                 end = 35.dp
                             ),
-                        color = TextPrimary,
+                        color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 34.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -184,7 +185,7 @@ fun ScoreView(
                         .width(145.dp)
                         .height(179.dp)
                         .background(
-                            color = CardBackground,
+                            color = MaterialTheme.colorScheme.surface,
                             shape = RoundedCornerShape(14.dp)
                         ),
                     contentAlignment = Alignment.Center
@@ -196,7 +197,7 @@ fun ScoreView(
 
                         Text(
                             text = wordsLearned.toString(),
-                            color = TextPrimary,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontSize = 34.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -205,7 +206,7 @@ fun ScoreView(
                             text = "Palabras aprendidas",
                             modifier = Modifier
                                 .padding(top = 10.dp),
-                            color = TextPrimary,
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Normal,
                             textAlign = TextAlign.Center
@@ -265,7 +266,7 @@ fun ScoreView(
 
                     Text(
                         text = "Compartir",
-                        color = TextSecondary,
+                        color = if (isSystemInDarkTheme()) Color.White else TextSecondary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium
                     )

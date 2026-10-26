@@ -2,6 +2,7 @@ package com.hector.koes.View
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -76,6 +77,9 @@ fun Home(
         textFieldValue = TextFieldValue("")
     }
 
+    val isDark = isSystemInDarkTheme()
+    val textColor = if (isDark) Color.White else TextPrimary
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -106,7 +110,7 @@ fun Home(
                 if (displaySpanish != null) {
                     Text(
                         text = displaySpanish,
-                        color = TextPrimary,
+                        color = textColor,
                         fontSize = 18.sp,
                         modifier = if (showTooltip && writingMode == WritingMode.PALABRAS) {
                             Modifier.blur(5.dp)
@@ -135,7 +139,7 @@ fun Home(
                     ) {
                         Text(
                             text = currentItem?.romanization ?: "",
-                            color = TextPrimary,
+                            color = textColor,
                             fontSize = 14.sp
                         )
                     }
@@ -144,7 +148,7 @@ fun Home(
 
             Text(
                 text = suggestion,
-                color = TextPrimary,
+                color = textColor,
                 fontSize = 18.sp,
                 modifier = Modifier
                     .pointerInput(Unit) {
@@ -164,7 +168,7 @@ fun Home(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                val visualText = remember(textFieldValue.text, suggestion) {
+                val visualText = remember(textFieldValue.text, suggestion, isDark) {
                     buildAnnotatedString {
                         val text = textFieldValue.text
                         val isWordFullyComplete = text.isNotEmpty() &&
@@ -175,7 +179,7 @@ fun Home(
 
                         for (i in text.indices) {
                             val isCorrect = isWordFullyComplete || validation.getOrElse(i) { false }
-                            withStyle(style = SpanStyle(color = if (isCorrect) TextPrimary else TextRed)) {
+                            withStyle(style = SpanStyle(color = if (isCorrect) textColor else TextRed)) {
                                 append(text[i])
                             }
                         }
@@ -199,7 +203,7 @@ fun Home(
                     },
                     readOnly = showCustomKeyboard,
                     textStyle = TextStyle(
-                        color = Color.Transparent,
+                        color = if (isDark) Color.White.copy(alpha = 0.1f) else Color.Transparent,
                         textAlign = TextAlign.Center,
                         fontSize = if (writingMode == WritingMode.PALABRAS) 40.sp else 24.sp,
                         fontWeight = FontWeight.Bold

@@ -3,6 +3,7 @@ package com.hector.koes.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -163,6 +164,10 @@ fun CameraView(
         }
 
         // Panel inferior
+        val isDark = isSystemInDarkTheme()
+        val bottomPanelBg = if (isDark) Color(0xF2292929) else GlassDropdownBackground
+        val buttonBg = if (isDark) Color(0x804D6578) else CameraViewButtonContainerColor
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -176,7 +181,7 @@ fun CameraView(
                         bottomEnd = 0.dp
                     )
                 )
-                .background(GlassDropdownBackground)
+                .background(bottomPanelBg)
         ) {
             Box(
                 modifier = Modifier
@@ -196,7 +201,7 @@ fun CameraView(
                         .size(86.dp),
                     shape = CircleShape,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = CameraViewButtonContainerColor
+                        containerColor = buttonBg
                     ),
                     contentPadding = PaddingValues(0.dp)
                 ) {
@@ -229,14 +234,14 @@ fun CameraView(
                             .size(86.dp),
                         shape = CircleShape,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = CameraViewButtonContainerColor
+                            containerColor = buttonBg
                         ),
                         contentPadding = PaddingValues(0.dp)
                     ) {
 
                         Text(
                             text = "↻",
-                            color = TextPrimary,
+                            color = if (isDark) Color.White else TextPrimary,
                             fontSize = 28.sp
                         )
                     }
@@ -258,14 +263,14 @@ fun CameraView(
                             .size(86.dp),
                         shape = CircleShape,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = CameraViewButtonContainerColor
+                            containerColor = buttonBg
                         ),
                         contentPadding = PaddingValues(0.dp)
                     ) {
 
                         Text(
                             text = "✓",
-                            color = TextPrimary,
+                            color = if (isDark) Color.White else TextPrimary,
                             fontSize = 30.sp
                         )
                     }

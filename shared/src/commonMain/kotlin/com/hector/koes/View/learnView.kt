@@ -2,6 +2,7 @@ package com.hector.koes.View
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -59,7 +60,7 @@ fun LearnView(
                 text = "Formación de palabras",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextPrimary,
+                color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier
                     .padding(top = 80.dp, start = 21.dp)
             )
@@ -109,13 +110,17 @@ fun OracionItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {}
 ) {
+    val isDark = isSystemInDarkTheme()
+    val cardBg = if (isDark) Color(0xFF333333) else LearnItemBackgroundColor
+    val textColor = MaterialTheme.colorScheme.onSurface
+
     Row(
         modifier = modifier
             .widthIn(max = 362.dp)
             .fillMaxWidth()
             .height(60.dp)
             .background(
-                color = LearnItemBackgroundColor,
+                color = cardBg,
                 shape = RoundedCornerShape(5.dp)
             )
             .clickable { onClick() }
@@ -126,7 +131,7 @@ fun OracionItem(
             text = titulo,
             fontSize = 15.sp,
             fontWeight = FontWeight.Medium,
-            color = TextPrimary
+            color = textColor
         )
     }
 }

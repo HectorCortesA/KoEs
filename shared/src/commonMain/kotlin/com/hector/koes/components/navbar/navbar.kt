@@ -14,6 +14,7 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -22,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalViewConfiguration
@@ -35,12 +37,13 @@ import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.math.PI
 import kotlin.math.hypot
 
-private val GlassBorder = Brush.verticalGradient(
-    colors = listOf(
-        GlassBorderColorStart,
-        GlassBorderColorEnd
+private val GlassBorder: Brush
+    @Composable get() = Brush.verticalGradient(
+        colors = listOf(
+            GlassBorderColorStart,
+            GlassBorderColorEnd
+        )
     )
-)
 
 @Composable
 fun Navbar(
@@ -204,7 +207,8 @@ fun DictionaryWaterButton(
                         AsyncImage(
                             model = Res.getUri(secondaryIcon),
                             contentDescription = "Opción secundaria",
-                            modifier = Modifier.size(26.dp)
+                            modifier = Modifier.size(26.dp),
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                         )
                     }
                 }
@@ -349,7 +353,8 @@ fun DictionaryWaterButton(
                         } else {
                             "Diccionario"
                         },
-                        modifier = Modifier.size(26.dp)
+                        modifier = Modifier.size(26.dp),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                     )
                 }
             }
@@ -382,12 +387,13 @@ fun NavButton(
                 AsyncImage(
                     model = Res.getUri(iconUri),
                     contentDescription = null,
-                    modifier = Modifier.size(26.dp)
+                    modifier = Modifier.size(26.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                 )
             } else if (text != null) {
                 Text(
                     text = text,
-                    color = TextSecondary,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold
                 )
             }

@@ -6,6 +6,7 @@ import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,10 +63,13 @@ fun HeatCalendar(
     modifier: Modifier = Modifier,
     wordCounts: Map<Int, Int> = emptyMap(),
 ) {
+    val isDark = isSystemInDarkTheme()
+    val calendarBg = if (isDark) Color(0xFF444444) else GlassBorderTopLight
+
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(10.dp),
-        color = GlassBorderTopLight,
+        color = calendarBg,
     ) {
         Column(
             modifier = Modifier
@@ -100,12 +104,14 @@ private fun HeatCell(
     wordCount: Int,
 ) {
     val isActive = wordCount > 0
+    val isDark = isSystemInDarkTheme()
+    val emptyCellBg = if (isDark) Color(0xFF292929) else HeatmapEmptyToken
 
     Box(
         modifier = modifier
             .aspectRatio(23f / 27f)
             .clip(RoundedCornerShape(3.dp))
-            .background(if (isActive) Color.Transparent else HeatmapEmptyToken)
+            .background(if (isActive) Color.Transparent else emptyCellBg)
             .semantics {
                 contentDescription = if (isActive) "Día con $wordCount palabras resueltas" else "Día sin actividad"
             },

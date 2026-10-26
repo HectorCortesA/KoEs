@@ -5,7 +5,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -95,6 +97,10 @@ fun ModaProfile(
 
     val scrimAlpha = (0.20f * (1f - (animatableOffset.value / 600f).coerceIn(0f, 1f)))
 
+    val isDark = isSystemInDarkTheme()
+    val modalBg = if (isDark) Color(0xF23A3A3A) else GlassModalBackground
+    val textColor = MaterialTheme.colorScheme.onSurface
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -131,7 +137,7 @@ fun ModaProfile(
                     )
                 }
                 .background(
-                    color = GlassModalBackground,
+                    color = modalBg,
                     shape = RoundedCornerShape(
                         topStart = 50.dp,
                         topEnd = 50.dp,
@@ -177,7 +183,7 @@ fun ModaProfile(
                     },
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextSecondary
+                    color = textColor
                 )
 
                 Spacer(
@@ -217,7 +223,7 @@ fun ModaProfile(
                             } else {
                                 "Foto"
                             },
-                            color = TextSecondary
+                            color = textColor
                         )
                     }
                 }
@@ -230,7 +236,7 @@ fun ModaProfile(
 
                     Text(
                         text = name,
-                        color = TextSecondary,
+                        color = textColor,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Medium
                     )
@@ -338,7 +344,7 @@ fun GlassButton(
 
             Text(
                 text = text,
-                color = TextSecondary,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
         }

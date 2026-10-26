@@ -2,6 +2,7 @@ package com.hector.koes.components.card
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,7 +21,8 @@ import com.hector.koes.model.*
 import com.hector.koes.ui.theme.*
 import kotlinx.coroutines.launch
 
-private val SecondaryText = ModalOracionSecondaryTextColor
+private val SecondaryText: Color
+    @Composable get() = ModalOracionSecondaryTextColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,10 +35,13 @@ fun ModalOracion(
     )
     val scope = rememberCoroutineScope()
 
+    val isDark = isSystemInDarkTheme()
+    val modalBg = if (isDark) Color(0xF23A3A3A) else GlassModalBackground
+
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
-        containerColor = CardBackground,
+        containerColor = modalBg,
         shape = RoundedCornerShape(
             topStart = 40.dp,
             topEnd = 40.dp
@@ -62,14 +67,14 @@ fun ModalOracion(
                 text = oracion.titulo,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Text(
                 text = oracion.descripcion,
                 fontSize = 16.sp,
                 lineHeight = 24.sp,
-                color = Color.Black
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             oracion.estructuras.forEach { estructura ->
@@ -92,7 +97,7 @@ fun ModalOracion(
                                     text = palabra.palabra,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = Color.Black,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     textAlign = TextAlign.Center
                                 )
                                 Text(
@@ -228,7 +233,7 @@ private fun SectionTitle(text: String) {
         text = text,
         fontSize = 20.sp,
         fontWeight = FontWeight.SemiBold,
-        color = Color.Black
+        color = MaterialTheme.colorScheme.onSurface
     )
 }
 
@@ -244,6 +249,6 @@ private fun TableText(
         fontSize = 15.sp,
         lineHeight = 22.sp,
         fontWeight = if (header) FontWeight.SemiBold else FontWeight.Normal,
-        color = Color.Black
+        color = MaterialTheme.colorScheme.onSurface
     )
 }

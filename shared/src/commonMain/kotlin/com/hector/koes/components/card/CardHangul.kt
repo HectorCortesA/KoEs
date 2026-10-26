@@ -1,11 +1,13 @@
 package com.hector.koes.components.card
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,6 +30,10 @@ fun CardHangul(
     pronunciation: String,
     modifier: Modifier = Modifier
 ) {
+    val isDark = isSystemInDarkTheme()
+    val bgColor = if (isDark) Color(0xFF292929) else CardHangulBackgroundColor
+    val textColor = MaterialTheme.colorScheme.onSurface
+
     Column(
         modifier = modifier
             .shadow(
@@ -37,7 +43,7 @@ fun CardHangul(
             .width(80.dp)
             .height(80.dp)
             .background(
-                color = CardHangulBackgroundColor,
+                color = bgColor,
                 shape = RoundedCornerShape(10.dp)
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,7 +53,8 @@ fun CardHangul(
         Text(
             text = hangul,
             fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = textColor
         )
 
         // Texto responsivo: se ajusta en una sola línea y reduce su impacto visual
@@ -59,6 +66,7 @@ fun CardHangul(
             softWrap = false,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
+            color = textColor,
             modifier = Modifier.width(72.dp) // Un poco menos que el ancho del card
         )
     }

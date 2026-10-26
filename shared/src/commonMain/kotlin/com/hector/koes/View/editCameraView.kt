@@ -3,6 +3,7 @@ package com.hector.koes.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -107,7 +108,7 @@ fun EditCameraView(
                     Box(
                         modifier = Modifier.width(180.dp).height(45.dp)
                             .clip(RoundedCornerShape(12.dp))
-                            .background(GlassBackground)
+                            .background(if (isSystemInDarkTheme()) Color(0x80202020) else GlassBackground)
                             .border(
                                 1.dp,
                                 Brush.verticalGradient(
@@ -119,17 +120,17 @@ fun EditCameraView(
                             .padding(horizontal = 14.dp),
                         contentAlignment = Alignment.CenterStart
                     ) {
-                        Text("Añadir elemento ▾", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = TextSecondary)
+                        Text("Añadir elemento ▾", fontSize = 13.sp, fontWeight = FontWeight.Medium, color = if (isSystemInDarkTheme()) Color.White else TextSecondary)
                     }
                     DropdownMenu(
                         expanded = isDropdownExpanded,
                         onDismissRequest = { isDropdownExpanded = false },
-                        containerColor = GlassDropdownBackground,
+                        containerColor = if (isSystemInDarkTheme()) Color(0xF2292929) else GlassDropdownBackground,
                         modifier = Modifier.width(220.dp)
                     ) {
                         availableBadges.forEach { badge ->
                             DropdownMenuItem(
-                                text = { Text(badge, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = TextDark) },
+                                text = { Text(badge, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = MaterialTheme.colorScheme.onSurface) },
                                 onClick = {
                                     val isCal = badge.contains("Calendario")
                                     overlayItems = overlayItems + OverlayItem(
@@ -151,7 +152,7 @@ fun EditCameraView(
                         .clickable { onNavigate("score") },
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("✕", fontSize = 20.sp, color = TextPrimary, fontWeight = FontWeight.Bold)
+                    Text("✕", fontSize = 20.sp, color = if (isSystemInDarkTheme()) Color.White else TextPrimary, fontWeight = FontWeight.Bold)
                 }
             }
 
@@ -256,7 +257,7 @@ fun EditCameraView(
             Box(
                 modifier = Modifier.width(111.dp).height(35.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(GlassBackground)
+                    .background(if (isSystemInDarkTheme()) Color(0x80202020) else GlassBackground)
                     .border(
                         1.dp,
                         Brush.verticalGradient(listOf(GlassGradientStart, GlassGradientEnd)),
@@ -273,7 +274,7 @@ fun EditCameraView(
                     },
                 contentAlignment = Alignment.Center
             ) {
-                Text("Compartir", color = TextSecondary, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                Text("Compartir", color = if (isSystemInDarkTheme()) Color.White else TextSecondary, fontSize = 14.sp, fontWeight = FontWeight.Medium)
             }
         }
     }

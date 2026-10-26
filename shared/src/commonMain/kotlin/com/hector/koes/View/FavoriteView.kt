@@ -100,7 +100,7 @@ fun FavoriteView(
             text = "Favoritos",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary,
+            color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .statusBarsPadding()

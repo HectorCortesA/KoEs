@@ -2,6 +2,7 @@ package com.hector.koes.components.card
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,11 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.hector.koes.ui.theme.FavoriteRedAlphaColor
-import com.hector.koes.ui.theme.FavoriteWhiteAlphaColor
 import com.hector.koes.ui.theme.GlassBackgroundLight
-import com.hector.koes.ui.theme.GlassSheetContainerColor
-import com.hector.koes.ui.theme.ModalDetailLabelColor
 
 @Composable
 fun ModalDictionary(
@@ -44,6 +42,11 @@ fun ModalDictionary(
     isFavorite: Boolean = false,
     onToggleFavorite: () -> Unit = {}
 ) {
+    val isDark = isSystemInDarkTheme()
+    val modalBg = if (isDark) Color(0xF23A3A3A) else GlassBackgroundLight
+    val textColor = MaterialTheme.colorScheme.onSurface
+    val labelColor = if (isDark) Color(0xB3FFFFFF) else Color.Black.copy(alpha = 0.6f)
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -54,7 +57,7 @@ fun ModalDictionary(
         Box(
             modifier = Modifier
                 .matchParentSize()
-                .background(GlassBackgroundLight)
+                .background(modalBg)
                 .blur(15.dp)
         )
 
@@ -96,7 +99,8 @@ fun ModalDictionary(
                     .padding(top = 10.dp),
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = textColor
             )
             Row(
                 modifier = Modifier
@@ -110,13 +114,14 @@ fun ModalDictionary(
                         Text(
                             text = "Coreano",
                             fontSize = 14.sp,
-                            color = Color.Black.copy(alpha = 0.6f)
+                            color = labelColor
                         )
                         Text(
                             text = wordCorea,
                             modifier = Modifier.padding(top = 4.dp),
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = textColor
                         )
                     }
                 }
@@ -127,13 +132,14 @@ fun ModalDictionary(
                         Text(
                             text = "Romanización",
                             fontSize = 14.sp,
-                            color = Color.Black.copy(alpha = 0.6f)
+                            color = labelColor
                         )
                         Text(
                             text = romanization,
                             modifier = Modifier.padding(top = 4.dp),
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.SemiBold,
+                            color = textColor
                         )
                     }
                 }
@@ -144,7 +150,7 @@ fun ModalDictionary(
                     .fillMaxWidth()
                     .padding(top = 35.dp),
                 fontSize = 14.sp,
-                color = Color.Black.copy(alpha = 0.6f),
+                color = labelColor,
                 textAlign = TextAlign.Center
             )
             Text(
@@ -154,7 +160,8 @@ fun ModalDictionary(
                     .padding(top = 4.dp),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = textColor
             )
 
             Text(
@@ -163,7 +170,8 @@ fun ModalDictionary(
                     .fillMaxWidth()
                     .padding(top = 35.dp, start = 24.dp, end = 24.dp),
                 fontSize = 16.sp,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = textColor
             )
 
             Text(
@@ -173,7 +181,8 @@ fun ModalDictionary(
                     .padding(top = 6.dp, start = 24.dp, end = 24.dp),
                 fontSize = 17.sp,
                 fontWeight = FontWeight.SemiBold,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                color = textColor
             )
         }
     }
