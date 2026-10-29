@@ -1,3 +1,11 @@
+// KoEs — diseño responsive corregido (2026-10-29)
+// - Teléfonos: conserva medidas originales (referencia: 402 dp).
+// - Tablets: ampliación moderada, hasta 1.20x.
+// - Teclas especiales: tamaño aplicado una sola vez, sin duplicar escala.
+// - Lógica de Hangul, multi-tap, callbacks, colores y orden de teclas conservados.
+// Si el teclado queda bajo la barra de navegación, añade navigationBarsPadding()
+// en el contenedor de pantalla que lo posiciona en la parte inferior.
+
 package com.hector.koes.components.KoreanKeyboard
 
 import androidx.compose.foundation.background
@@ -5,6 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +24,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +49,10 @@ import com.hector.koes.ui.theme.TextPrimary
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
+
+// Multiplicador visual: no altera la lógica ni los colores del teclado.
+private val LocalKeyboardScale = compositionLocalOf { 1f }
+
 
 private val KeyboardBackground: Color
     @Composable get() = if (isSystemInDarkTheme()) Color(0xFF292929) else KeyboardBackgroundToken
@@ -184,73 +199,48 @@ private val COMPOUND_MEDIALS =
 @Composable
 fun KoreanKeyboard(
     onKeyClick: (String) -> Unit,
-
     onShiftClick: () -> Unit = {},
-
     onDeleteClick: () -> Unit = {},
-
     onNumberClick: () -> Unit = {},
-
     onSettingsClick: () -> Unit = {},
-
     onNativeKeyboardClick: () -> Unit = {}
 ) {
+    var keyboardMode by remember { mutableStateOf(KeyboardMode.NORMAL) }
 
-    var keyboardMode by remember {
-        mutableStateOf(
-            KeyboardMode.NORMAL
-        )
-    }
-
-
-    when (keyboardMode) {
-
-        KeyboardMode.NORMAL -> {
-
-            NormalKoreanKeyboard(
-                onKeyClick = onKeyClick,
-
-                onShiftClick =
-                    onShiftClick,
-
-                onDeleteClick =
-                    onDeleteClick,
-
-                onNumberClick =
-                    onNumberClick,
-
-                onSettingsClick = {
-
-                    keyboardMode =
-                        KeyboardMode.TEN_KEY
-
-                    onSettingsClick()
-                },
-
-                onNativeKeyboardClick =
-                    onNativeKeyboardClick
-            )
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        // El diseño original tiene una base de 402 dp de ancho.
+        // En teléfonos se conserva el tamaño original; en pantallas estrechas
+        // se reduce para evitar recortes. En tablets aumenta como máximo 20 %.
+        // No usar 1.8f: da teclas desproporcionadas y ocupa demasiada altura.
+        val keyboardScale = if (maxWidth < 600.dp) {
+            (maxWidth.value / 402f).coerceAtMost(1f)
+        } else {
+            (maxWidth.value / 402f).coerceAtMost(1.20f)
         }
 
+        CompositionLocalProvider(LocalKeyboardScale provides keyboardScale) {
+            when (keyboardMode) {
+                KeyboardMode.NORMAL -> NormalKoreanKeyboard(
+                    onKeyClick = onKeyClick,
+                    onShiftClick = onShiftClick,
+                    onDeleteClick = onDeleteClick,
+                    onNumberClick = onNumberClick,
+                    onSettingsClick = {
+                        keyboardMode = KeyboardMode.TEN_KEY
+                        onSettingsClick()
+                    },
+                    onNativeKeyboardClick = onNativeKeyboardClick
+                )
 
-        KeyboardMode.TEN_KEY -> {
-
-            TenKeyKoreanKeyboard(
-                onKeyClick =
-                    onKeyClick,
-
-                onDeleteClick =
-                    onDeleteClick,
-
-                onNumberClick =
-                    onNumberClick,
-
-                onBackToNormalKeyboard = {
-
-                    keyboardMode =
-                        KeyboardMode.NORMAL
-                }
-            )
+                KeyboardMode.TEN_KEY -> TenKeyKoreanKeyboard(
+                    onKeyClick = onKeyClick,
+                    onDeleteClick = onDeleteClick,
+                    onNumberClick = onNumberClick,
+                    onBackToNormalKeyboard = {
+                        keyboardMode = KeyboardMode.NORMAL
+                    }
+                )
+            }
         }
     }
 }
@@ -276,6 +266,8 @@ private fun NormalKoreanKeyboard(
 
     onNativeKeyboardClick: () -> Unit
 ) {
+
+    val scale = LocalKeyboardScale.current
 
     var shiftEnabled by remember {
         mutableStateOf(false)
@@ -344,14 +336,14 @@ private fun NormalKoreanKeyboard(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(289.dp)
+            .height((289.dp * scale))
             .background(
                 color =
                     KeyboardBackground,
 
                 shape =
                     RoundedCornerShape(
-                        10.dp
+                        (10.dp * scale)
                     )
             ),
 
@@ -361,14 +353,14 @@ private fun NormalKoreanKeyboard(
 
         Spacer(
             modifier =
-                Modifier.height(20.dp)
+                Modifier.height((20.dp * scale))
         )
 
 
         // FILA 1
         Row(
             modifier =
-                Modifier.width(390.dp),
+                Modifier.width((390.dp * scale)),
 
             horizontalArrangement =
                 Arrangement.SpaceEvenly
@@ -391,14 +383,14 @@ private fun NormalKoreanKeyboard(
 
         Spacer(
             modifier =
-                Modifier.height(11.dp)
+                Modifier.height((11.dp * scale))
         )
 
 
         // FILA 2
         Row(
             modifier =
-                Modifier.width(345.dp),
+                Modifier.width((345.dp * scale)),
 
             horizontalArrangement =
                 Arrangement.SpaceEvenly
@@ -421,14 +413,14 @@ private fun NormalKoreanKeyboard(
 
         Spacer(
             modifier =
-                Modifier.height(11.dp)
+                Modifier.height((11.dp * scale))
         )
 
 
         // FILA 3
         Row(
             modifier =
-                Modifier.width(396.dp),
+                Modifier.width((396.dp * scale)),
 
             verticalAlignment =
                 Alignment.CenterVertically,
@@ -456,7 +448,7 @@ private fun NormalKoreanKeyboard(
 
             Row(
                 modifier =
-                    Modifier.width(300.dp),
+                    Modifier.width((300.dp * scale)),
 
                 horizontalArrangement =
                     Arrangement.SpaceEvenly
@@ -489,14 +481,14 @@ private fun NormalKoreanKeyboard(
 
         Spacer(
             modifier =
-                Modifier.height(11.dp)
+                Modifier.height((11.dp * scale))
         )
 
 
         // FILA INFERIOR
         Row(
             modifier =
-                Modifier.width(394.dp),
+                Modifier.width((394.dp * scale)),
 
             verticalAlignment =
                 Alignment.CenterVertically,
@@ -520,7 +512,7 @@ private fun NormalKoreanKeyboard(
 
                 Spacer(
                     modifier =
-                        Modifier.width(3.dp)
+                        Modifier.width((3.dp * scale))
                 )
 
 
@@ -574,6 +566,8 @@ private fun TenKeyKoreanKeyboard(
 
     onBackToNormalKeyboard: () -> Unit
 ) {
+
+    val scale = LocalKeyboardScale.current
 
     /*
      * --------------------------------------------------------
@@ -1027,14 +1021,14 @@ private fun TenKeyKoreanKeyboard(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(289.dp)
+            .height((289.dp * scale))
             .background(
                 color =
                     KeyboardBackground,
 
                 shape =
                     RoundedCornerShape(
-                        10.dp
+                        (10.dp * scale)
                     )
             ),
 
@@ -1044,13 +1038,13 @@ private fun TenKeyKoreanKeyboard(
 
         Spacer(
             modifier =
-                Modifier.height(15.dp)
+                Modifier.height((15.dp * scale))
         )
 
 
         Row(
             modifier =
-                Modifier.width(394.dp),
+                Modifier.width((394.dp * scale)),
 
             horizontalArrangement =
                 Arrangement.SpaceBetween,
@@ -1067,7 +1061,7 @@ private fun TenKeyKoreanKeyboard(
             Column(
                 verticalArrangement =
                     Arrangement.spacedBy(
-                        7.dp
+                        (7.dp * scale)
                     )
             ) {
 
@@ -1110,7 +1104,7 @@ private fun TenKeyKoreanKeyboard(
             Column(
                 verticalArrangement =
                     Arrangement.spacedBy(
-                        7.dp
+                        (7.dp * scale)
                     )
             ) {
 
@@ -1124,7 +1118,7 @@ private fun TenKeyKoreanKeyboard(
                 Row(
                     horizontalArrangement =
                         Arrangement.spacedBy(
-                            7.dp
+                            (7.dp * scale)
                         )
                 ) {
 
@@ -1173,7 +1167,7 @@ private fun TenKeyKoreanKeyboard(
                 Row(
                     horizontalArrangement =
                         Arrangement.spacedBy(
-                            7.dp
+                            (7.dp * scale)
                         )
                 ) {
 
@@ -1222,7 +1216,7 @@ private fun TenKeyKoreanKeyboard(
                 Row(
                     horizontalArrangement =
                         Arrangement.spacedBy(
-                            7.dp
+                            (7.dp * scale)
                         )
                 ) {
 
@@ -1271,7 +1265,7 @@ private fun TenKeyKoreanKeyboard(
                 Row(
                     horizontalArrangement =
                         Arrangement.spacedBy(
-                            7.dp
+                            (7.dp * scale)
                         )
                 ) {
 
@@ -1303,7 +1297,7 @@ private fun TenKeyKoreanKeyboard(
                     Spacer(
                         modifier =
                             Modifier.width(
-                                72.dp
+                                (72.dp * scale)
                             )
                     )
                 }
@@ -1318,7 +1312,7 @@ private fun TenKeyKoreanKeyboard(
             Column(
                 verticalArrangement =
                     Arrangement.spacedBy(
-                        7.dp
+                        (7.dp * scale)
                     )
             ) {
 
@@ -1369,19 +1363,21 @@ fun KoreanKey(
     onClick: () -> Unit
 ) {
 
+    val scale = LocalKeyboardScale.current
+
     Box(
         modifier = Modifier
-            .width(35.dp)
-            .height(42.dp)
+            .width((35.dp * scale))
+            .height((42.dp * scale))
             .shadow(
-                elevation = 2.dp,
-                shape = RoundedCornerShape(10.dp),
+                elevation = (2.dp * scale),
+                shape = RoundedCornerShape((10.dp * scale)),
                 spotColor = ShadowColorToken,
                 ambientColor = ShadowColorToken
             )
             .background(
                 color = NormalKeyBackground,
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape((10.dp * scale))
             )
             .clickable {
 
@@ -1425,13 +1421,15 @@ private fun TenKey(
     onClick: () -> Unit
 ) {
 
+    val scale = LocalKeyboardScale.current
+
     Box(
         modifier = Modifier
-            .width(72.dp)
-            .height(48.dp)
+            .width((72.dp * scale))
+            .height((48.dp * scale))
             .shadow(
-                elevation = 2.dp,
-                shape = RoundedCornerShape(10.dp),
+                elevation = (2.dp * scale),
+                shape = RoundedCornerShape((10.dp * scale)),
                 spotColor = ShadowColorToken,
                 ambientColor = ShadowColorToken
             )
@@ -1441,7 +1439,7 @@ private fun TenKey(
 
                 shape =
                     RoundedCornerShape(
-                        10.dp
+                        (10.dp * scale)
                     )
             )
             .clickable {
@@ -1470,7 +1468,7 @@ private fun TenKey(
                 text,
 
             fontSize =
-                fontSize,
+                fontSize * scale,
 
             fontWeight =
                 FontWeight.Medium,
@@ -1502,13 +1500,15 @@ private fun TenKeySpecialKey(
     onClick: () -> Unit
 ) {
 
+    val scale = LocalKeyboardScale.current
+
     Box(
         modifier = Modifier
-            .width(width)
-            .height(height)
+            .width(width * scale)
+            .height(height * scale)
             .shadow(
-                elevation = 2.dp,
-                shape = RoundedCornerShape(10.dp),
+                elevation = (2.dp * scale),
+                shape = RoundedCornerShape((10.dp * scale)),
                 spotColor = ShadowColorToken,
                 ambientColor = ShadowColorToken
             )
@@ -1518,7 +1518,7 @@ private fun TenKeySpecialKey(
 
                 shape =
                     RoundedCornerShape(
-                        10.dp
+                        (10.dp * scale)
                     )
             )
             .clickable {
@@ -1535,7 +1535,7 @@ private fun TenKeySpecialKey(
                 text,
 
             fontSize =
-                fontSize,
+                fontSize * scale,
 
             fontWeight =
                 FontWeight.Medium,
@@ -1570,13 +1570,15 @@ fun SpecialTextKey(
     onClick: () -> Unit
 ) {
 
+    val scale = LocalKeyboardScale.current
+
     Box(
         modifier = Modifier
-            .width(width)
-            .height(height)
+            .width(width * scale)
+            .height(height * scale)
             .shadow(
-                elevation = 2.dp,
-                shape = RoundedCornerShape(10.dp),
+                elevation = (2.dp * scale),
+                shape = RoundedCornerShape((10.dp * scale)),
                 spotColor = ShadowColorToken,
                 ambientColor = ShadowColorToken
             )
@@ -1590,7 +1592,7 @@ fun SpecialTextKey(
 
                 shape =
                     RoundedCornerShape(
-                        10.dp
+                        (10.dp * scale)
                     )
             )
             .clickable {
@@ -1607,7 +1609,7 @@ fun SpecialTextKey(
                 text,
 
             fontSize =
-                fontSize,
+                fontSize * scale,
 
             fontWeight =
                 FontWeight.Medium,
@@ -1630,6 +1632,13 @@ fun SpecialTextKey(
     backgroundColor = 0xFFFFFFFF,
     widthDp = 402,
     heightDp = 320
+)
+@Preview(
+    name = "Tablet vertical",
+    showBackground = true,
+    backgroundColor = 0xFFFFFFFF,
+    widthDp = 800,
+    heightDp = 600
 )
 @Composable
 fun KoreanKeyboardPreview() {

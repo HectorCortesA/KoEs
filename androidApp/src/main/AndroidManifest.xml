@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- ===================================== -->
-    <!-- PERMISOS -->
-    <!-- ===================================== -->
-
     <uses-permission
         android:name="android.permission.CAMERA" />
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
-    <!-- ===================================== -->
-    <!-- APLICACIÓN KOES -->
-    <!-- ===================================== -->
-
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -24,13 +14,10 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
 
-        <!-- ================================= -->
-        <!-- ACTIVIDAD PRINCIPAL -->
-        <!-- ================================= -->
-
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait" >
 
             <intent-filter>
                 <action
